@@ -466,3 +466,29 @@ stops, and a long pipe can run over several lines, since a statement ends only a
 `end procedure.main` stands alone, with no `;`. Examples in entries before this one are written without `;`.
 
 Owner: too long, then "yea".
+
+## D32: `copy` or `share` on assignment, and parameters can't be changed (2026-11-16)
+
+Assigning a list or a record to a name says whether it gets its own or shares the original:
+
+    mutable #b: List = copy #a;
+    mutable #c: List = share #a;
+
+Changing `#b` leaves `#a` alone. Changing `#c` changes `#a`, and the word `share` on that line says so. There's no
+default, so it's never hidden, which is what bites Python beginners. Plain values like `Whole` need no word, since
+copying and sharing them look the same.
+
+Arguments need no word, because a procedure can't change its parameters. It can only read them, so passing the original
+looks exactly like passing a copy, and costs nothing. A procedure that changes a list returns the new one, and the caller
+stores it, which D26 makes sure of:
+
+    change #party = add_member(#party, name: "Tankun");
+
+Requiring a word on every argument, as in `heal(share #party)`, was turned down: that's ownership with friendlier
+names, like Cyborg's `Lend` and `Give`.
+
+Open: how AroundPy keeps `copy` cheap without reference counts (escape analysis, D21, or lists that share unchanged
+parts); the list syntax itself.
+
+Owner: "Tell me, two words, `share` & `copy`. Hard to learn?", "Bro's talking number 2 like we're adding ownership",
+then "yes".
