@@ -711,7 +711,7 @@ parameter is in pixels is fine, and `300 seconds` or a bare `300` there is refus
 passes with no unit word and no check. There are no unit types, no conversions and no maths on units. That's Cyborg's
 checked units (D8 left them undecided), which are heavy, and Plainly skips them.
 
-Open: where unit words come from (declared by packages, or a fixed list). How a parameter declares its unit: D47.
+Where unit words come from: D48. How a parameter declares its unit: D47.
 
 Owner: "i would like to add units there, just not checked ones (those are heavy)", "Uh, bro, Shouldn't it be behind?",
 then "yea, but not that syntax".
@@ -754,3 +754,13 @@ failures, what a procedure takes and gives, and the top of the body holds labels
 when calling it, in that order.
 
 Owner: "What abt in body instead?", then "yea".
+
+## D48: Unit words are declared by packages (2026-11-16)
+
+A unit word like `pixels` or `seconds` is declared by a package, not built into the language: a graphics package
+declares `pixels` and `points`, and `std` declares `seconds`. A game can declare its own, like `tiles`. If two packages
+declare the same unit word, D39 applies: the bare word is refused, and the package's name goes in front.
+
+Open: how a package declares a unit word.
+
+Owner: "declared by packages".
