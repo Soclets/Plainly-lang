@@ -764,3 +764,12 @@ just part of one procedure's calling rules, like a label, so two packages that b
 `pixels`, a fair trade for unchecked units.
 
 Owner: "declared by packages", "Just let them declare in there? Like in the fn", then "yea".
+
+## D49: CLI first, and a GUI only as a package later, if ever (2026-11-16)
+
+Plainly's standard library targets the terminal: printing, reading keys, drawing characters and colours, through
+`crossterm`. Its examples and README show terminal games. A GUI, if it ever comes, is a separate package wrapping a
+library like raylib behind `external.rust` (D40), with labels and units (D45 to D48) for its calls. The language itself
+doesn't change either way.
+
+Owner: "CLI first, GUI as a package later if ever. And btw, I'm Tankun, lol".
