@@ -97,7 +97,26 @@ Labels don't depend on units. Whether Plainly has Cyborg's units, checked while 
 isn't decided: they're very rich, and may be more than Plainly needs. Without them, Plainly skips Cyborg D144, where a
 label's narrowing names a unit.
 
-Open: how a label is declared (Cyborg's separate `labels [...]` and `defaults [...]` lines, or in the parameter list);
-whether labels keep their order unless `labels.any_order` is given, as in Cyborg.
+Open: whether labels keep their order unless `labels.any_order` is given, as in Cyborg.
 
 Owner: "idk if we'll have checked units. But we'll definitely have Cyborg's labels".
+
+How a label is declared: D9.
+
+## D9: Labels and defaults are declared on their own lines (2026-11-16)
+
+As in Cyborg (Cyborg D114), labels and defaults are declared on separate lines at the top of the body, labels first:
+
+    proc first_word[#text: Text, #limit: Whole] returns Text:
+    labels [#limit as limit]
+    defaults [#limit = 40]
+    ...
+    end proc first_word
+
+    first_word(#text, limit: 20)
+    first_word(#text)
+
+The one-line form, `[#text: Text, limit #limit: Whole = 40]`, was turned down: it packs a label, a name, a type and a
+default into one item, which is hard to read.
+
+Owner: "That's bad btw" (of the one-line form), then "separate, yea".
