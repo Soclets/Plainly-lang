@@ -10,7 +10,7 @@ replaces `join_text(...)` from the early sketch.
 
 Open: whether `&` turns a non-text value such as a `Whole` into text by itself. (Answered by D6: it doesn't.)
 
-Owner: "`&` decided."
+Owner: too long.
 
 ## D2: `show_text.format` fills in names, and `show_text` stays literal (2026-11-16)
 
@@ -35,7 +35,7 @@ A `\` makes the next character literal: `show_text.format("\#1 player: #name")` 
 Open: how a newline or tab is written; whether `\` before an ordinary letter is an error; how `\"` and `\\` work in plain
 (non-`.format`) text.
 
-Owner: "`\` escapes, but it doesn't format like C".
+Owner: too long.
 
 Since D4, a bare `#` in `.format` text is literal, so `"#1 player"` needs no escape. `\{` escapes a brace instead.
 
@@ -51,7 +51,7 @@ inside `.format`. It's one more thing to learn, but a small one, and it says wha
 Open: what may go in braces besides names and `new_line` (expressions such as `{#total + 1}`?); other named characters,
 such as a tab.
 
-Owner: "It should probably be this instead, then. [...] Which yes, I know, it's a thing to learn. But I think it's small".
+Owner: too long.
 
 Changed by D12: `show_text` ends the line by itself, so `new_line` is for line breaks inside text.
 
@@ -85,7 +85,7 @@ Open: field access, such as `{#player.score}`, once Plainly has records; width, 
 spells as words, like `{$price, places: 2}`; a version of `.format` that builds a `Text` value instead of printing,
 which Cyborg's design claude advises deciding early (D11).
 
-Owner: "yea".
+Owner: too long.
 
 ## D8: Plainly has Cyborg's labels (2026-11-16)
 
@@ -101,7 +101,7 @@ label's narrowing names a unit.
 
 Label order: D10.
 
-Owner: "idk if we'll have checked units. But we'll definitely have Cyborg's labels".
+Owner: too long.
 
 How a label is declared: D9.
 
@@ -121,7 +121,7 @@ As in Cyborg (Cyborg D114), labels and defaults are declared on separate lines a
 The one-line form, `[#text: Text, limit #limit: Whole = 40]`, was turned down: it packs a label, a name, a type and a
 default into one item, which is hard to read.
 
-Owner: "That's bad btw" (of the one-line form), then "separate, yea".
+Owner: "Fucking profound. That's bad btw" (of the one-line form), then "separate, yea".
 
 ## D10: Labels keep their order, unless `labels.any_order` (2026-11-16)
 
@@ -155,7 +155,8 @@ itself:
 `show_text.format(...)` stays, as a shortcut for `show_text(be.Text.format(...))`, since it's the most common line in a
 CLI game. Owner, asked whether to keep it: "yes".
 
-Owner: "Probably, how would it look?", "Wait, how do you make that work elsewhere?", then "Ahhh. yea".
+Owner: "Probably, how would it look?", "Wait, how do you make that work elsewhere? Like, not just in conversion", then
+"Ahhh. yea".
 
 ## D12: `show_text` ends the line by itself, and `.same_line` doesn't (2026-11-16)
 
@@ -173,7 +174,8 @@ examples, not the word.
 
 How `.same_line` and `.format` combine: D13.
 
-Owner: "I don't like `new_line` that much. How about we do auto newline, and make `no_newline`?", then "`same_line`".
+Owner: "Hm, honest opinion? I don't like `new_line` that much. How about we do auto newline, and make `no_newline`?",
+then "`same_line`".
 
 ## D13: Both ways of printing a filled-in prompt work (2026-11-16)
 
@@ -216,7 +218,7 @@ is, so it can't be mistaken for an offset from 0, which Cyborg writes as `offset
 `proc` is to `procedure`. Square brackets after a name hold which item, and after `procedure greet` they hold
 parameters, and the label keeps the two apart.
 
-Owner: "`#xs[position: 1] // pos also available`", then "yea", to position 1 being the first item.
+Owner: too long, then "yea", to position 1 being the first item.
 
 ## D16: Plainly compiles ahead of time to native code, through Cranelift (2026-11-16)
 
@@ -230,7 +232,8 @@ Cranelift compiles fast, so a `run` command can compile to a temporary file and 
 build per target, which Cranelift covers for x86-64, ARM64 and RISC-V, and less optimization than LLVM, which CLI games
 don't need. PlainGC finds references through the stack maps Cranelift records.
 
-Owner: "I was thinking of switching to full AOT native via Cranelift, it's simpler", then "yup".
+Owner: "Before I answer that. I was thinking of switching to full AOT native via Cranelift, it's simpler", then "yup. Now,
+should PlainOracle be made in OCaml?".
 
 ## D17: PlainOracle is written in OCaml (2026-11-16)
 
@@ -243,7 +246,7 @@ Cargo.
 `Whole` is 64-bit, and OCaml's `int` is 63-bit, so the oracle uses `Int64` for every `Whole`, never `int`, or its overflow
 results would be wrong in ways that look right. OCaml strings are bytes, so `Text` needs a Unicode library.
 
-Owner: "should PlainOracle be made in OCaml?", then "Yea", to its independence being worth a second toolchain.
+Owner: "yup. Now, should PlainOracle be made in OCaml?", then "Yea", to its independence being worth a second toolchain.
 
 ## D18: Plainly doesn't have Cyborg's stable floats (2026-11-16)
 
@@ -269,7 +272,7 @@ bare names: where no default is obvious, there's no bare name.
 In `FinalPerf`, a dropped check means a bad position reads past the end of the list, with whatever happens next. That's
 the point of the mode: test in `Working` or `FinalSafe` first.
 
-Owner: "`// no default` `Working` `FinalSafe` `FinalPerf`?", then "It's FinalPerf, bro. Test your shit".
+Owner: too long, then "It's FinalPerf, bro. Test your shit".
 
 ## D20: A bad position the compiler can see is refused while building (2026-11-16)
 
@@ -352,7 +355,8 @@ mustn't move.
 Open: only where Plainly differs from the JVM, such as Cranelift's stack maps in place of HotSpot's.
 
 Owner: "Ah, ZGC, right? Seems nice", "It's cool, though. And for games (maybe not fucking CLI, though), pauses are
-shit", then "But it's fun, thoughhhh". On open questions: "The design copies ZGC, so you don't have to ask generational".
+shit", then "But it's fun, thoughhhh". On open questions: "No, like. The design copies ZGC, so you don't have to ask
+generational".
 
 ## D25: Two kinds of random, with names that can't be mixed up (2026-11-16)
 
@@ -380,7 +384,7 @@ it showed up in the first procedure multifinity wrote in Plainly.
 
 Open: how to discard a result on purpose, when that's really meant.
 
-Owner: "yea", to refusing it.
+Owner: "yea. Also, it's `change` in front to change", to refusing it.
 
 ## D27: `change` in front changes a variable (2026-11-16)
 
@@ -396,7 +400,7 @@ mixed up, and a reader sees every place a value changes.
 
 The spellings are D28.
 
-Owner: "Also, it's `change` in front to change".
+Owner: "yea. Also, it's `change` in front to change".
 
 ## D28: `mutable`, or `mut` for short (2026-11-16)
 
@@ -439,5 +443,5 @@ A step with no other arguments is written bare, `|> be.Whole`, not `|> be.Whole(
 a long chain are just noise. A step with labels keeps its parentheses, `|> heal(by: 300)`. (Owner: "`()` looks like it's
 a stroke when you don't nest for a lot".)
 
-Owner: "Just the symbol? Maybe we use `=>` arrow instead?", "Man, for some reason it looks like not the same thing
-doing", "Let me see slider (the original symbol)", then "`|>` it is".
+Owner: "Just the symbol? Maybe we use `=>` arrow instead? Let's see", "Man, for some reason it looks like not the same
+thing doing. Idk why", "Let me see slider (the original symbol)", then "`|>` it is".
