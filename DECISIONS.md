@@ -925,7 +925,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | English | Thai |
 |---|---|
 | `procedure` | `กระบวนการ` |
-| `end` | `ปิด` |
+| `end` | `สิ้นสุด` |
 | `.main` | `.หลัก` |
 | `show_text` | `แสดงข้อความ` |
 | `if` | `ถ้า` |
@@ -933,7 +933,8 @@ From now on, every keyword gets both an English and a Thai word. The first:
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
-`end` is `ปิด` ("close"), so `ปิด ถ้า` reads as "close the if".
+`end` is `สิ้นสุด` ("end, conclude"), so `สิ้นสุด ถ้า` reads as "end of the if". It's one word, so it needs no `_`,
+and it's the word Thai school flowcharts and pseudocode use for an end, next to `เริ่มต้น` for a start.
 
 What was turned down on the way:
 - `ขั้นตอน` for `procedure`: it means one step, not a whole procedure.
@@ -942,10 +943,12 @@ What was turned down on the way:
   unlike Thai, and `จบส่วน` written joined reads wrong.
 - Writing each name as everyday Thai with `_` only where it reads wrong: not predictable.
 - `_` wherever the English name has one: it clashed with `end`.
+- `ปิด` ("close") for `end`: `ปิด ถ้า` reads as "close, if…", the start of a condition.
 - `มิฉะนั้น` and `ไม่อย่างนั้น` for `else`: too formal, and too long. `ไม่งั้น` is the casual "or else", and one word.
 
 Owner, on the way: too long, then "Fuck, Thai sentence, mb", "Let me see a Thai senetcne", "So, what if we follow that
-for names?", then "yea, rec it".
+for names?", "yea, rec it", "`ปิด ถ้า` reads like close if, rather than end of section if. So, we could bring the old
+word bacl", "Look at normal Thai, what do they use?", then "yea, rec it".
 
 Open:
 - the rest of the Thai keyword table;
