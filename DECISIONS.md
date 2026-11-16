@@ -280,3 +280,15 @@ building follow D19: an error while running in `Working` and `FinalSafe`, and no
 Open: how far the compiler looks, beyond literals and fixed sizes, such as a loop counter whose range it knows.
 
 Owner: "yea".
+
+## D21: The Final modes add Plainly's own optimizations (2026-11-16)
+
+Cranelift optimizes little, so `FinalSafe` and `FinalPerf` also run optimizations in Plainly's own compiler, before the
+code reaches Cranelift. `Working` doesn't, so it keeps the fastest compile (D19).
+
+Open: which optimizations. Candidates are what Cranelift lacks or can't see: inlining small procedures; removing checks
+the compiler can prove, from known values and ranges, as Cyborg does (Cyborg D312), which also makes `FinalSafe` cheaper;
+keeping values that never leave a procedure out of PlainGC's heap; and anything that needs Plainly's types. Also open:
+what they work on, such as an IR of Plainly's own between the syntax tree and Cranelift.
+
+Owner: "Btw, the Final modes would have better optimization from our frontend. Since Cranelift doesn't do much shit".
