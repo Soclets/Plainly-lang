@@ -311,3 +311,12 @@ backend. From Go: inlining and escape analysis work well close to the tree, so P
 IR is also enough to add LLVM later, if it's ever wanted.
 
 Owner: "How many IRs?", "How many does Go and Swift have?", then "yea".
+
+## D23: The compiler is AroundPy (2026-11-16)
+
+Plainly's compiler is called AroundPy, so Plainly has "AroundPy performance", in the spirit of Cyborg's `OKAY\n`. It
+undersells on purpose: a native binary compiled through Cranelift with static types should run far faster than CPython
+on compute-heavy code.
+
+Owner: "What should the compiler's name be? AroundPy? So, we could say \"AroundPy performance\"", then "That's the
+fucking point?".
