@@ -87,9 +87,17 @@ Owner: "yea".
 
 ## D8: Plainly has Cyborg's labels (2026-11-16)
 
-Plainly takes Cyborg's labels. Whether Plainly also has Cyborg's units, checked while building (as in making Celsius
-correct), isn't decided: they're very rich, and may be more than Plainly needs.
+Plainly takes Cyborg's labels: named arguments, chosen by a function's writer, that every call must then write, as in
+`first_word(#text, limit: 20)` instead of `first_word(#text, 20)`. A label is separate from the parameter's own name, so
+a function can rename its insides without changing its callers. Only labelled parameters can have defaults. By
+convention the first argument, the thing being worked on, stays bare. Labels can be narrowed, as in `len.max:`. Leaving
+off a label with no default, or writing one that wasn't declared, is refused while building. (Cyborg D13, D113, D114)
 
-Open: the details of labels, to be taken from Cyborg.
+Labels don't depend on units. Whether Plainly has Cyborg's units, checked while building (as in making Celsius correct),
+isn't decided: they're very rich, and may be more than Plainly needs. Without them, Plainly skips Cyborg D144, where a
+label's narrowing names a unit.
+
+Open: how a label is declared (Cyborg's separate `labels [...]` and `defaults [...]` lines, or in the parameter list);
+whether labels keep their order unless `labels.any_order` is given, as in Cyborg.
 
 Owner: "idk if we'll have checked units. But we'll definitely have Cyborg's labels".
