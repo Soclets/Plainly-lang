@@ -526,3 +526,24 @@ in `change` (D27), so it can never be a comparison.
 
 Owner: "`<` & `>`, `at_most`, `at_least`, `!=`, `==`? What about that? As for why `!=` and `==`, it's because when you
 get it, you get it without even reading in mind.", then "yea".
+
+## D35: `if`, `else if`, `else` and `end if` (2026-11-16)
+
+    if #hp at_least 1:
+    show_text("Still alive!");
+    else if #hp == 0:
+    show_text("Just barely gone.");
+    else:
+    show_text("Game over.");
+    end if
+
+The condition has no parentheses and no `then`: a header ends with `:`, as `procedure greet[...]:` does. `end if`
+closes it, like `end procedure greet`. Statements inside end with `;`, and the headers and closer don't (D31). A lone `=`
+in the condition is refused (D34).
+
+`else`, not `otherwise`, which Cyborg uses for the arm that handles a failure. Plainly's error handling will come from
+Cyborg or Radium (D6), so `otherwise` stays free for that.
+
+Open: combining conditions (`and`, `or`, `not`).
+
+Owner: "`otherwise`? That's error handling", then "yes".
