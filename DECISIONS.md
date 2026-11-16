@@ -821,3 +821,43 @@ Cyborg's D128 range, from Radium. `1 to 5` was turned down, since `for each #n i
 
 Owner: "`for each #n in 1 to 5:` reads weird", "Cyborg actually uses `[]` there. And... Hm... We might want Cyborg's",
 then "yea".
+
+## D53: Loops (2026-11-16)
+
+    repeat 3 times:
+    show_text("Get ready...");
+    end repeat
+
+    for each #word in #words:
+    show_text(#word);
+    end for
+
+    for each #n in range[from: 1, to: 5]:
+    show_text.format("Level {#n}");
+    end for
+
+    while #lives at_least 1:
+    play_turn();
+    end while
+
+    forever:
+    if #score at_least 50:
+    break;
+    else:
+    change #score = #score + 5;
+    end if
+    end forever
+
+- `repeat … times` repeats with no counter.
+- `for each … in` goes through a list or a range (D52). The loop variable writes no type: it comes from what's looped
+  over, since `#word: Text in #words:` repeats what `List<Text>` already says, with two colons in one header.
+- `while` runs while its condition holds, and `forever` has no end unless you `break` or `return`, so one word finds every
+  endless loop.
+- `break;` leaves the innermost loop. An `if` that breaks has the rest of the pass in its `else:` (D50).
+- There's no `continue`. Ending one pass early is an `if` around the rest. This follows Radium's D77, where every word
+  for it was misread in cold tests: `continue` as carrying on, `skip` as skipping the whole loop, and `next`,
+  `skip_rest` and `skip_this` too.
+
+Open: named loops, Cyborg's `break rows;`.
+
+Owner: "rec loops".
