@@ -24,6 +24,13 @@ this list.
 - Whether there are positions counted from the end, ranges of positions, or an `offset:` form that counts from 0.
 - How a list's type and a list value are written.
 
+## Floats
+
+- What Plainly's floats promise, now that Cyborg's stable floats are out (D18): plain IEEE 754 behaviour, with NaN and
+  infinity allowed?
+- `f32` or `f64` behind `Float`. `Float` means 32-bit in C, Java, C#, Swift and Kotlin, and 64-bit in Python.
+- Whether Fale's `~` mark on inexact float literals, like `~0.1`, stays.
+
 ## Units
 
 - Whether Plainly has Cyborg's units, checked while building (D8).
