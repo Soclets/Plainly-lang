@@ -644,3 +644,21 @@ true/false type, which aren't designed yet.
 Claude proposed the Rust side and `procedure.rust`. Owner: "Design that Rust shit", "What about `external.rust
 procedure`? `extern` alias", then "What do you think? `extern.rust` is kinda like `pub`? So, it's like a generic thingy.
 So, maybe it doesn't need to reapt?"
+
+## D41: Handler families, and `.*` on a handler that can jump (2026-11-16)
+
+Plainly has handler families: named, reusable sets of `case` arms for failures, used at a call so the same handling
+isn't copied to every call, as in Cyborg (`fam.handler`) and Radium:
+
+    #title: Text = first_word(#heading) otherwise word_failed.use_placeholder;
+    #name: Text = first_word(#typed) otherwise word_failed.*give_up;
+
+A handler that can `return` or `break` out of the caller is marked `*`, on its own name after the family's dot, where
+it's used and not where it's declared, as in Cyborg (standard 8.8). Leaving the mark off a handler that can jump is
+refused, and so is putting it on one that can't. Without it, a jump hides behind a name, and the lines after the call
+can silently never run.
+
+Open: how a handler family is declared; the rest of error handling, of which this is one part.
+
+Owner: "Where's handler families?", "First of all why did you drop handler families?", "Why no `*` mark?", too long,
+"Bro, that's the wrong place for it", then "yea".
