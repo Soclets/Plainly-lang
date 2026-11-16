@@ -42,7 +42,7 @@ Proposed, not yet agreed (D41 to D44 and D46 are decided):
 
 ## Units
 
-- How a parameter declares its unit, and where unit words come from (D45). Checked units are out (D45).
+- Where unit words come from: declared by packages, or a fixed list (D45, D47).
 
 ## Used in the README, but not decided
 
