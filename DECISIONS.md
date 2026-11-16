@@ -270,3 +270,13 @@ In `FinalPerf`, a dropped check means a bad position reads past the end of the l
 the point of the mode: test in `Working` or `FinalSafe` first.
 
 Owner: "`// no default` `Working` `FinalSafe` `FinalPerf`?", then "It's FinalPerf, bro. Test your shit".
+
+## D20: A bad position the compiler can see is refused while building (2026-11-16)
+
+A position the compiler can tell is wrong before the program runs is refused while building, in every mode, `FinalPerf`
+included: `#xs[position: 0]`, or position 10 of a list whose size is fixed at 5. Positions it can't check while
+building follow D19: an error while running in `Working` and `FinalSafe`, and no check in `FinalPerf`.
+
+Open: how far the compiler looks, beyond literals and fixed sizes, such as a loop counter whose range it knows.
+
+Owner: "yea".
