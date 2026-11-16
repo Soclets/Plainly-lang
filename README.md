@@ -12,8 +12,8 @@ end procedure greet
 procedure.main[]:
 #name: Text = "Tankun"
 #score: Whole = 120
-show_text(greet(#name) & new_line)
-show_text.format("{#name} has {#score} points.{new_line}")
+show_text(greet(#name))
+show_text.format("{#name} has {#score} points.")
 end procedure.main
 ```
 
