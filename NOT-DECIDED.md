@@ -42,7 +42,7 @@ Proposed, not yet agreed (D41 to D44 and D46 are decided):
 
 ## Units
 
-- Where unit words come from: declared by packages, or a fixed list (D45, D47).
+- How a package declares a unit word (D48).
 
 ## Used in the README, but not decided
 
