@@ -26,12 +26,11 @@ this list.
 
 ## Failures
 
-Proposed, not yet agreed (D41, D42 and D43 are decided):
+Proposed, not yet agreed (D41 to D44 are decided):
 - `fails not_found;` lines at the top of a body, next to `labels` and `defaults`, as in Radium.
 - `otherwise:` with `case` arms, each ending in `instead`, `return`, `break` or `fail`, and `end otherwise`; whether a
   statement ending in `end otherwise` also takes `;`.
 - `otherwise use 8080`, `otherwise ignore`, `otherwise crash`.
-- Whether `show_text` can fail, or stops the program if the terminal is gone, as Rust's `println!` does.
 - Failures carrying data; `?` in `main`; cleanup for files and the terminal; how a handler family is declared; how a
   Rust `Result::Err` maps to a failure, and a Rust panic to a crash.
 
