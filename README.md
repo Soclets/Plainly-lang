@@ -2,6 +2,21 @@
 
 It's... Plain?
 
+## Code snippet
+
+```
+proc greet[#name: Text] returns Text:
+return be.Text.format("Hello, {#name}!")
+end proc greet
+
+procedure.main[]:
+#name: Text = "Tankun"
+#score: Whole = 120
+show_text(greet(#name) & new_line)
+show_text.format("{#name} has {#score} points.{new_line}")
+end procedure.main
+```
+
 ## Licences
 
 - [`LICENSE`](LICENSE): Apache-2.0 WITH LLVM-exception, for the code. Programs you compile owe nothing.
