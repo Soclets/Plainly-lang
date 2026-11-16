@@ -30,6 +30,13 @@ Still open (D41 to D44, D46, D55 and D56 are decided):
 - Failures carrying data; `?` in `main`; cleanup for files and the terminal; how a handler family is declared; how a
   Rust `Result::Err` maps to a failure, and a Rust panic to a crash.
 
+## Thai (D57)
+
+- The rest of the Thai keyword table, and Thai names for the standard library.
+- Error messages in Thai.
+- A required space between keywords, since Thai doesn't put spaces between words.
+- Measuring text by screen columns, not characters.
+
 ## Floats
 
 - What Plainly's floats promise, now that Cyborg's stable floats are out (D18): plain IEEE 754 behaviour, with NaN and
