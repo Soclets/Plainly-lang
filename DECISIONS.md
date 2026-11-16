@@ -807,3 +807,17 @@ Making a value that really runs code, like allocating or something that can fail
 from Radium. Plainly already followed it before writing it down.
 
 Owner: "Right... You don't know the signature bracket rule, ask Cyborg", then "yea".
+
+## D52: Ranges are `range[from: 1, to: 5]` (2026-11-16)
+
+    range[from: 1, to: 5]
+    range[from: 1, before: #count]
+    range[from: 10, to: 1, step_by: -1]
+
+A range holds its numbers and runs nothing, so it uses `[ ]` (D51). `to:` includes the end and `before:` stops just
+before it, so there's no off-by-one guessing. `step_by:` steps or counts down. `from:` is required and the order is
+fixed, and a range that can never reach its end, like `from: 1, to: 5, step_by: -1`, is refused while building. This is
+Cyborg's D128 range, from Radium. `1 to 5` was turned down, since `for each #n in 1 to 5` reads oddly.
+
+Owner: "`for each #n in 1 to 5:` reads weird", "Cyborg actually uses `[]` there. And... Hm... We might want Cyborg's",
+then "yea".
