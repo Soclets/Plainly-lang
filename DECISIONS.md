@@ -25,6 +25,8 @@ Open: how to write a literal `#` inside `.format` text; where a name ends inside
 
 Owner: "yup, and `show_text` stays the non format kind".
 
+Changed by D4: names go in braces, `{#total}`.
+
 ## D3: `\` escapes, but isn't C's escape codes (2026-11-16)
 
 A `\` makes the next character literal: `show_text.format("\#1 player: #name")` prints `#1 player: ` and then the name.
@@ -34,3 +36,19 @@ Open: how a newline or tab is written; whether `\` before an ordinary letter is 
 (non-`.format`) text.
 
 Owner: "`\` escapes, but it doesn't format like C".
+
+Since D4, a bare `#` in `.format` text is literal, so `"#1 player"` needs no escape. `\{` escapes a brace instead.
+
+## D4: `.format` fills in braces, and `new_line` is a word (2026-11-16)
+
+Inside `show_text.format(...)`, what goes in braces is filled in: `show_text.format("Hello, {#name}{new_line}")`. A bare
+`#` is literal, so `"#1 player"` prints as written, and the braces show exactly where a name ends: `{#total}points`.
+This changes D2, which had no braces.
+
+A newline is the word `new_line`, not a code like C's `\n`: `show_text("Hello, World!" & new_line)`, or `{new_line}`
+inside `.format`. It's one more thing to learn, but a small one, and it says what it is.
+
+Open: what may go in braces besides names and `new_line` (expressions such as `{#total + 1}`?); other named characters,
+such as a tab.
+
+Owner: "It should probably be this instead, then. [...] Which yes, I know, it's a thing to learn. But I think it's small".
