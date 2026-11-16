@@ -231,3 +231,16 @@ build per target, which Cranelift covers for x86-64, ARM64 and RISC-V, and less 
 don't need. PlainGC finds references through the stack maps Cranelift records.
 
 Owner: "I was thinking of switching to full AOT native via Cranelift, it's simpler", then "yup".
+
+## D17: PlainOracle is written in OCaml (2026-11-16)
+
+PlainOracle, the slow, obviously correct reference that the compiler's output is checked against, is written in OCaml,
+while the compiler stays in Rust (D16). Two languages mean the compiler can't copy the oracle, even by accident, and
+agree with its bugs. OCaml's garbage collector gives the oracle memory handling much like PlainGC's for free, and its
+data types and pattern matching suit a readable interpreter. The cost is a second toolchain, opam and dune, next to
+Cargo.
+
+`Whole` is 64-bit, and OCaml's `int` is 63-bit, so the oracle uses `Int64` for every `Whole`, never `int`, or its overflow
+results would be wrong in ways that look right. OCaml strings are bytes, so `Text` needs a Unicode library.
+
+Owner: "should PlainOracle be made in OCaml?", then "Yea", to its independence being worth a second toolchain.
