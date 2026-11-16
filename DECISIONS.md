@@ -898,3 +898,16 @@ fall off its end is refused. `end otherwise` closes the block and stands alone, 
 Radium's (Radium D78).
 
 Owner: "yea".
+
+## D56: `otherwise use`, `otherwise ignore` and `otherwise crash` (2026-11-16)
+
+    #port: Whole = read_port() otherwise use 8080;
+    save_text(#line, file: "save.txt") otherwise ignore;
+    load_level(#name) otherwise crash;
+
+One-line ways to handle a failure: `otherwise use` carries on with a value, `otherwise ignore` ignores the failure on
+purpose, and `otherwise crash` stops the program on purpose. Each is a searchable phrase, so every ignored failure and
+every deliberate crash in a game can be found. They're Cyborg's `?? 8080`, `?? void` and `?? crash` in plain words.
+Every way of handling a failure except `?` (D42) starts with `otherwise`.
+
+Owner: too long.
