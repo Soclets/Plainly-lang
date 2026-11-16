@@ -26,9 +26,7 @@ this list.
 
 ## Failures
 
-Proposed, not yet agreed (D41 to D44 and D46 are decided):
-- `otherwise:` with `case` arms, each ending in `instead`, `return`, `break` or `fail`, and `end otherwise`; whether a
-  statement ending in `end otherwise` also takes `;`.
+Proposed, not yet agreed (D41 to D44, D46 and D55 are decided):
 - `otherwise use 8080`, `otherwise ignore`, `otherwise crash`.
 - Failures carrying data; `?` in `main`; cleanup for files and the terminal; how a handler family is declared; how a
   Rust `Result::Err` maps to a failure, and a Rust panic to a crash.
