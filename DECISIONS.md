@@ -330,6 +330,8 @@ results.
 
 ## D24: PlainGC is ZGC-style (2026-11-16)
 
+Replaced by D38: PlainGC is Go-style.
+
 PlainGC follows ZGC's design: it marks and moves objects on its own threads while the program runs, so pauses stay well
 under a frame, which matters for games beyond the terminal. It's precise, finding references through Cranelift's stack
 maps (D16).
@@ -570,3 +572,27 @@ plain word is the safe one, the reverse of Ada, whose plain `and` evaluates both
 `and then` everywhere.
 
 Owner: too long, then "Huh? How does Ada's problem even apply?", then "have".
+
+## D38: PlainGC is Go-style, from the start (2026-11-16)
+
+This replaces D24's ZGC-style design. PlainGC follows Go's collector:
+- **It marks while the program runs**, so pauses usually stay well under a millisecond, close to ZGC's.
+- **It never moves objects.** Rust code in the standard library holds plain pointers: no handles, no pinning.
+- **Only a write barrier**, a check when a reference is stored. Reads are plain loads, so AroundPy emits no load
+  barriers.
+- **No coloured pointers and no generations**, so no remembered sets.
+- **Objects are grouped by size** (size classes, as in Go and TCMalloc), which keeps fragmentation down without
+  compacting.
+
+It's precise, finding references through Cranelift's stack maps (D16). Without generations, short-lived garbage is kept
+off the heap by escape analysis (D21), as Go does.
+
+What was weighed: for offline CLI games a simple stop-the-world mark-and-sweep fits best, since their heaps are tiny.
+Go-style fits best if Plainly grows past the terminal, and ZGC-style fits the goal least: its strengths are huge heaps
+and short pauses at any size, and it forces handles and load barriers into AroundPy and the whole standard library. A
+simple collector and Go's make the same promise that objects never move, so either could grow into the other. Go-style
+was chosen from the start. It's roughly 5,000 to 12,000 lines, against 10,000 to 25,000 for ZGC-style.
+
+Open: how closely to follow Go's pacer, which decides when a collection starts.
+
+Owner: "What if we move to Go-style GC?", "What would fit our goal most?", then "Go-style from the start".
