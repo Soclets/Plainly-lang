@@ -97,7 +97,7 @@ Labels don't depend on units. Whether Plainly has Cyborg's units, checked while 
 isn't decided: they're very rich, and may be more than Plainly needs. Without them, Plainly skips Cyborg D144, where a
 label's narrowing names a unit.
 
-Open: whether labels keep their order unless `labels.any_order` is given, as in Cyborg.
+Label order: D10.
 
 Owner: "idk if we'll have checked units. But we'll definitely have Cyborg's labels".
 
@@ -120,3 +120,20 @@ The one-line form, `[#text: Text, limit #limit: Whole = 40]`, was turned down: i
 default into one item, which is hard to read.
 
 Owner: "That's bad btw" (of the one-line form), then "separate, yea".
+
+## D10: Labels keep their order, unless `labels.any_order` (2026-11-16)
+
+A call writes its labels in the order the function declares them. A function that doesn't mind says so by narrowing its
+`labels` line, as in Cyborg (Cyborg D114):
+
+    proc move[#player: Player, #x: Whole, #y: Whole]:
+    labels.any_order [#x as across, #y as down]
+    ...
+    end proc move
+
+    move(#player, across: 3, down: 1)
+    move(#player, down: 1, across: 3)
+
+`labels.in_order` is refused, since it's already the default.
+
+Owner: "yea, but before recording, where is `labels.any_order` un synatx?", then "tea" (yea).
