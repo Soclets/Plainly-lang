@@ -554,6 +554,20 @@ Owner: "`otherwise`? That's error handling", then "yes".
 
 Words, not C's `&&`, `||` and `!`.
 
-Open: whether `and` and `or` stop early (short-circuit) by default, and whether a narrowing evaluates both sides.
+Whether they stop early: D37.
 
 Owner: too long.
+
+## D37: `and` and `or` stop early, and `and.both` and `or.both` don't (2026-11-16)
+
+`and` and `or` short-circuit: the right side runs only when it can change the answer. That keeps the everyday guard safe,
+since the right side doesn't run when `#i` is past the end:
+
+    if #i at_most #count and #xs[position: #i] == 0:
+
+`and.both` and `or.both` evaluate both sides every time, for the rare right side with an effect that must happen. The
+plain word is the safe one, the reverse of Ada, whose plain `and` evaluates both sides, so its users learn to write
+`and then` everywhere.
+
+Owner: "short circuit by default? And then add a narrowing for it to run both?" (part of a longer message), "Huh? How does
+Ada's problem even apply?", then "have".
