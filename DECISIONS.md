@@ -674,3 +674,12 @@ failure, so being short matters. It replaces the proposed `otherwise fail`.
 
 Owner: "Wait a minute, `show_text(\"HW\") otherwise what` for passing up", "I think `?` is looking very beutiful", then
 "yea".
+
+## D43: Handling a failure is required (2026-11-16)
+
+A call that can fail must be handled, with `?` (D42), an `otherwise` form, or a handler family (D41). One with none is
+refused while building, as in Cyborg (Cyborg D434) and Radium. If a library procedure gains a new failure, every caller
+that doesn't handle it gets a build error, not a surprise crash while playing. It's the same idea as D26: an unhandled
+failure hides a bug, just as an ignored result does.
+
+Owner: "yea".
