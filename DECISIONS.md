@@ -569,5 +569,4 @@ since the right side doesn't run when `#i` is past the end:
 plain word is the safe one, the reverse of Ada, whose plain `and` evaluates both sides, so its users learn to write
 `and then` everywhere.
 
-Owner: "short circuit by default? And then add a narrowing for it to run both?" (part of a longer message), "Huh? How does
-Ada's problem even apply?", then "have".
+Owner: too long, then "Huh? How does Ada's problem even apply?", then "have".
