@@ -207,3 +207,13 @@ isn't in Cyborg's standard, whose table has one row so far (a borrow: how it can
 ranks safety words by how much harm they can do.
 
 Owner: "yup".
+
+## D15: Items are reached by `position:`, counting from 1 (2026-11-16)
+
+An item in a list is reached with the label `position:`, or its short form `pos:`: `#xs[position: 1]`,
+`#xs[pos: 1]`. Position 1 is the first item, as "first position" means in plain English. The label says what the number
+is, so it can't be mistaken for an offset from 0, which Cyborg writes as `offset.items:`. `pos` is to `position` what
+`proc` is to `procedure`. Square brackets after a name hold which item, and after `procedure greet` they hold
+parameters, and the label keeps the two apart.
+
+Owner: "`#xs[position: 1] // pos also available`", then "yea", to position 1 being the first item.
