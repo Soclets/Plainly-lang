@@ -600,8 +600,8 @@ Owner: "What if we move to Go-style GC?", "What would fit our goal most?", then 
 ## D39: Names have no paths, and `package::` settles a clash (2026-11-16)
 
 A package's names are used bare: `show_text`, `be.Text`, `draw`. There are no paths like Cyborg's
-`std::io::fmt_print`. When two packages both have a name, the bare name is refused, and the fix lists each package's
-version, and the package's name goes in front with `::`:
+`std::io::fmt_print`. When two packages both have a name, the bare name is refused, with a fix listing each package's
+spelling. The package's name goes in front with `::`:
 
     crossterm::draw(...);
 
