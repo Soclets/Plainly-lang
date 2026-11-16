@@ -793,3 +793,17 @@ Cyborg's D430. Several conditions stay flat as one `else if` chain (D35).
 
 Owner: "follow Radium on that one, don't rec yet, though. I think Cyborg has something with `if`s in functions, ask it",
 then "yea".
+
+## D51: `( )` runs, `[ ]` holds, `< >` fills in a type (2026-11-16)
+
+- `( )` runs something: a call, as in `greet(#name)`. It also groups maths, as in `(#a + #b) * 2`.
+- `[ ]` describes or holds values, and runs nothing: a declaration's parameters (`procedure greet[#name: Text]`),
+  positions (`#xs[position: 1]`), list values, building a record, ranges (D52), and the `labels`, `defaults`, `units`
+  and `fails` lists.
+- `< >` fills in a type: `List<Whole>` (D33).
+
+A reader can tell at a glance whether something happens: `[ ]` just holds values, and `( )` runs code, which may fail.
+Making a value that really runs code, like allocating or something that can fail, uses `( )`. This is Cyborg's D23,
+from Radium. Plainly already followed it before writing it down.
+
+Owner: "Right... You don't know the signature bracket rule, ask Cyborg", then "yea".
