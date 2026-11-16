@@ -288,7 +288,26 @@ code reaches Cranelift. `Working` doesn't, so it keeps the fastest compile (D19)
 
 Open: which optimizations. Candidates are what Cranelift lacks or can't see: inlining small procedures; removing checks
 the compiler can prove, from known values and ranges, as Cyborg does (Cyborg D312), which also makes `FinalSafe` cheaper;
-keeping values that never leave a procedure out of PlainGC's heap; and anything that needs Plainly's types. Also open:
-what they work on, such as an IR of Plainly's own between the syntax tree and Cranelift.
+keeping values that never leave a procedure out of PlainGC's heap; and anything that needs Plainly's types. They work on
+Plainly IR (D22).
 
 Owner: "Btw, the Final modes would have better optimization from our frontend. Since Cranelift doesn't do much shit".
+
+## D22: One IR of Plainly's own, Swift-style (2026-11-16)
+
+    source → syntax tree → typed tree → Plainly IR → Cranelift IR → native
+
+The typed tree is the checker's output, with names resolved and types attached, and it's where refusals like D20's
+happen. Plainly IR is the one IR of Plainly's own: a control-flow graph where what was hidden is written out, such as
+each position check, each PlainGC allocation, and labels and defaults filled in. D21's optimizations run on it. Cranelift
+IR is Cranelift's own.
+
+`Working` takes the same path and skips the optimizations, so the modes differ only in optimizations, never in how code
+is translated, and a translation bug shows in every mode, where the oracle catches it.
+
+This is Swift's shape (AST, then SIL, then LLVM IR): a backend does the low-level work, so the language needs one layer
+of its own for its checks and optimizations. Go has two of its own (an IR tree and SSA) because it writes its own
+backend. From Go: inlining and escape analysis work well close to the tree, so Plainly IR needn't be very low-level. One
+IR is also enough to add LLVM later, if it's ever wanted.
+
+Owner: "How many IRs?", "How many does Go and Swift have?", then "yea".
