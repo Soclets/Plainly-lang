@@ -52,3 +52,11 @@ Open: what may go in braces besides names and `new_line` (expressions such as `{
 such as a tab.
 
 Owner: "It should probably be this instead, then. [...] Which yes, I know, it's a thing to learn. But I think it's small".
+
+## D5: Only the opening brace is escaped (2026-11-16)
+
+In `.format` text, `\{` makes a brace literal, and the closing `}` needs nothing:
+`show_text.format("Type \{#name} to see your name")` prints `Type {#name} to see your name`. A `}` with no open fill-in
+is just a character. That's one `\` instead of two, and no rule about the closing side, unlike Python's `{{ }}`.
+
+Owner: "yea", to escaping only the opening brace.
