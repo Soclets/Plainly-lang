@@ -925,8 +925,10 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | English | Thai |
 |---|---|
 | `procedure` | `กระบวนการ` |
+| `end` | `จบ_ส่วน` |
 
-`ขั้นตอน` was turned down: it means one step, not a whole procedure.
+`ขั้นตอน` was turned down: it means one step, not a whole procedure. A bare `จบ` was turned down for `end`: it reads like
+"The End", finishing everything, not closing one block (owner: too long, then "yea").
 
 Open:
 - the rest of the Thai keyword table;
