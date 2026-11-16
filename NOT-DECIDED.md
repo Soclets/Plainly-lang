@@ -18,6 +18,12 @@ this list.
 - Other named characters besides `new_line`, such as a tab (D4).
 - Whether `\` before an ordinary letter is an error, and how `\"` and `\\` work in plain text (D3).
 
+## Lists
+
+- What happens at a position past the end, or at position 0 (D15).
+- Whether there are positions counted from the end, ranges of positions, or an `offset:` form that counts from 0.
+- How a list's type and a list value are written.
+
 ## Units
 
 - Whether Plainly has Cyborg's units, checked while building (D8).
