@@ -755,12 +755,12 @@ when calling it, in that order.
 
 Owner: "What abt in body instead?", then "yea".
 
-## D48: Unit words are declared by packages (2026-11-16)
+## D48: A procedure's `units` line is where its unit words come from (2026-11-16)
 
-A unit word like `pixels` or `seconds` is declared by a package, not built into the language: a graphics package
-declares `pixels` and `points`, and `std` declares `seconds`. A game can declare its own, like `tiles`. If two packages
-declare the same unit word, D39 applies: the bare word is refused, and the package's name goes in front.
+There's no separate list of unit words. Whatever word a procedure writes in its `units` line (D47) is the word its
+callers must write: `units [#x in pixels];` makes `pixels` the word for `#x`. A unit word isn't a name a package exports,
+just part of one procedure's calling rules, like a label, so two packages that both use `pixels` never clash, and D39's
+`package::` isn't needed for units. Nothing makes packages agree on spelling, so one may write `pixel` and another
+`pixels`, a fair trade for unchecked units.
 
-Open: how a package declares a unit word.
-
-Owner: "declared by packages".
+Owner: "declared by packages", "Just let them declare in there? Like in the fn", then "yea".
