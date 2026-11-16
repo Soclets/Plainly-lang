@@ -353,3 +353,18 @@ Open: only where Plainly differs from the JVM, such as Cranelift's stack maps in
 
 Owner: "Ah, ZGC, right? Seems nice", "It's cool, though. And for games (maybe not fucking CLI, though), pauses are
 shit", then "But it's fun, thoughhhh". On open questions: "The design copies ZGC, so you don't have to ask generational".
+
+## D25: Two kinds of random, with names that can't be mixed up (2026-11-16)
+
+Plainly's standard library has two random sources:
+- **Game random:** a fast pseudo-random generator, such as PCG or xoshiro, started from a seed. The same seed gives the
+  same sequence, so a daily puzzle can be seeded by the date, and a bug that depends on a roll can be replayed until
+  it's fixed.
+- **Secret random:** unpredictable randomness from the operating system, as `openssl rand` gives, for anything that must
+  be unguessable.
+
+Their names make the difference obvious, since using a game random for a secret is a classic security bug.
+
+Open: the names, and how a seed is given.
+
+Owner: "Randomeness? Like `openssl rand`?", then "yea", to both kinds with clearly different names.
