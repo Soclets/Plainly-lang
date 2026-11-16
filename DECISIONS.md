@@ -150,6 +150,7 @@ itself:
     save_text(be.Text.format("{#name},{#score}"), file: "save.txt")
     return be.Text.format("Hello, {#name}!")
 
-Open: whether `show_text.format` stays, as a shortcut for `show_text(be.Text.format(...))`.
+`show_text.format(...)` stays, as a shortcut for `show_text(be.Text.format(...))`, since it's the most common line in a
+CLI game. Owner, asked whether to keep it: "yes".
 
 Owner: "Probably, how would it look?", "Wait, how do you make that work elsewhere?", then "Ahhh. yea".
