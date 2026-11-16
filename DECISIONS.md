@@ -880,3 +880,21 @@ puts the name right after the loop word, which in Plainly would be `for each row
 `rows: for each …`, was also offered.
 
 Owner: "We should have named loops", then "named".
+
+## D55: The `otherwise:` block, with one `case` per failure (2026-11-16)
+
+    #best: Whole = load_best_score() otherwise:
+    case not_found:
+    show_text("No high score yet.");
+    instead 0;
+    case unreadable:
+    instead 0;
+    end otherwise
+
+The arms must cover every failure still possible at that call. An arm can run any statements, and must end in one of
+four ways: `instead` a value, carrying on with it; `return`; `break`; or `fail`, passing a failure up. An arm that could
+fall off its end is refused. `end otherwise` closes the block and stands alone, with no `;`, like every closer (D31).
+`otherwise` is kept for this, which is why `if` uses `else` (D35). This is Cyborg's `otherwise:` (Cyborg D45, D139) and
+Radium's (Radium D78).
+
+Owner: "yea".
