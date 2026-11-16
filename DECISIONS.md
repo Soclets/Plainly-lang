@@ -858,6 +858,25 @@ then "yea".
   for it was misread in cold tests: `continue` as carrying on, `skip` as skipping the whole loop, and `next`,
   `skip_rest` and `skip_this` too.
 
-Open: named loops, Cyborg's `break rows;`.
+Named loops: D54.
 
 Owner: "rec loops".
+
+## D54: A loop can be `named`, and `break` can name it (2026-11-16)
+
+    for each #row in #grid named rows:
+    for each #cell in #row:
+    if #cell == "X":
+    break rows;
+    else:
+    show_text.same_line(#cell);
+    end if
+    end for
+    end for rows
+
+`named` goes at the end of a loop's header, and the closer repeats the name: `end for rows`. `break rows;` leaves that
+loop and every loop inside it. Any loop can be named, as in `forever named game:` closed by `end forever game`. Cyborg
+puts the name right after the loop word, which in Plainly would be `for each rows #row`, and a label in front,
+`rows: for each …`, was also offered.
+
+Owner: "We should have named loops", then "named".
