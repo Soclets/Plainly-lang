@@ -394,6 +394,17 @@ mixed up, and a reader sees every place a value changes.
 
 `change` on a variable not declared `mut` (or `mutable`) is refused (owner: "yea, no shit").
 
-Open: the `mut` and `mutable` spellings themselves.
+The spellings are D28.
 
 Owner: "Also, it's `change` in front to change".
+
+## D28: `mutable`, or `mut` for short (2026-11-16)
+
+A variable that can be changed is declared `mutable`, or `mut` for short, the way `proc` is short for `procedure`:
+
+    mutable #player_health: Whole = 100
+    mut #player_health: Whole = 100
+
+`mutable` is Fale's word. `mut` is what Rust and Cyborg readers already know.
+
+Owner: "It's `mut` and `mutatable`, right? Or what is it", then "rec".
