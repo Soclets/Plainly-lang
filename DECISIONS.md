@@ -435,8 +435,9 @@ No word read right: `then` breaks the grammar before a procedure's name, and `in
 means an inline function, a `match` arm or a return type. `|>` means one thing only, and it's learnt once, like `&`
 (D1). Where no plain word reads right, a symbol that means one thing is the next best choice.
 
-Open: whether a step with no other arguments is written bare (`|> be.Whole`) or with parentheses (`|> be.Whole()`), so
-every step looks alike.
+A step with no other arguments is written bare, `|> be.Whole`, not `|> be.Whole()`: empty parentheses on every step of
+a long chain are just noise. A step with labels keeps its parentheses, `|> heal(by: 300)`. (Owner: "`()` looks like it's
+a stroke when you don't nest for a lot".)
 
 Owner: "Just the symbol? Maybe we use `=>` arrow instead?", "Man, for some reason it looks like not the same thing
 doing", "Let me see slider (the original symbol)", then "`|>` it is".
