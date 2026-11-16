@@ -5,9 +5,9 @@ It's... Plain?
 ## Code snippet
 
 ```
-proc greet[#name: Text] returns Text:
+procedure greet[#name: Text] returns Text:
 return be.Text.format("Hello, {#name}!")
-end proc greet
+end procedure greet
 
 procedure.main[]:
 #name: Text = "Tankun"
