@@ -24,6 +24,11 @@ this list.
 - Whether there are positions counted from the end, ranges of positions, or an `offset:` form that counts from 0.
 - How a list's type and a list value are written.
 
+## Values
+
+- Copy or share: after `#b = #a` with a list, whether changing `#b` changes `#a`. Fale's `copy`/`share` is a starting
+  point. (Owner: later.)
+
 ## Floats
 
 - What Plainly's floats promise, now that Cyborg's stable floats are out (D18): plain IEEE 754 behaviour, with NaN and
