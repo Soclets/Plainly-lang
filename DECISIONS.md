@@ -711,7 +711,7 @@ parameter is in pixels is fine, and `300 seconds` or a bare `300` there is refus
 passes with no unit word and no check. There are no unit types, no conversions and no maths on units. That's Cyborg's
 checked units (D8 left them undecided), which are heavy, and Plainly skips them.
 
-Open: how a parameter declares its unit; where unit words come from (declared by packages, or a fixed list).
+Open: where unit words come from (declared by packages, or a fixed list). How a parameter declares its unit: D47.
 
 Owner: "i would like to add units there, just not checked ones (those are heavy)", "Uh, bro, Shouldn't it be behind?",
 then "yea, but not that syntax".
@@ -734,7 +734,23 @@ A procedure with no result writes just `fails [...]`, with no `or` (owner: "just
 
     procedure save_game[#state: Text] fails [disk_full]:
 
-Open: how a parameter declares its unit (D45), which by this split belongs in the header.
+How a parameter declares its unit: D47, in the body, not the header.
 
 Owner: "Also, wait. You have to be shitting me if you put failure in body, but units in header", "I feel like failure
 should go in h?", "Ah, that reads weird. There's nothing separating fails", then "yup".
+
+## D47: Units are declared in the body, after labels and defaults (2026-11-16)
+
+    external.rust procedure draw_image[#image: Image, #x: Whole, #y: Whole]:
+    labels [#x as across, #y as down];
+    units [#x in pixels, #y in pixels];
+    end procedure draw_image
+
+    draw_image(#whale, across: 300 pixels, down: 200 pixels);
+
+To a caller, a unit works like a label: it's a word written at the call, and the compiler checks the word, not the
+value (D45). So it sits with the labels. That refines D46's split: the header holds the types, the result and the
+failures, what a procedure takes and gives, and the top of the body holds labels, defaults and units, the words written
+when calling it, in that order.
+
+Owner: "What abt in body instead?", then "yea".
