@@ -492,3 +492,19 @@ parts); the list syntax itself.
 
 Owner: "Tell me, two words, `share` & `copy`. Hard to learn?", "Bro's talking number 2 like we're adding ownership",
 then "yes".
+
+## D33: Generic types use `<>`, and `<` and `>` as operators need spaces (2026-11-16)
+
+A generic type's parts go in angle brackets: `List<Whole>`, `Map<Text, Whole>`, `List<List<Whole>>`. They're written
+with no spaces. `<` and `>` used as operators always have a space on each side, as in `#a < #b`, so the two can never be
+mixed up. That's also why `>>` at the end of `List<List<Whole>>` is two closers, not an operator, the problem that gave
+Rust its `::<>` and older C++ its `> >`.
+
+The word form, `List of Whole` and `Map of Text to Whole`, was turned down: it reads oddly with two parts, and nesting
+needs a grouping rule.
+
+Open: how a generic's maker declares its placeholders (Cyborg writes `?u`); whether Plainly has `<` and `>` as operators
+at all, rather than words like Fale's `at_least`.
+
+Owner: "Map of Text to Whole sounds weird. And I mean `<>`  works everywhere, even when we use `<` and `>` as operator.
+Just require space".
