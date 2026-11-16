@@ -42,7 +42,6 @@ Proposed, not yet agreed (D41 to D44 and D46 are decided):
 
 ## Units
 
-- How a package declares a unit word (D48).
 
 ## Used in the README, but not decided
 
