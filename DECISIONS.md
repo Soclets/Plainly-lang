@@ -596,3 +596,20 @@ was chosen from the start. It's roughly 5,000 to 12,000 lines, against 10,000 to
 Open: how closely to follow Go's pacer, which decides when a collection starts.
 
 Owner: "What if we move to Go-style GC?", "What would fit our goal most?", then "Go-style from the start".
+
+## D39: Names have no paths, and `package::` settles a clash (2026-11-16)
+
+A package's names are used bare: `show_text`, `be.Text`, `draw`. There are no paths like Cyborg's
+`std::io::fmt_print`. When two packages both have a name, the bare name is refused, and the fix lists each package's
+version, and the package's name goes in front with `::`:
+
+    crossterm::draw(...);
+
+That's one level only: a package's name, never a path inside it.
+
+Open: whether files import anything, or the manifest's list of packages is enough, as in Jernal; limbs, which Cyborg's
+design claude advises leaving out until Plainly needs to extend its compiler; how a procedure with its body in Rust is
+declared.
+
+Owner: "I don't agree with paths, though. As for no limbs, that means Plainly has to be able to print by itself?", then
+"you say `name::` in front".
