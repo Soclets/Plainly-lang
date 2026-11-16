@@ -408,3 +408,20 @@ A variable that can be changed is declared `mutable`, or `mut` for short, the wa
 `mutable` is Fale's word. `mut` is what Rust and Cyborg readers already know.
 
 Owner: "It's `mut` and `mutatable`, right? Or what is it", then "rec".
+
+## D29: Plainly has a pipe (2026-11-16)
+
+A value can be passed along a chain of calls, read left to right in the order they run, instead of nested from the
+inside out:
+
+    show_text(be.Text(heal(be.Whole(#typed), by: 300)))
+
+becomes one chain where each step's result is the next call's bare first argument, as in Elixir. That matches the labels
+convention (D8), where the first argument, the thing being worked on, stays bare, and the labelled ones stay written out.
+
+The spelling isn't `|>`, which isn't meant to be read, or `then`, which reads wrongly before a procedure's name and which
+an `if` may want.
+
+Open: the spelling.
+
+Owner: "I think it should, but `|>` isn't meant to be read, while `then` is, and then `then` breaks the grammar".
