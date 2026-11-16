@@ -662,3 +662,15 @@ Open: how a handler family is declared; the rest of error handling, of which thi
 
 Owner: "Where's handler families?", "First of all why did you drop handler families?", "Why no `*` mark?", too long,
 "Bro, that's the wrong place for it", then "yea".
+
+## D42: `?` passes a failure up (2026-11-16)
+
+    #count: Whole = parse_whole(#typed)?;
+    save_text(#line, file: "save.txt")?;
+
+`?` hands a failure to the caller, and the procedure must list that failure itself, as in Cyborg (Cyborg D44). Like `|>`
+(D30) and `&` (D1), it's a symbol that means one thing only, learnt once, and it's the most common way of handling a
+failure, so being short matters. It replaces the proposed `otherwise fail`.
+
+Owner: "Wait a minute, `show_text(\"HW\") otherwise what` for passing up", "I think `?` is looking very beutiful", then
+"yea".
