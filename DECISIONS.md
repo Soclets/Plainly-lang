@@ -186,6 +186,22 @@ The second works without any special rule, since `be.Text.format` gives back ord
 because `show_text` is an ordinary procedure from `std`'s writer, not syntax, so its narrowings are whatever `std` offers,
 and `std` offers both together.
 
-Open: whether `show_text.same_line.format` (the other order) works too.
+The other order, `show_text.same_line.format`, is refused: D14.
 
 Owner: "Wait, shouldn't you be able to do it both ways? And `show_text` depends on `std`'s writer anyways".
+
+## D14: Narrowings go strongest first (2026-11-16)
+
+When one name has two or more narrowings, their order is fixed: the one that changes the action most sits next to the
+name. The wrong order is refused, with the right spelling as the fix. `.format` changes what's printed, and
+`.same_line` only where the output ends, so it's `show_text.format.same_line(...)`, and `show_text.same_line.format(...)`
+is refused with `fix: show_text.format.same_line`.
+
+One spelling per thing means a search finds every use, and nobody wonders whether two orders mean different things. The
+reader also learns the most important fact first. This is the same rule as CyborgPL's (owner: "yeah, strongest first")
+and Cyborg's (Cyborg D223). Labels, like a format's settings, aren't narrowings, and their order is set by D10.
+
+Open: Plainly's table of narrowing kinds, so each new narrowing gets its place without judging it again. Cyborg's goes
+action, then content, then destination, then safety, and its design claude advises writing it early.
+
+Owner: "yup".
