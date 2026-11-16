@@ -254,3 +254,19 @@ adding up vector lanes. CLI games don't need any of it, and it's a lot of work i
 Open: what Plainly's floats do promise.
 
 Owner: "We wouldn't add those, broooo".
+
+## D19: Three build modes, and no default (2026-11-16)
+
+| Mode | Cranelift | Checks the compiler can't prove away, like a bad position or overflow |
+|---|---|---|
+| `Working` | `opt_level` none, the fastest compile | kept |
+| `FinalSafe` | `opt_level` speed | kept, so a bad position stops the program with an error |
+| `FinalPerf` | `opt_level` speed | dropped |
+
+There's no default mode: every build names one, so every build says what it promises. This follows Cyborg's rule for
+bare names: where no default is obvious, there's no bare name.
+
+In `FinalPerf`, a dropped check means a bad position reads past the end of the list, with whatever happens next. That's
+the point of the mode: test in `Working` or `FinalSafe` first.
+
+Owner: "`// no default` `Working` `FinalSafe` `FinalPerf`?", then "It's FinalPerf, bro. Test your shit".
