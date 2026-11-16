@@ -26,9 +26,8 @@ this list.
 
 ## Failures
 
-Proposed, not yet agreed (D41 and D42 are decided):
+Proposed, not yet agreed (D41, D42 and D43 are decided):
 - `fails not_found;` lines at the top of a body, next to `labels` and `defaults`, as in Radium.
-- Whether handling is required, so an unhandled call that can fail is refused, as in Cyborg's D434 and Radium.
 - `otherwise:` with `case` arms, each ending in `instead`, `return`, `break` or `fail`, and `end otherwise`; whether a
   statement ending in `end otherwise` also takes `;`.
 - `otherwise use 8080`, `otherwise ignore`, `otherwise crash`.
