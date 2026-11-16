@@ -930,6 +930,12 @@ From now on, every keyword gets both an English and a Thai word. The first:
 `ขั้นตอน` was turned down: it means one step, not a whole procedure. A bare `จบ` was turned down for `end`: it reads like
 "The End", finishing everything, not closing one block (owner: too long, then "yea").
 
+A Thai name with more than one word always has `_` between its words, exactly as English names do: `แสดง_ข้อความ` for
+`show_text`, and `จบ_ส่วน` for `end`. It's predictable: anyone knows where a name's words split, and whoever writes a new
+name never has to judge whether the joined form reads right. It also shows a kid learning Thai where each word ends.
+Writing each name as everyday Thai, with `_` only where the joined form reads wrong, was turned down as unpredictable
+(owner: "That's not so predictable, though", then "Honestly? Fair, it doesn't stroke").
+
 Open:
 - the rest of the Thai keyword table;
 - Thai names for the standard library's procedures, types and labels;
