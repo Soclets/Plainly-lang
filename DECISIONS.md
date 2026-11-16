@@ -715,3 +715,23 @@ Open: how a parameter declares its unit; where unit words come from (declared by
 
 Owner: "i would like to add units there, just not checked ones (those are heavy)", "Uh, bro, Shouldn't it be behind?",
 then "yea, but not that syntax".
+
+## D46: Failures go in the header, as `or fails [...]` (2026-11-16)
+
+    procedure load_level[#name: Text] returns Level or fails [not_found, broken]:
+    ...
+    end procedure load_level
+
+A failure is something a procedure can give back instead of its result, so it sits next to `returns`, as in Cyborg
+(Cyborg D209). `or fails` reads as what happens: it gives back a `Level`, or it fails. Without the `or`,
+`returns Level fails [...]` runs together. A comma, or `fails` on its own header line, were also offered.
+
+So the header says what a procedure takes and gives (parameters with their types, the result, and its failures), and
+the top of the body says how to call it (labels and defaults, D9). This replaces the proposed `fails` lines in the
+body, from Radium.
+
+Open: how a procedure with no result lists its failures; how a parameter declares its unit (D45), which by this split
+belongs in the header.
+
+Owner: "Also, wait. You have to be shitting me if you put failure in body, but units in header", "I feel like failure
+should go in h?", "Ah, that reads weird. There's nothing separating fails", then "yup".
