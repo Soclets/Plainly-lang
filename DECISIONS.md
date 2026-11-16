@@ -730,8 +730,11 @@ So the header says what a procedure takes and gives (parameters with their types
 the top of the body says how to call it (labels and defaults, D9). This replaces the proposed `fails` lines in the
 body, from Radium.
 
-Open: how a procedure with no result lists its failures; how a parameter declares its unit (D45), which by this split
-belongs in the header.
+A procedure with no result writes just `fails [...]`, with no `or` (owner: "just `fails [disk_full]`"):
+
+    procedure save_game[#state: Text] fails [disk_full]:
+
+Open: how a parameter declares its unit (D45), which by this split belongs in the header.
 
 Owner: "Also, wait. You have to be shitting me if you put failure in body, but units in header", "I feel like failure
 should go in h?", "Ah, that reads weird. There's nothing separating fails", then "yup".
