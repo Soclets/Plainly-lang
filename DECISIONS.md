@@ -683,3 +683,18 @@ that doesn't handle it gets a build error, not a surprise crash while playing. I
 failure hides a bug, just as an ignored result does.
 
 Owner: "yea".
+
+## D44: `show_text` can't fail (2026-11-16)
+
+`show_text` never needs `?` or `otherwise`. If the text can't go anywhere, the game ends by itself, and the game's code
+never handles it. That only happens when the terminal closed, or when the output was sent into a file or another program
+that stopped taking it. A handler couldn't tell anyone, since telling means printing, which is what failed. Rust's
+`println!`, Python's `print`, Go's `fmt.Println` and C's `printf` all end up the same way in practice.
+
+How the runtime ends the game is AroundPy's detail: quietly when whatever was reading the output quit, and with a line on
+stderr and a failure exit status for a real error, such as a full disk when the output goes to a file.
+
+The general rule for the standard library: a procedure lists a failure only when a normal program would want to handle
+it.
+
+Owner: "yea".
