@@ -925,19 +925,27 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | English | Thai |
 |---|---|
 | `procedure` | `กระบวนการ` |
-| `end` | `จบ_ส่วน` |
+| `end` | `ปิด` |
 | `.main` | `.หลัก` |
-| `show_text` | `แสดง_ข้อความ` |
+| `show_text` | `แสดงข้อความ` |
 | `if` | `ถ้า` |
+| `else` | `ไม่งั้น` |
 
-`ขั้นตอน` was turned down: it means one step, not a whole procedure. A bare `จบ` was turned down for `end`: it reads like
-"The End", finishing everything, not closing one block (owner: too long, then "yea").
+Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
+keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
+`end` is `ปิด` ("close"), so `ปิด ถ้า` reads as "close the if".
 
-A Thai name with more than one word always has `_` between its words, exactly as English names do: `แสดง_ข้อความ` for
-`show_text`, and `จบ_ส่วน` for `end`. It's predictable: anyone knows where a name's words split, and whoever writes a new
-name never has to judge whether the joined form reads right. It also shows a kid learning Thai where each word ends.
-Writing each name as everyday Thai, with `_` only where the joined form reads wrong, was turned down as unpredictable
-(owner: "That's not so predictable, though", then "Honestly? Fair, it doesn't stroke").
+What was turned down on the way:
+- `ขั้นตอน` for `procedure`: it means one step, not a whole procedure.
+- A bare `จบ` for `end`: it reads like "The End", finishing everything, not closing one block.
+- `จบ_ส่วน` for `end`, with `_` always between the words of a Thai name: predictable, but code full of `_` looks
+  unlike Thai, and `จบส่วน` written joined reads wrong.
+- Writing each name as everyday Thai with `_` only where it reads wrong: not predictable.
+- `_` wherever the English name has one: it clashed with `end`.
+- `มิฉะนั้น` and `ไม่อย่างนั้น` for `else`: too formal, and too long. `ไม่งั้น` is the casual "or else", and one word.
+
+Owner, on the way: too long, then "Fuck, Thai sentence, mb", "Let me see a Thai senetcne", "So, what if we follow that
+for names?", then "yea, rec it".
 
 Open:
 - the rest of the Thai keyword table;
