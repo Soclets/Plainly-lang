@@ -422,6 +422,21 @@ convention (D8), where the first argument, the thing being worked on, stays bare
 The spelling isn't `|>`, which isn't meant to be read, or `then`, which reads wrongly before a procedure's name and which
 an `if` may want.
 
-Open: the spelling.
+The spelling is D30.
 
 Owner: "I think it should, but `|>` isn't meant to be read, while `then` is, and then `then` breaks the grammar".
+
+## D30: The pipe is `|>` (2026-11-16)
+
+    #typed |> be.Whole |> heal(by: 300) |> be.Text |> show_text
+
+No word read right: `then` breaks the grammar before a procedure's name, and `into` and `through` were offered. An arrow,
+`=>` or `->`, already says what something is (in maths, `⇒` is "implies"), not where it goes, and in other languages it
+means an inline function, a `match` arm or a return type. `|>` means one thing only, and it's learnt once, like `&`
+(D1). Where no plain word reads right, a symbol that means one thing is the next best choice.
+
+Open: whether a step with no other arguments is written bare (`|> be.Whole`) or with parentheses (`|> be.Whole()`), so
+every step looks alike.
+
+Owner: "Just the symbol? Maybe we use `=>` arrow instead?", "Man, for some reason it looks like not the same thing
+doing", "Let me see slider (the original symbol)", then "`|>` it is".
