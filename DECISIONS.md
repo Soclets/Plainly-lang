@@ -508,3 +508,22 @@ at all, rather than words like Fale's `at_least`.
 
 Owner: "Map of Text to Whole sounds weird. And I mean `<>`  works everywhere, even when we use `<` and `>` as operator.
 Just require space".
+
+## D34: Comparison is `==`, `!=`, `<`, `>`, `at_least` and `at_most` (2026-11-16)
+
+    #lives == 0
+    #guess != #answer
+    #score > #best
+    #hp at_least 1
+    #hp at_most 100
+
+A symbol where it's read at a glance, a word where it isn't. `==` and `!=` are understood without reading them in your
+head, and are in almost every language. `<` and `>` are school maths. `<=` and `>=` are where beginners trip (which way
+round, whether the number counts, `<=` or `=<`), so they're `at_least` and `at_most`. `<` and `>` have a space on each
+side (D33).
+
+A lone `=` in a condition, the classic `if #a = 1` typo, is refused with `fix: ==`. `=` only appears in declarations and
+in `change` (D27), so it can never be a comparison.
+
+Owner: "`<` & `>`, `at_most`, `at_least`, `!=`, `==`? What about that? As for why `!=` and `==`, it's because when you
+get it, you get it without even reading in mind.", then "yea".
