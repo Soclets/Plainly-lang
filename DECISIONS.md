@@ -343,8 +343,13 @@ Go's collector (running alongside the program, but never moving objects) and a s
 considered. Go's gets most of ZGC's short pauses with far less work, and doesn't move objects. ZGC was chosen anyway,
 because it's fun, and it compacts memory.
 
-Open: the handle or pinning design for Rust code; whether it's generational, as ZGC has been since JDK 21; which pointer
-bits are used on each target.
+The design copies ZGC, so where ZGC has an answer, that's PlainGC's answer, and the question isn't asked again. So
+PlainGC is generational, as ZGC has been since JDK 21 and by default since JDK 23, which also means store barriers and
+remembered sets alongside the load barriers. Its pointer colouring follows ZGC's on each target. Rust code reaching
+Plainly objects follows what the JVM does for native code: JNI-style handles, and critical regions where an object
+mustn't move.
+
+Open: only where Plainly differs from the JVM, such as Cranelift's stack maps in place of HotSpot's.
 
 Owner: "Ah, ZGC, right? Seems nice", "It's cool, though. And for games (maybe not fucking CLI, though), pauses are
-shit", then "But it's fun, thoughhhh".
+shit", then "But it's fun, thoughhhh". On open questions: "The design copies ZGC, so you don't have to ask generational".
