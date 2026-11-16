@@ -608,8 +608,39 @@ spelling. The package's name goes in front with `::`:
 That's one level only: a package's name, never a path inside it.
 
 Open: whether files import anything, or the manifest's list of packages is enough, as in Jernal; limbs, which Cyborg's
-design claude advises leaving out until Plainly needs to extend its compiler; how a procedure with its body in Rust is
-declared.
+design claude advises leaving out until Plainly needs to extend its compiler. A procedure with its body in Rust: D40.
 
 Owner: "I don't agree with paths, though. As for no limbs, that means Plainly has to be able to print by itself?", then
 "you say `name::` in front".
+
+## D40: `external.rust procedure` declares a procedure whose body is in Rust (2026-11-16)
+
+    external.rust procedure save_text[#text: Text, #file: Text] returns Bool:
+    labels [#file as file];
+    end procedure save_text
+
+    extern.rust proc show_text[#text: Text]:
+    end proc show_text
+
+`external` says the body is somewhere else, and `.rust` says where, which leaves room for `external.c` later. `extern`
+is its short form, as `proc` is for `procedure`. It's a modifier in front, like `mutable` or a `pub`, so the closer
+doesn't repeat it. The body holds only `labels` and `defaults` (D9), never code. Callers can't tell it apart from any
+other procedure, and AroundPy only reads its signature and emits a call.
+
+The Rust side uses a helper crate, `plainly`, whose attribute writes the `extern "C"` wrapper:
+
+    #[plainly::procedure]
+    fn save_text(text: plainly::Text<'_>, file: plainly::Text<'_>) -> bool { ... }
+
+`Whole` is `i64`, a `Text` argument is a borrowed `plainly::Text<'_>`, valid only during the call, and a returned
+`Text` is built in PlainGC's heap with `plainly::Text::new(...)`. Rust code never keeps a Plainly object after the call
+returns: PlainGC never moves objects (D38), but it can't see Rust's variables, so the object could be freed. The `'_`
+lifetime makes Rust's own compiler refuse that. Each package's Rust code is a static library, with symbols named after
+the package and procedure, like `plainly_std_save_text`, so two packages can't collide (D39).
+
+Open: what a Rust procedure does when it fails, which waits on error handling (D6); the mappings for floats and the
+true/false type, which aren't designed yet.
+
+Claude proposed the Rust side and `procedure.rust`. Owner: "Design that Rust shit", "What about `external.rust
+procedure`? `extern` alias", then "What do you think? `extern.rust` is kinda like `pub`? So, it's like a generic thingy.
+So, maybe it doesn't need to reapt?"
