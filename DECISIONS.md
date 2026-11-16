@@ -698,3 +698,20 @@ The general rule for the standard library: a procedure lists a failure only when
 it.
 
 Owner: "yea".
+
+## D45: Units go behind the number, and only literals are compared (2026-11-16)
+
+A number can say its unit behind it, as in Cyborg:
+
+    draw_image(#whale, across: 300 pixels, down: 200 pixels);
+    wait(for: 2 seconds);
+
+A parameter declares its unit, and the compiler compares only the unit words on literals: `300 pixels` where the
+parameter is in pixels is fine, and `300 seconds` or a bare `300` there is refused. A variable, as in `across: #x`,
+passes with no unit word and no check. There are no unit types, no conversions and no maths on units. That's Cyborg's
+checked units (D8 left them undecided), which are heavy, and Plainly skips them.
+
+Open: how a parameter declares its unit; where unit words come from (declared by packages, or a fixed list).
+
+Owner: "i would like to add units there, just not checked ones (those are heavy)", "Uh, bro, Shouldn't it be behind?",
+then "yea, but not that syntax".
