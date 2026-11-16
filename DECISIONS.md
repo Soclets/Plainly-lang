@@ -368,3 +368,16 @@ Their names make the difference obvious, since using a game random for a secret 
 Open: the names, and how a seed is given.
 
 Owner: "Randomeness? Like `openssl rand`?", then "yea", to both kinds with clearly different names.
+
+## D26: A returned value can't be ignored (2026-11-16)
+
+Calling a procedure that returns a value and doing nothing with the result is refused. In
+
+    heal(#player_health, by: 300)
+
+`heal` returns the new health, and nothing stores it, so the health never changes. That bug looks like working code, and
+it showed up in the first procedure multifinity wrote in Plainly.
+
+Open: how to discard a result on purpose, when that's really meant.
+
+Owner: "yea", to refusing it.
