@@ -53,6 +53,8 @@ such as a tab.
 
 Owner: "It should probably be this instead, then. [...] Which yes, I know, it's a thing to learn. But I think it's small".
 
+Changed by D12: `show_text` ends the line by itself, so `new_line` is for line breaks inside text.
+
 ## D5: Only the opening brace is escaped (2026-11-16)
 
 In `.format` text, `\{` makes a brace literal, and the closing `}` needs nothing:
@@ -154,3 +156,21 @@ itself:
 CLI game. Owner, asked whether to keep it: "yes".
 
 Owner: "Probably, how would it look?", "Wait, how do you make that work elsewhere?", then "Ahhh. yea".
+
+## D12: `show_text` ends the line by itself, and `.same_line` doesn't (2026-11-16)
+
+`show_text` and `show_text.format` add a newline at the end, as Python's `print`, Java's `println` and Go's `Println` do.
+Most prints want one, and a beginner who forgets `& new_line` gets everything on one line with no idea why:
+
+    show_text(greet(#name))
+    show_text.format("{#name} has {#score} points.")
+
+`show_text.same_line` doesn't add one, for prompts and for drawing the screen: `show_text.same_line("Your move: ")`. It
+names what you get rather than what you don't, so it isn't `no_new_line`.
+
+`new_line` stays, for line breaks inside text: `be.Text.format("Line one{new_line}Line two")`. This changes D4's
+examples, not the word.
+
+Open: how `.same_line` and `.format` combine, since `show_text.format.same_line(...)` is three levels deep.
+
+Owner: "I don't like `new_line` that much. How about we do auto newline, and make `no_newline`?", then "`same_line`".
