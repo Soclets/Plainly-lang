@@ -201,7 +201,9 @@ One spelling per thing means a search finds every use, and nobody wonders whethe
 reader also learns the most important fact first. This is the same rule as CyborgPL's (owner: "yeah, strongest first")
 and Cyborg's (Cyborg D223). Labels, like a format's settings, aren't narrowings, and their order is set by D10.
 
-Open: Plainly's table of narrowing kinds, so each new narrowing gets its place without judging it again. Cyborg's goes
-action, then content, then destination, then safety, and its design claude advises writing it early.
+Open: Plainly's table of narrowing kinds, so each new narrowing gets its place without judging it again. Cyborg's
+design claude suggested action, then content, then destination, then safety, and advises writing it early. That order
+isn't in Cyborg's standard, whose table has one row so far (a borrow: how it can be used, then how long), and whose rule
+ranks safety words by how much harm they can do.
 
 Owner: "yup".
