@@ -72,3 +72,24 @@ A conversion that can fail, such as `be.Whole("hello")`, will use the error hand
 which isn't designed yet.
 
 Owner: "Maybe `be.Text(#total)` instead? As for why it's `.`, it's because it would have other types too", then "yea".
+
+## D7: Braces hold values, never calls or maths (2026-11-16)
+
+What goes in `.format`'s braces only reads: a name like `{#total}`, or a word like `{new_line}`. `{#total + 1}` and
+`{greet(#name)}` are refused. A format string can never hide work, and a call that can fail or maths that can overflow
+stays out where you can see it. This follows Cyborg's `fmt_print` (Cyborg D194, D210).
+
+Open: field access, such as `{#player.score}`, once Plainly has records; width, padding and decimal places, which Cyborg
+spells as words, like `{$price, places: 2}`; a version of `.format` that builds a `Text` value instead of printing,
+which Cyborg's design claude advises deciding early.
+
+Owner: "yea".
+
+## D8: Plainly has Cyborg's labels (2026-11-16)
+
+Plainly takes Cyborg's labels. Whether Plainly also has Cyborg's units, checked while building (as in making Celsius
+correct), isn't decided: they're very rich, and may be more than Plainly needs.
+
+Open: the details of labels, to be taken from Cyborg.
+
+Owner: "idk if we'll have checked units. But we'll definitely have Cyborg's labels".
