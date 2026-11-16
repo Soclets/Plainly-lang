@@ -503,8 +503,7 @@ Rust its `::<>` and older C++ its `> >`.
 The word form, `List of Whole` and `Map of Text to Whole`, was turned down: it reads oddly with two parts, and nesting
 needs a grouping rule.
 
-Open: how a generic's maker declares its placeholders (Cyborg writes `?u`); whether Plainly has `<` and `>` as operators
-at all, rather than words like Fale's `at_least`.
+Open: how a generic's maker declares its placeholders (Cyborg writes `?u`). `<` and `>` are operators: D34.
 
 Owner: "Map of Text to Whole sounds weird. And I mean `<>`  works everywhere, even when we use `<` and `>` as operator.
 Just require space".
