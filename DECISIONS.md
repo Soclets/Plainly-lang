@@ -911,3 +911,29 @@ every deliberate crash in a game can be found. They're Cyborg's `?? 8080`, `?? v
 Every way of handling a failure except `?` (D42) starts with `otherwise`.
 
 Owner: too long.
+
+## D57: Plainly supports Thai: one grammar, two word tables (2026-11-16)
+
+Plainly's keywords come in English and Thai. It's one language with two word tables, not two languages: the grammar is
+the same, and since keywords are a fixed list, `apy` can rewrite any file from one table to the other without losing
+anything, so Thai code and English code are always the same program. Many Thai kids can't read English, and for them
+`procedure` and `otherwise` aren't plain words, so this is "plain words where we can" for them. Scratch does the same
+with its blocks.
+
+From now on, every keyword gets both an English and a Thai word. The first:
+
+| English | Thai |
+|---|---|
+| `procedure` | `กระบวนการ` |
+
+`ขั้นตอน` was turned down: it means one step, not a whole procedure.
+
+Open:
+- the rest of the Thai keyword table;
+- Thai names for the standard library's procedures, types and labels;
+- error messages in Thai;
+- requiring a space between keywords, since Thai doesn't put spaces between words;
+- measuring text by the columns it takes on screen, not by characters, since `ที่` is three characters in one column.
+
+Owner: too long, "Whatever, but `ขั้นตอน` means step in Thai, not a entire procedure", too long, then "We support Thai,
+yeah".
