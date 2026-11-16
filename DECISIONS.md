@@ -8,7 +8,7 @@ What was chosen, with the owner's words. Nothing in the early notes counts as de
 `&` reads as "and", is already used for joining in Ada, Visual Basic and Excel, and Plainly has no other use for it. It
 replaces `join_text(...)` from the early sketch.
 
-Open: whether `&` turns a non-text value such as a `Whole` into text by itself.
+Open: whether `&` turns a non-text value such as a `Whole` into text by itself. (Answered by D6: it doesn't.)
 
 Owner: "`&` decided."
 
@@ -60,3 +60,15 @@ In `.format` text, `\{` makes a brace literal, and the closing `}` needs nothing
 is just a character. That's one `\` instead of two, and no rule about the closing side, unlike Python's `{{ }}`.
 
 Owner: "yea", to escaping only the opening brace.
+
+## D6: `be.Type(value)` converts (2026-11-16)
+
+Converting a value is a call narrowed by the type it becomes: `be.Text(#total)`, `be.Whole(#typed)`. The type's own name
+is used, so nothing new is learnt. `.` keeps its one meaning, narrowing, and never means "do something to this value".
+`&` doesn't convert by itself: `show_text("Total: " & be.Text(#total) & new_line)`. `.format`'s braces do convert,
+since `{#total}` has to become text to be printed.
+
+A conversion that can fail, such as `be.Whole("hello")`, will use the error handling Plainly takes from Cyborg or Radium,
+which isn't designed yet.
+
+Owner: "Maybe `be.Text(#total)` instead? As for why it's `.`, it's because it would have other types too", then "yea".
