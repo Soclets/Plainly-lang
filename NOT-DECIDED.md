@@ -20,7 +20,7 @@ this list.
 
 ## Lists
 
-- What happens at a position past the end, or at position 0 (D15).
+- How far the compiler looks for a bad position while building, beyond literals and fixed sizes (D20).
 - Whether there are positions counted from the end, ranges of positions, or an `offset:` form that counts from 0.
 - How a list's type and a list value are written.
 
