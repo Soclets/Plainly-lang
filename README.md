@@ -1,5 +1,7 @@
 # Plainly
 
+It's... Plain?
+
 ## Licences
 
 - [`LICENSE`](LICENSE): Apache-2.0 WITH LLVM-exception, for the code. Programs you compile owe nothing.
