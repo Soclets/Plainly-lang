@@ -773,3 +773,23 @@ library like raylib behind `external.rust` (D40), with labels and units (D45 to 
 doesn't change either way.
 
 Owner: "CLI first, GUI as a package later if ever. And btw, I'm Tankun, lol".
+
+## D50: After an `if` that always leaves, the rest goes in `else:` (2026-11-16)
+
+When an `if` block always leaves, by `return`, `break` or `fail`, the code that runs otherwise goes in that `if`'s
+`else:`, not after `end if`. Code after `end if` there is refused, with a fix moving it into `else:`:
+
+    procedure greet[#name: Text]:
+    if #name == "":
+    return;
+    else:
+    show_text.format("Hi, {#name}!");
+    end if
+    end procedure greet
+
+A guard clause, an `if` that leaves with plain code after it, looks like it would do two things. With `else`, the two
+paths read as alternatives. Both shapes compile to the same test and jump, so it costs nothing at run time. This is
+Cyborg's D430. Several conditions stay flat as one `else if` chain (D35).
+
+Owner: "follow Radium on that one, don't rec yet, though. I think Cyborg has something with `if`s in functions, ask it",
+then "yea".
