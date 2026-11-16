@@ -217,3 +217,17 @@ is, so it can't be mistaken for an offset from 0, which Cyborg writes as `offset
 parameters, and the label keeps the two apart.
 
 Owner: "`#xs[position: 1] // pos also available`", then "yea", to position 1 being the first item.
+
+## D16: Plainly compiles ahead of time to native code, through Cranelift (2026-11-16)
+
+The compiler is written in Rust and compiles a whole program ahead of time to a native binary through Cranelift. There's
+no bytecode and no JIT. This replaces the early plan of bytecode run by a Cranelift JIT, with some parts optionally
+precompiled. It's simpler: there's no bytecode format to design and version, no runtime compiler, and none of that plan's
+questions (tiered or not, who picks the precompiled parts, what happens when precompiled code and bytecode disagree).
+The player gets one native file, with no warm-up.
+
+Cranelift compiles fast, so a `run` command can compile to a temporary file and run it, as `go run` does. The cost is a
+build per target, which Cranelift covers for x86-64, ARM64 and RISC-V, and less optimization than LLVM, which CLI games
+don't need. PlainGC finds references through the stack maps Cranelift records.
+
+Owner: "I was thinking of switching to full AOT native via Cranelift, it's simpler", then "yup".
