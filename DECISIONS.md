@@ -314,9 +314,13 @@ Owner: "How many IRs?", "How many does Go and Swift have?", then "yea".
 
 ## D23: The compiler is AroundPy (2026-11-16)
 
-Plainly's compiler is called AroundPy, so Plainly has "AroundPy performance", in the spirit of Cyborg's `OKAY\n`. It
+Plainly's compiler is called AroundPy, so Plainly has "AroundPy performance", in the spirit of Cyborg's `OKAY\n`.
+Its full name is AroundPython, and its short form is APy, the way `proc` is short for `procedure`. It
 undersells on purpose: a native binary compiled through Cranelift with static types should run far faster than CPython
 on compute-heavy code.
 
 Owner: "What should the compiler's name be? AroundPy? So, we could say \"AroundPy performance\"", then "That's the
-fucking point?".
+fucking point?". On the names: "Its shorten is APy, so APy (AroundPython)?", then "yea".
+
+Open: whether the command is `apy` or `plainly`. APY is also a finance term (annual percentage yield), which crowds search
+results.
