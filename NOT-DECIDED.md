@@ -40,9 +40,6 @@ Proposed, not yet agreed (D41 to D44 and D46 are decided):
 - `f32` or `f64` behind `Float`. `Float` means 32-bit in C, Java, C#, Swift and Kotlin, and 64-bit in Python.
 - Whether Fale's `~` mark on inexact float literals, like `~0.1`, stays.
 
-## Units
-
-
 ## Used in the README, but not decided
 
 - `procedure greet[...] returns Text:` as the header, with `:` at the end.
