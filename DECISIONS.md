@@ -244,3 +244,13 @@ Cargo.
 results would be wrong in ways that look right. OCaml strings are bytes, so `Text` needs a Unicode library.
 
 Owner: "should PlainOracle be made in OCaml?", then "Yea", to its independence being worth a second toolchain.
+
+## D18: Plainly doesn't have Cyborg's stable floats (2026-11-16)
+
+Plainly doesn't take Cyborg's `f64.stable` machinery: no guarantee of the same bits on every machine, no rule against NaN
+and infinity with a check on every result, no correctly rounded maths library such as CORE-MATH, and no fixed order for
+adding up vector lanes. CLI games don't need any of it, and it's a lot of work in the compiler and the standard library.
+
+Open: what Plainly's floats do promise.
+
+Owner: "We wouldn't add those, broooo".
