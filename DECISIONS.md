@@ -381,3 +381,18 @@ it showed up in the first procedure multifinity wrote in Plainly.
 Open: how to discard a result on purpose, when that's really meant.
 
 Owner: "yea", to refusing it.
+
+## D27: `change` in front changes a variable (2026-11-16)
+
+A variable that already exists gets a new value with `change` in front:
+
+    mut #player_health: Whole = 100
+    change #player_health = heal(#player_health, by: 300)
+
+A new variable is a type and `=` (`#total: Whole = 0`), and changing one says `change`, so creating and changing can't be
+mixed up, and a reader sees every place a value changes.
+
+Open: whether `change` on a variable not declared `mut` (or `mutable`) is refused; the `mut` and `mutable` spellings
+themselves.
+
+Owner: "Also, it's `change` in front to change".
