@@ -324,3 +324,27 @@ fucking point?". On the names: "Its shorten is APy, so APy (AroundPython)?", the
 
 Open: whether the command is `apy` or `plainly`. APY is also a finance term (annual percentage yield), which crowds search
 results.
+
+## D24: PlainGC is ZGC-style (2026-11-16)
+
+PlainGC follows ZGC's design: it marks and moves objects on its own threads while the program runs, so pauses stay well
+under a frame, which matters for games beyond the terminal. It's precise, finding references through Cranelift's stack
+maps (D16).
+
+What it brings with it:
+- **Load barriers.** Every read of a reference checks whether the object has moved, so AroundPy emits a barrier into every
+  reference load it hands to Cranelift. They cost a little speed all the time, not just while collecting.
+- **Coloured pointers.** PlainGC keeps its own bits inside pointers, which depends on each OS and CPU's address layout.
+- **Objects move.** Rust code in the standard library never holds a raw pointer to a Plainly object across a point where
+  PlainGC can run. It holds a handle, or pins the object.
+- **A runtime with threads from the start.**
+
+Go's collector (running alongside the program, but never moving objects) and a simple stop-the-world mark-and-sweep were
+considered. Go's gets most of ZGC's short pauses with far less work, and doesn't move objects. ZGC was chosen anyway,
+because it's fun, and it compacts memory.
+
+Open: the handle or pinning design for Rust code; whether it's generational, as ZGC has been since JDK 21; which pointer
+bits are used on each target.
+
+Owner: "Ah, ZGC, right? Seems nice", "It's cool, though. And for games (maybe not fucking CLI, though), pauses are
+shit", then "But it's fun, thoughhhh".
