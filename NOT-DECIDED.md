@@ -43,7 +43,7 @@ Proposed, not yet agreed (D41 to D44 are decided):
 
 ## Units
 
-- Whether Plainly has Cyborg's units, checked while building (D8).
+- How a parameter declares its unit, and where unit words come from (D45). Checked units are out (D45).
 
 ## Used in the README, but not decided
 
