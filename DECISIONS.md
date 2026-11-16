@@ -445,3 +445,24 @@ a stroke when you don't nest for a lot".)
 
 Owner: "Just the symbol? Maybe we use `=>` arrow instead? Let's see", "Man, for some reason it looks like not the same
 thing doing. Idk why", "Let me see slider (the original symbol)", then "`|>` it is".
+
+## D31: Every statement in a body ends with `;` (2026-11-16)
+
+    procedure.main[]:
+    mutable #player_health: Whole = 100;
+    change #player_health = #player_health |> heal(by: 300) |> heal;
+    #player_health |> be.Text |> show_text;
+    "Tankun" |> greet |> show_text;
+    end procedure.main
+
+Without an end mark, lines after a `change` read as if the `change` did all of them. With `;`, each statement visibly
+stops, and a long pipe can run over several lines, since a statement ends only at its `;`:
+
+    change #player_health = #player_health
+    |> heal(by: 300)
+    |> heal;
+
+`labels [...];` and `defaults [...];` end with `;` too, as in Cyborg. A header ends with `:`, and a closer such as
+`end procedure.main` stands alone, with no `;`. Examples in entries before this one are written without `;`.
+
+Owner: too long, then "yea".
