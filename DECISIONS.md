@@ -171,6 +171,21 @@ names what you get rather than what you don't, so it isn't `no_new_line`.
 `new_line` stays, for line breaks inside text: `be.Text.format("Line one{new_line}Line two")`. This changes D4's
 examples, not the word.
 
-Open: how `.same_line` and `.format` combine, since `show_text.format.same_line(...)` is three levels deep.
+How `.same_line` and `.format` combine: D13.
 
 Owner: "I don't like `new_line` that much. How about we do auto newline, and make `no_newline`?", then "`same_line`".
+
+## D13: Both ways of printing a filled-in prompt work (2026-11-16)
+
+To fill in braces and stay on the line, either form works:
+
+    show_text.format.same_line("Lives: {#lives}, your move: ")
+    show_text.same_line(be.Text.format("Lives: {#lives}, your move: "))
+
+The second works without any special rule, since `be.Text.format` gives back ordinary `Text` (D11). The first works
+because `show_text` is an ordinary procedure from `std`'s writer, not syntax, so its narrowings are whatever `std` offers,
+and `std` offers both together.
+
+Open: whether `show_text.same_line.format` (the other order) works too.
+
+Owner: "Wait, shouldn't you be able to do it both ways? And `show_text` depends on `std`'s writer anyways".
