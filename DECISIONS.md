@@ -24,3 +24,13 @@ Open: how to write a literal `#` inside `.format` text; where a name ends inside
 `.format` exists beyond `show_text`, for building a `Text` value.
 
 Owner: "yup, and `show_text` stays the non format kind".
+
+## D3: `\` escapes, but isn't C's escape codes (2026-11-16)
+
+A `\` makes the next character literal: `show_text.format("\#1 player: #name")` prints `#1 player: ` and then the name.
+`\` only escapes. It doesn't start C-style codes, so `\n` doesn't mean a newline and `\t` doesn't mean a tab.
+
+Open: how a newline or tab is written; whether `\` before an ordinary letter is an error; how `\"` and `\\` work in plain
+(non-`.format`) text.
+
+Owner: "`\` escapes, but it doesn't format like C".
