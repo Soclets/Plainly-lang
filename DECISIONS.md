@@ -81,7 +81,7 @@ stays out where you can see it. This follows Cyborg's `fmt_print` (Cyborg D194, 
 
 Open: field access, such as `{#player.score}`, once Plainly has records; width, padding and decimal places, which Cyborg
 spells as words, like `{$price, places: 2}`; a version of `.format` that builds a `Text` value instead of printing,
-which Cyborg's design claude advises deciding early.
+which Cyborg's design claude advises deciding early (D11).
 
 Owner: "yea".
 
@@ -137,3 +137,19 @@ A call writes its labels in the order the function declares them. A function tha
 `labels.in_order` is refused, since it's already the default.
 
 Owner: "yea, but before recording, where is `labels.any_order` un synatx?", then "tea" (yea).
+
+## D11: `be.Text.format` builds text without printing it (2026-11-16)
+
+`be.Text.format("...")` fills in braces the way `show_text.format` does, and gives back a `Text` value instead of
+printing. It's `be.Text` (make Text, D6) narrowed by `.format` (fill in the braces, D2, D4), so it's made of words already
+learnt. Since the result is ordinary `Text`, it works anywhere text goes, and no procedure has to support formatting
+itself:
+
+    #line: Text = be.Text.format("{#name}: {#score}")
+    #banner: Text = "== " & be.Text.format("Level {#score}") & " =="
+    save_text(be.Text.format("{#name},{#score}"), file: "save.txt")
+    return be.Text.format("Hello, {#name}!")
+
+Open: whether `show_text.format` stays, as a shortcut for `show_text(be.Text.format(...))`.
+
+Owner: "Probably, how would it look?", "Wait, how do you make that work elsewhere?", then "Ahhh. yea".
