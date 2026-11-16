@@ -544,6 +544,16 @@ in the condition is refused (D34).
 `else`, not `otherwise`, which Cyborg uses for the arm that handles a failure. Plainly's error handling will come from
 Cyborg or Radium (D6), so `otherwise` stays free for that.
 
-Open: combining conditions (`and`, `or`, `not`).
+Combining conditions: D36.
 
 Owner: "`otherwise`? That's error handling", then "yes".
+
+## D36: Conditions combine with `and`, `or` and `not` (2026-11-16)
+
+    if #hp at_least 1 and not #paused:
+
+Words, not C's `&&`, `||` and `!`.
+
+Open: whether `and` and `or` stop early (short-circuit) by default, and whether a narrowing evaluates both sides.
+
+Owner: too long.
