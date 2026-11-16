@@ -392,7 +392,8 @@ A variable that already exists gets a new value with `change` in front:
 A new variable is a type and `=` (`#total: Whole = 0`), and changing one says `change`, so creating and changing can't be
 mixed up, and a reader sees every place a value changes.
 
-Open: whether `change` on a variable not declared `mut` (or `mutable`) is refused; the `mut` and `mutable` spellings
-themselves.
+`change` on a variable not declared `mut` (or `mutable`) is refused (owner: "yea, no shit").
+
+Open: the `mut` and `mutable` spellings themselves.
 
 Owner: "Also, it's `change` in front to change".
