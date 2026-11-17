@@ -1124,7 +1124,8 @@ offered, since a timer adding up frame times for hours loses precision in 32 bit
 
 A 64-bit float is `f64`, from Rust's number family: D65.
 
-Open: whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg. NaN and infinity: D66.
+`~` on a literal the type can hold exactly, like `~0.5`, is refused, as in Cyborg, so `~` always means "this was
+rounded" (owner: "yea"). NaN and infinity: D66.
 
 Owner: "Let's do floats, `~` is in. Named `Float`".
 
