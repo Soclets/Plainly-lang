@@ -19,3 +19,7 @@ names the decision it came from, or when the owner gave it.
 3. **Stop at 8:30 PM.** Every session stops at 20:30 and suggests the owner stops too, since going past bedtime has made
    the owner abandon languages. A `UserPromptSubmit` hook prints the time with every message, and a reminder from 20:30
    until 05:00. (Owner, 2026-11-17)
+4. **Prompting.** Before prompting a subagent or a new session, a session downloads the current prompting guide for that
+   AI as Markdown and reads the file itself, in full, and again after every compaction. Never through a fetch tool's
+   summary, which can drop parts. Messaging another session isn't prompting, and is written like one colleague talking
+   to another. (Owner, 2026-11-17, from Cyborg's rule 11)
