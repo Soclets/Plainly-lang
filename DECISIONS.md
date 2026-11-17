@@ -1197,4 +1197,5 @@ Owner: "both. But not that syntax. Ask Cyborg for how to make empty shit."
 
 Open: whether `[]` and `""` are refused, with `.empty` as the fix, as in Cyborg; filling an array from a range or a rule.
 
-Owner: "Where the fuck is setting a max length for List? And why the word `size:`?", has code, then "yea".
+Owner: "Where the fuck is setting a max length for List? And why the word `size:`?", "With alts too: `.empty` takes its
+type from left, `len`, `maximum`, `minimum`?", then "yea".
