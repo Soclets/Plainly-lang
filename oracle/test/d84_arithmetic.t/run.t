@@ -87,3 +87,23 @@ Mixing `&` with arithmetic needs `( )` (D83).
    what: `x` and `&` are mixed without `( )`
    why:  maths doesn't say which goes first, so `( )` shows it.
   [1]
+
+Arithmetic in Thai: `หาร`, `หาเศษ`, `.ปัดลง`, `.ตัดเศษ`, `บวก`, `ลบ` and `คูณ` with `.ไม่เกิน`, and `ต่ำสุด` and `สูงสุด` (D57).
+
+  $ plainoracle thai_runs.เพลนลี่
+  3
+  -3
+  1
+  0
+  100
+  21
+
+A Thai arithmetic word in an English file is refused, with the English word as the fix (D57, D75).
+
+  $ plainoracle thai_word.plainly
+  refused: thai_word.plainly:3:25, line 3 column 25
+   3 |     show_text(be.Text(7 หาร.down 2));
+     |                         ^^^
+   fix:  `divide`
+   why:  this file says `english`, so its keywords are English.
+  [1]

@@ -124,7 +124,9 @@ let end_of_file state =
 let next state =
   match current state with Some token -> token | None -> end_of_file state
 
-let refuse state message = state.refusals <- message :: state.refusals
+let refuse state message =
+  if not (List.mem message state.refusals) then
+    state.refusals <- message :: state.refusals
 
 (* trace: D75 *)
 (* A keyword from the other table than the file's language line is refused,
@@ -584,6 +586,75 @@ let spaced state (token : Token.t) =
 let token_at state index =
   if index < Array.length state.tokens then Some state.tokens.(index) else None
 
+(* trace: D57 *)
+(* The arithmetic words in both tables, each with what it means. The first
+   word for a meaning in a table is the one a fix suggests. *)
+let arithmetic_words =
+  [
+    ("divide", "divide", English);
+    ("div", "divide", English);
+    ("หาร", "divide", Thai);
+    ("remainder", "remainder", English);
+    ("mod", "remainder", English);
+    ("หาเศษ", "remainder", Thai);
+    ("plus", "plus", English);
+    ("บวก", "plus", Thai);
+    ("minus", "minus", English);
+    ("ลบ", "minus", Thai);
+    ("times", "times", English);
+    ("คูณ", "times", Thai);
+    ("down", "down", English);
+    ("ปัดลง", "down", Thai);
+    ("toward_zero", "toward_zero", English);
+    ("ตัดเศษ", "toward_zero", Thai);
+    ("exact", "exact", English);
+    ("ลงตัว", "exact", Thai);
+    ("saturate", "saturate", English);
+    ("ไม่เกิน", "saturate", Thai);
+    ("minimum", "minimum", English);
+    ("min", "minimum", English);
+    ("ต่ำสุด", "minimum", Thai);
+    ("maximum", "maximum", English);
+    ("max", "maximum", English);
+    ("สูงสุด", "maximum", Thai);
+  ]
+
+(* What an arithmetic word means, refusing one from the other table than the
+   file's language, with its word in the file's table as the fix (D75). *)
+let meaning_of state (token : Token.t) word =
+  match List.find_opt (fun (found, _, _) -> found = word) arithmetic_words with
+  | None -> None
+  | Some (_, meaning, table) ->
+      (match state.declared with
+      | Some declared when declared <> table ->
+          let fix =
+            match
+              List.find_opt
+                (fun (_, other, other_table) ->
+                  other = meaning && other_table = declared)
+                arithmetic_words
+            with
+            | Some (spelling, _, _) -> spelling
+            | None -> meaning
+          in
+          refuse state
+            {
+              Message.kind = Message.Refused;
+              line = token.line;
+              byte = token.byte;
+              length = token.length;
+              body = Message.Fix fix;
+              why =
+                Some
+                  (Printf.sprintf "this file says `%s`, so its keywords are %s."
+                     state.declared_word
+                     (match declared with
+                     | English -> "English"
+                     | Thai -> "Thai"));
+            }
+      | _ -> ());
+      Some meaning
+
 (* Looks at the operator at the current position without moving past it. *)
 let peek_operator state =
   match current state with
@@ -623,8 +694,10 @@ let peek_operator state =
             token_at state (state.position + 2) )
         with
         | Some { kind = Symbol '.'; _ }, Some ({ kind = Word word; _ } as found)
-          ->
-            Some (word, found)
+          -> (
+            match meaning_of state found word with
+            | Some meaning -> Some (meaning, found)
+            | None -> Some (word, found))
         | _ -> None
       in
       match token.kind with
@@ -638,44 +711,45 @@ let peek_operator state =
                decided yet"
       | Symbol '&' -> one Join_text 0
       | Word "x" -> one (Calculate Times) 2
-      | Word ("divide" | "div") -> (
-          english_only state token;
-          match narrowing () with
-          | Some ("down", found) -> narrowed found (Calculate (Divide Down)) 2
-          | Some ("toward_zero", found) ->
-              narrowed found (Calculate (Divide Toward_zero)) 2
-          | Some ("exact", found) ->
-              stop Message.Not_built_yet found
-                "`.exact` isn't in PlainOracle yet, since failures aren't"
-          | Some (_, found) -> not_built state found
-          | None -> one Bare_divide 2)
-      | Word ("remainder" | "mod") -> (
-          english_only state token;
-          match narrowing () with
-          | Some ("down", found) ->
-              narrowed found (Calculate (Remainder Down)) 2
-          | Some ("toward_zero", found) ->
-              narrowed found (Calculate (Remainder Toward_zero)) 2
-          | Some (_, found) -> not_built state found
-          | None ->
-              stop Message.Not_built_yet token
-                "a `remainder` that doesn't say how to round isn't in \
-                 PlainOracle yet")
-      | Word (("plus" | "minus" | "times") as word) -> (
-          english_only state token;
-          let operation, level =
-            match word with
-            | "plus" -> (Plus, 1)
-            | "minus" -> (Minus, 1)
-            | _ -> (Times, 2)
-          in
-          match narrowing () with
-          | Some ("saturate", found) ->
-              narrowed found (Calculate (Saturate operation)) level
-          | Some (_, found) -> not_built state found
-          | None ->
-              stop Message.Not_designed_yet token
-                (Printf.sprintf "a bare `%s` isn't decided yet" word))
+      | Word word -> (
+          match meaning_of state token word with
+          | Some "divide" -> (
+              match narrowing () with
+              | Some ("down", found) ->
+                  narrowed found (Calculate (Divide Down)) 2
+              | Some ("toward_zero", found) ->
+                  narrowed found (Calculate (Divide Toward_zero)) 2
+              | Some ("exact", found) ->
+                  stop Message.Not_built_yet found
+                    "`.exact` isn't in PlainOracle yet, since failures aren't"
+              | Some (_, found) -> not_built state found
+              | None -> one Bare_divide 2)
+          | Some "remainder" -> (
+              match narrowing () with
+              | Some ("down", found) ->
+                  narrowed found (Calculate (Remainder Down)) 2
+              | Some ("toward_zero", found) ->
+                  narrowed found (Calculate (Remainder Toward_zero)) 2
+              | Some (_, found) -> not_built state found
+              | None ->
+                  stop Message.Not_built_yet token
+                    "a `remainder` that doesn't say how to round isn't in \
+                     PlainOracle yet")
+          | Some (("plus" | "minus" | "times") as meaning) -> (
+              let operation, level =
+                match meaning with
+                | "plus" -> (Plus, 1)
+                | "minus" -> (Minus, 1)
+                | _ -> (Times, 2)
+              in
+              match narrowing () with
+              | Some ("saturate", found) ->
+                  narrowed found (Calculate (Saturate operation)) level
+              | Some (_, found) -> not_built state found
+              | None ->
+                  stop Message.Not_designed_yet token
+                    (Printf.sprintf "a bare `%s` isn't decided yet" word))
+          | _ -> None)
       | _ -> None)
 
 let take_operator state operator =
@@ -990,14 +1064,17 @@ let type_limits state =
       advance state;
       let label () =
         let token = next state in
-        match token.kind with
-        | Word ("min" | "minimum") ->
-            english_only state token;
+        let meaning =
+          match token.kind with
+          | Word word -> meaning_of state token word
+          | _ -> None
+        in
+        match meaning with
+        | Some "minimum" ->
             advance state;
             ignore (expect_symbol state ':');
             `Minimum (limit_number state)
-        | Word ("max" | "maximum") ->
-            english_only state token;
+        | Some "maximum" ->
             advance state;
             ignore (expect_symbol state ':');
             `Maximum (limit_number state, token)

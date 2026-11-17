@@ -138,8 +138,8 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90 and D91.
 3. ~~`-`, `*` and division~~: decided as D84 to D89, and built.
 4. ~~`be.Text` of something that's already `Text`~~: refused, as D90, and built.
 5. ~~Declaring the same name twice~~: `shadow` in front, as D91, and built.
-6. The Thai words for the arithmetic words (`divide`, `remainder`, `saturate`, `min`, `max`, …). `new_line` is
-   `บรรทัดใหม่`, `.format` is `.แทนค่า`, and `.same_line` is `.บรรทัดเดิม`, all built and tested. Decided: `mutable` `เปลี่ยนได้`, `change` `เปลี่ยน`, `shadow` `บัง`, `be` `เป็น`, `Whole`
+6. ~~Thai words for what's built~~: every built keyword has a Thai word now, all built and tested, including the
+   arithmetic words (`หาร`, `หาเศษ`, `.ปัดลง`, `.ตัดเศษ`, `.ลงตัว`, `บวก`, `ลบ`, `คูณ`, `.ไม่เกิน`, `ต่ำสุด`, `สูงสุด`). Decided: `mutable` `เปลี่ยนได้`, `change` `เปลี่ยน`, `shadow` `บัง`, `be` `เป็น`, `Whole`
    `จำนวนเต็ม`, `Text` `ข้อความ`.
 7. Other ways of writing numbers, like `1_000`.
 
