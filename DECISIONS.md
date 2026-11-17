@@ -1010,3 +1010,15 @@ collector. Messages say only what's certain.
 
 Owner: "I think that's more surface to get wrong, and err msgs? It's not really the same as a GC bug to me", then "Wrong
 err msgs are more annoying to me than having a bug in the GC".
+
+## D61: Thai error messages start with `ไม่ผ่าน:` (2026-11-17)
+
+In Thai, `refused:` is `ไม่ผ่าน:` ("didn't pass"), the word Thai students hear for a failed check. `ปฏิเสธ:` was turned
+down as too formal, closer to "rejected". A Thai `why:` line says what the code has written on it, not what was
+declared, as in `ที่เขียน `เปลี่ยนได้` ไว้` ("that has `mut` written on it"), since `ที่ประกาศ` ("which was declared")
+is textbook language.
+
+Open: the other Thai labels (`what:`, `why:`, `when:`, `because:`, `fix:`, `check failed:`, `warning:`).
+
+Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
+that".
