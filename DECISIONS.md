@@ -984,7 +984,7 @@ Against cascades, as in Cyborg:
 - To sort knock-on errors from independent ones, the first error's single fix is applied in memory and the program
   checked again. Whatever disappears was caused by it, and is shown with a `because:` pointing back (Cyborg D207).
 
-Open, to be changed one at a time: more than one `fix:` when each is real, as Fale does; Thai labels (D57) with code untranslated and the `file:line:col` place
+Open, to be changed one at a time: Thai labels (D57) with code untranslated and the `file:line:col` place
 unchanged, and columns counted in graphemes; what happens after a broken block opener or header, which Cyborg never
 decided.
 
@@ -1001,3 +1001,12 @@ variable, rather than how Plainly writes every variable.
 
 Owner: too long, then "That kinda sounds like hastag variable is a special thing, rather than our language calls
 variables as hashtags, or used as hashtags".
+
+## D60: At most one `fix:`, as in Cyborg (2026-11-17)
+
+An error message shows a `fix:` only when there's exactly one, as in Cyborg. Several fixes, as Fale shows, were turned
+down: every extra suggestion is more that can be wrong, and a wrong error message is worse than a bug in the garbage
+collector. Messages say only what's certain.
+
+Owner: "I think that's more surface to get wrong, and err msgs? It's not really the same as a GC bug to me", then "Wrong
+err msgs are more annoying to me than having a bug in the GC".
