@@ -101,25 +101,9 @@ These are choices slice 1 had to make so that anything could run. They're provis
 - A line's role for indentation comes from its first token: `procedure` and `end` lines are at level 0, everything else
   at level 1. That's only enough for slice 1, which has one block.
 
-## New wording waiting for review
+## Wording
 
-From slice 2, in D73's style:
-- `what: `"ten"` is `Text`, but `#score` is a `Whole``, with `why:  a variable (#) holds only the type written for it.`
-- `why:  `+` is only for numbers, and `&` joins text.`, with `fix: &` on text, or `what: `+` can't add `Text`` (built,
-  not tested) when only one side is text.
-- `why:  `&` joins text, and doesn't turn a number into text by itself.`
-- `why:  `show_text` shows text, and doesn't turn a number into text by itself.`
-- `what: `#nmae` isn't declared before this line`, with `why:  a variable (#) is declared, with its type, before it's
-  used.`
-- `what: `…` doesn't fit in a `Whole``, with `why:  a `Whole` holds whole numbers from -9223372036854775808 to
-  9223372036854775807.`
-- `what: `#score` isn't mutable` comes from D58's own example, and its `why:` is D59's.
-
-From slice 3:
-- `why:  `.format` changes what's shown, so it comes before `.same_line`.`
-- `what: `{#n + 1}` holds a calculation, not a value`, with `why:  a fill-in only reads a value, so it can never hide
-  work.`
-- `what: this `{` has no `}``, with `why:  a fill-in starts with `{` and ends with `}`.`
+All wording so far is approved: D73, D76, D80 and D81.
 
 ## Questions slice 2 raised
 
