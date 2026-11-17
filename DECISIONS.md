@@ -1021,7 +1021,10 @@ is textbook language.
 Thai messages call a variable `ตัวแปร`, the word Thai maths and programming textbooks use ("a symbol that varies"),
 as in "ตัวแปร x" (owner: "yea").
 
-Open: the other Thai labels (`what:`, `why:`, `when:`, `because:`, `fix:`, `check failed:`, `warning:`).
+`what:` is `ปัญหา:` ("problem"), which says what the line is. `อะไร:` ("what") was turned down: as a label it reads
+like a bare question (owner: "I'm back. I think problem in Thai").
+
+Open: the other Thai labels (`why:`, `when:`, `because:`, `fix:`, `check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
