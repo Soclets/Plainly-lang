@@ -1716,7 +1716,14 @@ the same, so it fits an `if`, and `not` covers "different":
 `!=` between two `Text`s is refused like `==`, since "different" has the same two meanings, so `not compare_Text.…` is
 the way (owner: "yea").
 
-Open: the refusal's wording; Thai names.
+The refusal has no `fix:`, since there are two methods to choose from (D60):
+
+    what: `==` doesn't compare `Text`
+    why:  text can be the same in more than one way, so `compare_Text` names which.
+
+with "`!=` doesn't compare `Text`" for `!=` (owner, asked whether it read right: "yea").
+
+Open: Thai names.
 
 Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
 codepoints, graphemes", "I think it should be a function instead", "How about `compare_Text.`, and no labels?", "What does
