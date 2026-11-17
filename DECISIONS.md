@@ -1234,6 +1234,6 @@ indented, only because the conversation's chat couldn't show indentation.
 Wrong indentation is refused while building, so every Plainly program looks the same, rather than being left to a
 formatter as Go's `gofmt` does. Blocks still end with `end …`, so indentation never decides where a block ends.
 
-Open: how wide one level is, and spaces or tabs.
+One level is 4 spaces. A tab in indentation is refused.
 
-Owner: "Indented, it's just that I can't format in chat", then "Refused".
+Owner: "Indented, it's just that I can't format in chat", "Refused", then "4 spaces".
