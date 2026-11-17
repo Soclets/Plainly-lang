@@ -1312,3 +1312,15 @@ question about mixing tables. Choosing by the person's system language, or by a 
 
 Owner: "You say at the top.
 `Thai` in Thai or `English`in English", "Rule", then "Required".
+
+## D76: The wording of the language line's refusals (2026-11-17)
+
+    what: the file doesn't say its language
+    why:  a file starts with its language: `english` or `ไทย`.
+
+    why:  this file says `english`, so its keywords are English.
+
+A file with no language line gets this message in English, since there's no language to go by. (Written with `English`,
+before D77 made it `english`.)
+
+Owner, asked whether any read wrong: "no. Also, shouldn't it be `english` with alt as `eng`?"
