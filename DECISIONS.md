@@ -1956,3 +1956,25 @@ For using what a `returns nothing` procedure gives, as in `#x: Text = greet("Mia
     why:  a procedure that returns nothing is called on a line of its own.
 
 Owner, asked whether any read wrong: "no".
+
+## D102: A variable declared inside a block ends with the block (2026-11-17)
+
+    if #lives > 0:
+        #message: Text = "Still alive";
+        show_text(#message);
+    end if
+    show_text(#message);
+
+The last line is refused with "`#message` isn't declared before this line" (D81). Whatever is declared inside a block,
+an `if`'s branch, an `else`, a loop's body or an `otherwise` case, ends at that block's end, as in C, Rust and Cyborg.
+A name declared inside a block can be declared again after it, since that's a new variable, and a `shadow` inside a block
+ends with it too, so the outer variable is seen again. A `mutable` variable from outside that's changed inside keeps its
+new value.
+
+Letting variables last after their block, as Python does, was turned down: the checker would have to prove a variable
+was set on every way through, and a beginner would have to learn why it sometimes exists after an `if` and sometimes
+doesn't.
+
+Found by Mult's Claude, after ChatGPT pointed at it: the oracle let such a variable through and then crashed.
+
+Owner: "Yea".

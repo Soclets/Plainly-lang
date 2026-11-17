@@ -12,8 +12,23 @@ A variable is declared with its name, its type and its first value (D27):
 A variable is declared before it's used, and using one before its declaration is refused (D81). Procedures are
 different: they can be called from anywhere in their file (D96).
 
-**Not decided:** declaring a variable without a first value; whether a variable declared inside a block, like an `if`'s
-body, can be used after the block ends.
+**Not decided:** declaring a variable without a first value.
+
+## Blocks
+
+A variable declared inside a block, an `if`'s branch, an `else`, a loop's body or an `otherwise` case, ends at that
+block's end (D102):
+
+```
+if #lives > 0:
+    #message: Text = "Still alive";
+    show_text(#message);
+end if
+```
+
+After `end if`, `#message` isn't declared, so using it is refused, and declaring the name again makes a new variable. A
+`shadow` inside a block ends with it, so the outer variable is seen again. A `mutable` variable from outside that's
+changed inside keeps its new value (D102).
 
 ## `mutable` and `change`
 
