@@ -1474,3 +1474,18 @@ The refusal says which brackets, since Plainly has four kinds and only `( )` gro
     why:  maths doesn't say which goes first, so `( )` shows it.
 
 Owner, on the wording: "What kind of brackets", then "yea".
+
+## D84: `-`, `x` for multiplying, and `divide`, or `div` for short (2026-11-17)
+
+    #total: Whole = #price x #count;
+    #left: Whole = #lives - 1;
+    #each: Whole = #total divide.… #players;
+
+`-` subtracts and `x` multiplies, the symbol taught at school, as in Cyborg. There's no `*`. Dividing is the word
+`divide`, with `div` as its short form, the way `proc` is short for `procedure`. They follow maths order (D83): `x` and
+`divide` before `+` and `-`.
+
+Open: how whole-number division rounds (Cyborg names it every time, as in `div.trunc` and `div.floor`); division of
+floats; the remainder; negative numbers; overflow on `-` and `x`.
+
+Owner: "`x`. Short as alts, `divide` is probably the better main".
