@@ -1582,3 +1582,29 @@ build mode (D19): stopping with D82's message and exit status 4 in `Working` and
 Open: the wording of both messages.
 
 Owner: "yea".
+
+## D89: The wording of arithmetic's messages (2026-11-17)
+
+    what: `7 divide 2` doesn't say how to round
+    why:  whole numbers divide with `.down`, `.toward_zero` or `.exact`.
+
+    what: `#a divide.down #b` divides by zero
+    when: `#b` is 0
+    why:  nothing can be divided by zero.
+
+    what: `#a - #b` is too small for a `Whole`
+    when: `#a` is -9223372036854775808, and `#b` is 1
+    why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
+
+    what: `150` is above `#hp`'s maximum of 100
+    why:  a number stays within the limits written for its type.
+
+    what: `#hp + 60` is above `#hp`'s maximum of 100
+    when: `#hp` is 50
+    why:  a number stays within the limits written for its type.
+
+The first and fourth are refusals while building, the others failed checks while running (D82). Below a minimum reads
+"is below `#hp`'s minimum of 0". A `when:` line with two values joins them with ", and", which settles D82's open
+case. Mixing `&` with `-`, `x` or `divide` uses D83's wording, naming the operator.
+
+Owner, asked whether any read wrong: "no".
