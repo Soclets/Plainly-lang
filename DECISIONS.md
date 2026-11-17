@@ -254,6 +254,8 @@ Owner: "yup. Now, should PlainOracle be made in OCaml?", then "Yea", to its inde
 
 ## D18: Plainly doesn't have Cyborg's stable floats (2026-11-16)
 
+Changed by D66: NaN and infinity are checked in the safe build modes.
+
 Plainly doesn't take Cyborg's `f64.stable` machinery: no guarantee of the same bits on every machine, no rule against NaN
 and infinity with a check on every result, no correctly rounded maths library such as CORE-MATH, and no fixed order for
 adding up vector lanes. CLI games don't need any of it, and it's a lot of work in the compiler and the standard library.
@@ -1122,8 +1124,7 @@ offered, since a timer adding up frame times for hours loses precision in 32 bit
 
 A 64-bit float is `f64`, from Rust's number family: D65.
 
-Open: whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
-Plainly's floats promise about NaN and infinity (D18).
+Open: whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg. NaN and infinity: D66.
 
 Owner: "Let's do floats, `~` is in. Named `Float`".
 
@@ -1139,3 +1140,25 @@ Mult's notes from the start ("`Whole` to start; the `i8`/`i32`/`i64`/`u8` family
 
 Owner: "Bro, we have the entire Rust family in short like `i`", then "No `isize` or `usize` shit, and we should add
 `f16`".
+
+## D66: NaN and infinity depend on the build mode (2026-11-17)
+
+| Mode | NaN and infinity |
+|---|---|
+| `Working` | checked after every float operation, stopping at the exact line |
+| `FinalSafe` | the CPU's sticky float flags, read where a float leaves the procedure that made it and where a loop ends |
+| `FinalPerf` | plain IEEE 754, unchecked |
+
+Every float operation already sets the CPU's sticky flags for free: "invalid" for NaN, and "overflow" and "divide by
+zero" for infinity. They stay set until cleared, so `FinalSafe` reads them only at those points, and the maths in
+between runs at full speed. Its message names the procedure or loop, not the line, and says to build with `Working` to
+find the line. This is Cyborg's D440, which isn't built or measured yet. Cranelift can't read the flags itself, so each
+check point calls a small runtime function in Rust, and nothing in Plainly's runtime may clear the flags between check
+points.
+
+Checking only division by zero was turned down: it misses NaN from `0.0 * infinity` or the square root of a negative,
+and infinity from overflow, while the flags catch all of them for about the same cost. This partly reopens D18, which
+turned down checking every result.
+
+Owner: "let's do the NaN and infinity stuff", "Depends on the fucking buldd", "Uh, ask Cyborg, it found a more
+effiecient way to check", then "yea, rec it".
