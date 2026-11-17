@@ -1821,3 +1821,16 @@ Owner: "Reading that, would beginners be confused?", ""a variable has to have a 
 procedure is the same wherever it’s written."
 
 But why is that?", then "yea".
+
+## D97: `|>` comes after maths and `&` (2026-11-17)
+
+A pipe takes everything on its left, worked out first, so
+
+    #a + 1 |> be.Text |> show_text;
+    "HP: " & be.Text(#hp) |> show_text;
+
+pipe `#a + 1` and the joined text. `( )` around the left side is allowed, and never needed. The other reading,
+`#a + (1 |> be.Text)`, pipes one piece of a calculation, which is never useful. Elixir and F# put the pipe after
+arithmetic the same way.
+
+Owner: "yea".
