@@ -23,7 +23,7 @@ otherwise goes in an `else:`, not after `end if`. A line after such an `if` is r
 
 ```
 procedure greet[#name: Text] returns nothing:
-    if compare_Text.stored_same(#name, .empty):
+    if compare_Text.same_bytes(#name, .empty):
         return nothing;
     else:
         show_text.format("Hi, {#name}!");
@@ -96,7 +96,7 @@ that loop and every loop inside it (D54):
 ```
 for each #row in #grid named rows:
     for each #cell in #row:
-        if compare_Text.stored_same(#cell, "X"):
+        if compare_Text.same_bytes(#cell, "X"):
             break rows;
         else:
             show_text.same_line(#cell);

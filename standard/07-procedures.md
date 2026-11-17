@@ -101,7 +101,7 @@ procedure sign[#n: Whole] returns Whole:
 end procedure sign
 
 procedure greet[#name: Text] returns nothing:
-    if compare_Text.stored_same(#name, .empty):
+    if compare_Text.same_bytes(#name, .empty):
         return nothing;
     else:
         show_text.format("Hi, {#name}!");

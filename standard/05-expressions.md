@@ -137,15 +137,18 @@ show_text.format.same_line("Lives: {#lives}, your move: ");
   (D33, D34).
 - **A lone `=` is refused,** with `==` as the fix, since `=` only gives a variable its value (D34).
 - **Values of different types can't be compared** (D93).
-- **`==` and `!=` don't compare `Text`.** Text is compared with a procedure that names how (D94):
+- **`==` and `!=` don't compare `Text`.** Text is compared with a procedure that names how (D94, D103):
 
   ```
-  if compare_Text.looks_same(#guess, #answer):
-  if not compare_Text.stored_same(#guess, #answer):
+  if compare_Text.same_normalized(#guess, #answer):
+  if not compare_Text.same_bytes(#guess, #answer):
   ```
 
-  `.stored_same` compares byte for byte. `.looks_same` compares after Unicode normalization (NFC), so differently typed
-  versions of the same visible text match. Case matters in both.
+  `.same_bytes` is true only when both are stored as exactly the same bytes. `.same_normalized` compares after Unicode
+  normalization (NFC), so the same characters stored in different ways match, like `é` as one character or as `e` and an
+  accent. Text that only looks alike can still differ: a Thai tone mark and a vowel above the letter typed in the other
+  order, fullwidth `Ａ` and `A`, Latin `a` and Cyrillic `а`, or a hidden zero-width space (D103). Case matters in both
+  (D94).
 
 **Not decided:** a chain like `1 < #x < 10`; `<` and `>` between two `Text`s; comparing true or false values.
 

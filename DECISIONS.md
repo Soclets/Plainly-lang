@@ -1733,6 +1733,8 @@ roundings. A first version said "text can be the same in more than one way, so `
 
 Open: Thai names.
 
+Changed by D103: the methods are `.same_bytes` and `.same_normalized`.
+
 Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
 codepoints, graphemes", "I think it should be a function instead", "How about `compare_Text.`, and no labels?", "What does
 `exact` do?", then "`stored_same`?".
@@ -1978,3 +1980,34 @@ doesn't.
 Found by Mult's Claude, after ChatGPT pointed at it: the oracle let such a variable through and then crashed.
 
 Owner: "Yea".
+
+## D103: `compare_Text.same_bytes` and `compare_Text.same_normalized` (2026-11-17)
+
+    if compare_Text.same_normalized(#guess, #answer):
+    if not compare_Text.same_bytes(#guess, #answer):
+
+D94's two methods are renamed after what they really compare, in the real terms, so a beginner learns words that are
+accurate and searchable, as with `.saturate` (D87):
+
+- `.stored_same` becomes `.same_bytes`: both texts are stored as exactly the same bytes.
+- `.looks_same` becomes `.same_normalized`: the same after Unicode normalization (NFC).
+
+`looks_same` promised more than NFC does. NFC only treats the same characters stored in different ways as equal, like
+`é` as one character or as `e` and an accent, or a Thai tone mark and a vowel below the letter typed in either order.
+Text that looks alike can still differ: a Thai tone mark and a vowel above the letter (`ิ ี ึ ื ั`) typed in the other
+order, `ำ` against `ํ` and `า`, fullwidth `Ａ` against `A`, Latin `a` against Cyrillic `а`, or a hidden zero-width space.
+So D94's line that a Thai tone mark and vowel mark match "typed in either order" holds only for vowels below the letter.
+No method can truly compare how text looks, since different letters can be drawn the same way. `same_characters` was
+offered first. `NFC` is left out of the name, since one normalization is enough for a game.
+
+D94's refusal for `==` and `!=` on text names the new methods:
+
+    what: `==` doesn't compare `Text`
+    why:  text is compared with `compare_Text.same_bytes` or `compare_Text.same_normalized`.
+
+Examples in entries before this one use the old names.
+
+Open: whether Thai marks typed in a different order should match; the Thai names.
+
+Owner: "Is `look_same` accurate?", "So, do we make them learn the two words instead?", "No, I meant let them learn the
+words?", then "Yea".

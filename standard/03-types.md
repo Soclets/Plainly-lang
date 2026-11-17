@@ -77,8 +77,8 @@ Text in UTF-8 (chapter 1), written in quotes (chapter 2). Empty text is `.empty`
 #typed: Text = .empty;
 ```
 
-Text is joined with `&` (D1), and compared with `compare_Text.stored_same` or `compare_Text.looks_same`, never `==`
-(D94, chapter 5).
+Text is joined with `&` (D1), and compared with `compare_Text.same_bytes` or `compare_Text.same_normalized`, never `==`
+(D94, D103, chapter 5).
 
 **Not decided:** a text's length, and reaching a character in it.
 
