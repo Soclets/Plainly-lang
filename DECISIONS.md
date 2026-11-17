@@ -955,6 +955,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `.down` (D85) | `.ปัดลง` ("round down"), the maths-class term |
 | `.toward_zero` (D85) | `.ตัดเศษ` ("cut off the remainder"), which says what happens |
 | `.exact` (D85) | `.ลงตัว` ("divides evenly"), the maths-class phrase |
+| `remainder`, `mod` (D85) | `หาเศษ` ("find the remainder"), a verb like `หาร`, since `เศษ` alone reads like the result |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
