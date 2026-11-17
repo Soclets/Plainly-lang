@@ -85,3 +85,9 @@ Nor fields in a fill-in (D7).
   $ plainoracle thai_new_line.เพลนลี่
   ก
   ข
+
+`.แทนค่า` and `.บรรทัดเดิม` are Thai `.format` and `.same_line`, with `{บรรทัดใหม่}` in braces (D57).
+
+  $ plainoracle thai_format.เพลนลี่
+  คะแนน: 15 จบ
+  15

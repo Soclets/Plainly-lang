@@ -405,7 +405,7 @@ let is_format_next state =
     ( state.tokens.(state.position + 1).kind,
       state.tokens.(state.position + 2).kind )
   with
-  | Symbol '.', Word "format" -> true
+  | Symbol '.', Keyword (Format_word, _) -> true
   | _ -> false
 
 let is_letter_or_digit = function
@@ -921,7 +921,7 @@ and primary state =
           check_table state type_token table;
           advance state;
           ignore (expect_symbol state '.');
-          ignore (expect_word state "format");
+          ignore (expect_keyword state Format_word);
           ignore (expect_symbol state '(');
           let pieces = format_argument state in
           let closing = expect_symbol state ')' in
@@ -1177,10 +1177,16 @@ let show_text state =
         advance state;
         let token = next state in
         match token.kind with
-        | Word (("format" | "same_line") as word)
-          when not (List.mem_assoc word found) ->
-            english_only state token;
+        | Keyword (((Format_word | Same_line_word) as keyword), table)
+          when not
+                 (List.mem_assoc
+                    (if keyword = Format_word then "format" else "same_line")
+                    found) ->
+            check_table state token table;
             advance state;
+            let word =
+              if keyword = Format_word then "format" else "same_line"
+            in
             narrowings ((word, token) :: found)
         | _ -> not_built state token)
     | _ -> List.rev found
