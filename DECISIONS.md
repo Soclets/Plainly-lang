@@ -743,6 +743,8 @@ A procedure with no result writes just `fails [...]`, with no `or` (owner: "just
 
     procedure save_game[#state: Text] fails [disk_full]:
 
+Changed by D100: it's `procedure save_game[#state: Text] returns nothing or fails [disk_full]:`.
+
 How a parameter declares its unit: D47, in the body, not the header.
 
 Owner: "Also, wait. You have to be shitting me if you put failure in body, but units in header", "I feel like failure
@@ -1218,6 +1220,8 @@ Owner: "both. But not that syntax. Ask Cyborg for how to make empty shit."
 a procedure with no result writes no `returns` (D46). Plainly asks for a word only where something empty would otherwise
 sit on the page, never to fill a place that's simply left out (owner: "refused. And if someone asks why writing no return
 isn't refused? It's because we only write more when there's already something empty").
+
+Changed by D100: a procedure with no result writes `returns nothing`.
 
 Open: filling an array from a range or a rule.
 
@@ -1866,6 +1870,8 @@ place.
 - A bare `return;` is refused, with `return early` as the fix.
 - `return early` as a procedure's last line is refused, since there's nothing to be early for.
 
+Replaced by D100: `return nothing`, matching a header's `returns nothing`.
+
 The wording of both refusals isn't decided. `return none;`, reusing `[none]`'s word, was turned down: it reads like
 giving back a value called `none`.
 
@@ -1873,3 +1879,39 @@ Open: the Thai words.
 
 Owner: "Shouldn't it be `return early`?", then "yea. Now, a question, should we make them write `returns early` in
 header?"
+
+## D100: A procedure with no result says `returns nothing`, and leaves with `return nothing` (2026-11-17)
+
+Every header says what its procedure gives back, even when that's nothing, the way `[none]` says it takes nothing:
+
+    english
+
+    procedure.main[none] returns nothing:
+        show_text("Hello, world!");
+    end procedure.main
+
+    procedure greet[#name: Text] returns nothing:
+        if compare_Text.stored_same(#name, .empty):
+            return nothing;
+        else:
+            show_text.format("Hi, {#name}!");
+        end if
+    end procedure greet
+
+A procedure can do something, like showing text, and still give nothing back. Writing `returns nothing` makes a
+beginner meet that difference instead of never thinking about it.
+
+`return` is always followed by what the procedure gives: `return #hp;` in a `returns Whole` procedure, and
+`return nothing;` in a `returns nothing` one, matching its header. This replaces D99's `return early`, and D99's two
+refusals carry over: a bare `return;` is refused with `return nothing` as the fix, and `return nothing` as a
+procedure's last line is refused.
+
+It changes three earlier decisions:
+- D68's reason for not requiring a word here ("we only write more when there's already something empty") no longer
+  applies to results: every header says what it gives.
+- D46's no-result form becomes `returns nothing or fails [disk_full]`.
+- `procedure.main` follows every procedure rule (D63), so it says `returns nothing` too, hello world included.
+
+Open: the wording of the refusals; the Thai words.
+
+Owner: too long, then "yea".
