@@ -1792,3 +1792,32 @@ code, so it has `what:` instead.
 A wrong-typed argument reuses D81's wording, as in "`"ten"` is `Text`, but `#health` is a `Whole`".
 
 Owner: "yea, draft it", has code, "yea", then "yea".
+
+## D96: A procedure can be called from anywhere in its file (2026-11-17)
+
+A call can come before the procedure's declaration in the file, so a file can start with `procedure.main` and read from
+the top down, from what the program does to how each piece works:
+
+    english
+
+    procedure.main[none]:
+        mutable #hp: Whole = 50;
+        change #hp = heal(#hp, by: 30);
+    end procedure.main
+
+    procedure heal[#health: Whole, #amount: Whole] returns Whole:
+        labels [#amount as by];
+        return #health + #amount;
+    end procedure heal
+
+Variables still come before their use (slice 2's refusal), and it's one rule: a step can use only what exists when it
+runs. A body's lines are steps that run in order, and a variable comes into being when its line runs. A procedure isn't
+a step: it sits outside every body, AroundPy reads the whole file before the program starts, and so every procedure
+exists for the whole run. Procedures can also call each other in either direction.
+
+Requiring declaration before use would push `procedure.main` to the bottom of the file, as in C.
+
+Owner: "Reading that, would beginners be confused?", ""a variable has to have a value by the time its line runs, and a
+procedure is the same wherever it’s written."
+
+But why is that?", then "yea".
