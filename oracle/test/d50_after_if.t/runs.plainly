@@ -1,13 +1,13 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     greet("");
     greet("Mia");
 end procedure.main
 
-procedure greet[#name: Text]:
+procedure greet[#name: Text] returns nothing:
     if compare_Text.stored_same(#name, ""):
-        return;
+        return nothing;
     else:
         show_text.format("Hi, {#name}!");
     end if

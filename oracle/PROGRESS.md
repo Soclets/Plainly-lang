@@ -30,7 +30,7 @@ To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`,
 
 ## Slice 1
 
-Runs: `procedure.main[none]:` with `show_text("…");` statements and `end procedure.main`, in English or Thai keywords
+Runs: `procedure.main[none]:` (now `procedure.main[none] returns nothing:`, D100) with `show_text("…");` statements and `end procedure.main`, in English or Thai keywords
 (`proc` works too), printing each text with a newline.
 
 Refused, with D58's layout, tested:
@@ -144,10 +144,9 @@ default; labels out of order; `labels.in_order`; too many arguments; an unused r
 without `return`; a call to `procedure.main` (D63); a written number without its unit or with another one; a line after
 an `if` with no `else` whose every branch leaves (D50). A wrong-typed argument uses D81's wording, untested.
 
-Stops (`NotDesignedYet`), each a refusal whose wording or rule isn't decided: leaving out a value without a label; using
-what a procedure with no result gives as a value; `shadow` on a parameter; a line after `return` in the same block; a
-line after an `if` where only some ways leave, or where every way leaves through an `else` too; `return` with a value in
-`procedure.main` or in a procedure with no result, and without one in a procedure with a result; `|>` into `show_text` from a number, `show_text.format` and `be.Text.format` as steps, `( )` on
+Stops (`NotDesignedYet`), each a refusal whose wording or rule isn't decided: leaving out a value without a label;
+`shadow` on a parameter; a line after an `if` where only some ways leave, or where every way leaves through an `else`
+too; a bare `return;` in a procedure that returns a value; a result on `procedure.main`; `|>` into `show_text` from a number, `show_text.format` and `be.Text.format` as steps, `( )` on
 a step, and an unlabelled value in a step; a label, default or unit for something that isn't a parameter, a default or
 unit on a parameter without a label, a unit on a parameter that isn't `Whole`, and a unit word on anything but a written
 number; `labels`, `defaults` and `units` lines out of order; a default that isn't a written value; limits on a result;
@@ -158,9 +157,23 @@ Stops (`NotBuiltYet`): a call to a name that isn't a procedure in the file, sinc
 and pipes written over several lines; `fails` in a header (slice 8).
 
 Not built yet: `external.rust procedure` (D40), `package::` (D39), and the Thai words for `labels`, `defaults`, `units`,
-`as`, `in`, `returns` and `return`, which aren't decided, so they stop in Thai files.
+`as` and `in`, which aren't decided, so they stop in Thai files.
 
 Traced decisions added: D8, D9, D10, D26, D29, D30, D32, D45, D46, D47, D48, D50, D95, D96, D97.
+
+## Returns and `return nothing` (slice 5, continued)
+
+Runs: every header says what it gives back, `returns Whole` or `returns nothing`, `procedure.main` included, and a
+procedure that returns nothing leaves early with `return nothing;` (D100); `คืน` for both `returns` and `return`, and
+`ไม่มีอะไร` for `nothing`, in Thai files (D57). Every test program now has `returns nothing` on its headers.
+
+Refused, tested, with D101's wording: a header with no `returns`, with the fix naming the type of the body's first
+returned value or `nothing`; a bare `return;`; `return nothing` as a procedure's last line; a line after `return` in the
+same block (D98); `return nothing` in a procedure that returns a value; a value returned from a procedure that returns
+nothing, `procedure.main` included; using what a `returns nothing` procedure gives as a value, whose type then becomes
+unknown so nothing after is refused because of it.
+
+Traced decisions added: D98, D99, D100, D101.
 
 ## Waiting for the owner
 
@@ -205,9 +218,11 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93
 
 ## Questions slice 5 raised
 
-11. The wording for the slice 5 stops listed above, most of all: a call leaving out a value without a label, using what
-    a procedure with no result gives, and `return` that doesn't match the procedure's result.
+11. The wording for the slice 5 stops listed above, most of all a call leaving out a value without a label. (Using what
+    a procedure that returns nothing gives, and a `return` that doesn't match its header, are D101.)
 12. `shadow` on a parameter.
-13. Code after `return` in the same block, and after an `if` where only some ways leave.
+13. ~~Code after `return` in the same block~~: refused, as D98. Still open: code after an `if` where only some ways
+    leave.
 14. ~~Whether `|>` comes after `+` and `&`~~: decided as D97, and built.
-15. Thai words for `labels`, `defaults`, `units`, `as`, `in`, `returns` and `return`.
+15. Thai words for `labels`, `defaults`, `units`, `as` and `in`. (`returns` and `return` are `คืน`, and `nothing` is
+    `ไม่มีอะไร`.)

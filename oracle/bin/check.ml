@@ -81,7 +81,8 @@ type statement =
   | Declare of string * expression * limits
   | Change of string * expression * limits
   | Expression_statement of expression
-  | Return of expression option
+  (* The value, if any, and where `return nothing` is written, if it is. *)
+  | Return of expression option * Token.t option
 
 (* trace: D8 *)
 (* trace: D9 *)
@@ -357,7 +358,7 @@ let starts_a_statement (token : Token.t) =
   match token.kind with
   | Keyword
       ( ( Show_text_word | End_word | Procedure_word | Mut_word | Change_word
-        | Shadow_word | If_word ),
+        | Shadow_word | If_word | Return_word ),
         _ )
   | Name _ | Text _ ->
       true
@@ -1358,9 +1359,7 @@ and primary state =
                 check_call state signature token closing None written
             | None -> (Call (name, []), None)
           in
-          let result = spanning token closing shape value_type in
-          allow_nothing state start result;
-          result)
+          allow_nothing state start (spanning token closing shape value_type))
   | Keyword (Procedure_word, table) when next_is_symbol state '.' ->
       check_table state token table;
       advance state;
@@ -1387,8 +1386,10 @@ and main_call state (token : Token.t) =
     "`procedure.main` runs once, when the program starts.";
   called
 
-(* What a procedure with no result gives can only be a statement of its own:
-   the whole statement, with nothing after it. *)
+(* trace: D101 *)
+(* What a procedure that returns nothing gives can only be a statement of its
+   own: the whole statement, with nothing after it. Anywhere else it's refused,
+   and its type becomes unknown so nothing after is refused because of it. *)
 and allow_nothing state start (result : expression) =
   if result.value_type = Some Nothing_type then
     let ends =
@@ -1397,12 +1398,16 @@ and allow_nothing state start (result : expression) =
       | Some { kind = Symbol ';'; _ } -> true
       | Some token -> token.line > (previous state).line
     in
-    if not (start = state.statement_start && ends) then
-      stop Message.Not_designed_yet
-        (token_of_expression result)
-        (Printf.sprintf
-           "`%s` gives nothing, and using that as a value isn't decided yet"
-           (text_of_expression state result))
+    if start = state.statement_start && ends then result
+    else begin
+      refuse_at state result
+        (Message.What
+           (Printf.sprintf "`%s` returns nothing, so there's no value to use"
+              (text_of_expression state result)))
+        "a procedure that returns nothing is called on a line of its own.";
+      { result with value_type = None }
+    end
+  else result
 
 (* trace: D8 *)
 (* A call's arguments, from `(` to `)`: each a value, with a label before it
@@ -1659,10 +1664,7 @@ and check_call state signature (name_token : Token.t) (last : Token.t) piped
     List.map (fun (index, _, value) -> (index, value)) (List.rev !matched)
     @ defaults
   in
-  ( Call (name, arguments),
-    match signature.result with
-    | Some result -> Some result
-    | None -> Some Nothing_type )
+  (Call (name, arguments), signature.result)
 
 (* trace: D45 *)
 (* trace: D95 *)
@@ -1725,8 +1727,7 @@ and pipe state start (left : expression) =
       if step.line <> left.line then
         stop Message.Not_built_yet step
           "a pipe written over several lines isn't in PlainOracle yet";
-      let result = pipe_step state left step in
-      allow_nothing state start result;
+      let result = allow_nothing state start (pipe_step state left step) in
       pipe state start result
   | _ -> left
 
@@ -2127,8 +2128,20 @@ let rec leaves statements =
 let after_leaving state (token : Token.t) previous_statement =
   match previous_statement with
   | Some (Return _) ->
-      stop Message.Not_designed_yet token
-        "a line after `return` in the same block isn't decided yet"
+      (* trace: D98 *)
+      let last = line_last_token state state.position in
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = token.line;
+          byte = token.byte;
+          length = last.byte + last.length - token.byte;
+          body = Message.What "this line comes after `return`, so it never runs";
+          why =
+            Some
+              "`return` leaves straight away, so nothing after it in the same \
+               block runs.";
+        }
   | Some (If (branches, otherwise)) ->
       let branches_leave =
         List.for_all (fun (_, body) -> leaves body) branches
@@ -2163,44 +2176,84 @@ let after_leaving state (token : Token.t) previous_statement =
 
 (* trace: D46 *)
 (* trace: D95 *)
+(* trace: D100 *)
+(* trace: D101 *)
+(* `return` is followed by what the procedure gives back: a value, or
+   `nothing`. *)
 let return_statement state (token : Token.t) =
-  english_only state token;
   advance state;
-  let value =
-    match current state with
-    | Some { kind = Symbol ';'; _ } -> None
-    | Some next_token when next_token.line > token.line -> None
-    | _ -> Some (expression state)
+  let name, result =
+    match state.current_procedure with
+    | Some signature -> (signature.procedure_name, signature.result)
+    | None -> ("procedure.main", Some Nothing_type)
   in
-  (match (state.current_procedure, value) with
-  | None, Some value ->
-      stop Message.Not_designed_yet
-        (token_of_expression value)
-        "a `return` with a value in `procedure.main` isn't decided yet"
-  | Some { result = None; _ }, Some value ->
-      stop Message.Not_designed_yet
-        (token_of_expression value)
-        "a `return` with a value in a procedure that returns nothing isn't \
-         decided yet"
-  | Some { result = Some result; _ }, None ->
-      stop Message.Not_designed_yet token
-        (Printf.sprintf
-           "a `return` without a value in a procedure that returns a `%s` \
-            isn't decided yet"
-           (type_name result))
-  | Some { result = Some result; procedure_name; _ }, Some value -> (
-      match value.value_type with
-      | Some found when found <> result ->
+  let bare () =
+    (match result with
+    | Some found when found <> Nothing_type ->
+        stop Message.Not_designed_yet token
+          (Printf.sprintf
+             "a `return` with no value in a procedure that returns a `%s` \
+              isn't decided yet"
+             (type_name found))
+    | _ ->
+        refuse state
+          {
+            Message.kind = Message.Refused;
+            line = token.line;
+            byte = token.byte;
+            length = token.length;
+            body = Message.Fix "return nothing";
+            why = Some "`return` is followed by what the procedure gives back.";
+          });
+    finish state;
+    Return (None, None)
+  in
+  match current state with
+  | Some ({ kind = Keyword (Nothing_word, table); _ } as nothing) ->
+      check_table state nothing table;
+      advance state;
+      let place =
+        { token with length = nothing.byte + nothing.length - token.byte }
+      in
+      (match result with
+      | Some found when found <> Nothing_type ->
+          refuse state
+            {
+              Message.kind = Message.Refused;
+              line = place.line;
+              byte = place.byte;
+              length = place.length;
+              body =
+                Message.What
+                  (Printf.sprintf "`%s` returns a `%s`, not nothing" name
+                     (type_name found));
+              why = Some "a procedure returns the type its header says.";
+            }
+      | _ -> ());
+      finish state;
+      Return (None, Some place)
+  | None | Some { kind = Symbol ';'; _ } -> bare ()
+  | Some next_token when next_token.line > token.line -> bare ()
+  | _ ->
+      let value = expression state in
+      (match (result, value.value_type) with
+      | Some Nothing_type, Some found ->
+          refuse_at state value
+            (Message.What
+               (Printf.sprintf "`%s` is `%s`, but `%s` returns nothing"
+                  (text_of_expression state value)
+                  (type_name found) name))
+            "a procedure returns the type its header says."
+      | Some expected, Some found when found <> expected ->
           refuse_at state value
             (Message.What
                (Printf.sprintf "`%s` is `%s`, but `%s` returns a `%s`"
                   (text_of_expression state value)
-                  (type_name found) procedure_name (type_name result)))
+                  (type_name found) name (type_name expected)))
             "a procedure returns the type its header says."
-      | _ -> ())
-  | _, None -> ());
-  finish state;
-  Return value
+      | _ -> ());
+      finish state;
+      Return (Some value, None)
 
 (* trace: D26 *)
 (* trace: D95 *)
@@ -2264,7 +2317,9 @@ let rec statements state depth found =
             if_statement state token depth
         | Name _ when next_is_symbol state ':' ->
             declaration state ~shadow:false ~mutable_variable:false
-        | Word "return" -> return_statement state token
+        | Keyword (Return_word, table) ->
+            check_table state token table;
+            return_statement state token
         | Name _ | Word _ | Text _ | Symbol '(' | Keyword (Be_word, _) ->
             expression_statement state
         | Keyword (Procedure_word, _) when next_is_symbol state '.' ->
@@ -2411,6 +2466,38 @@ let parameters_of state ~main =
   | _ -> not_built state token
 
 (* trace: D46 *)
+(* trace: D100 *)
+(* What a header says its procedure gives back: `returns` and a type, or
+   `returns nothing`. Returns the header's last token, the result, and whether
+   `returns` is missing. *)
+let result_of state (closing : Token.t) =
+  match current state with
+  | Some
+      ({ kind = Keyword (((Returns_word | Return_word) as keyword), table); _ }
+       as returns) -> (
+      (match (keyword, table) with
+      | Returns_word, _ -> check_table state returns table
+      | Return_word, Thai ->
+          (* `คืน` here is `returns`, which is what a fix should say. *)
+          check_table state
+            { returns with kind = Keyword (Returns_word, Thai) }
+            Thai
+      | _ -> not_built state returns);
+      advance state;
+      let type_token = next state in
+      match type_token.kind with
+      | Keyword (Nothing_word, table) ->
+          check_table state type_token table;
+          advance state;
+          (type_token, Some Nothing_type, false)
+      | _ ->
+          let result, limits = type_of state in
+          if limits <> no_limits then
+            stop Message.Not_designed_yet type_token
+              "limits on a procedure's result aren't decided yet";
+          (previous state, Some result, false))
+  | _ -> (closing, None, true)
+
 (* A named procedure's header after `procedure`: its name, parameters and
    result. *)
 let named_header state =
@@ -2423,21 +2510,9 @@ let named_header state =
     | _ -> not_built state name_token
   in
   let closing, parameters = parameters_of state ~main:false in
-  let closing, result =
-    match current state with
-    | Some ({ kind = Word "returns"; _ } as returns) ->
-        english_only state returns;
-        advance state;
-        let type_token = next state in
-        let result, limits = type_of state in
-        if limits <> no_limits then
-          stop Message.Not_designed_yet type_token
-            "limits on a procedure's result aren't decided yet";
-        (previous state, Some result)
-    | _ -> (closing, None)
-  in
-  header_colon state closing;
-  (name_token, name, parameters, result)
+  let last, result, missing = result_of state closing in
+  header_colon state last;
+  (name_token, name, parameters, result, if missing then Some closing else None)
 
 let enter_procedure state parameters line =
   state.variables <-
@@ -2621,10 +2696,10 @@ let procedure_top state parameters =
 (* A named procedure's header and the lines at the top of its body. *)
 let signature_of state =
   let procedure_token = expect_keyword state Procedure_word in
-  let name_token, name, parameters, result = named_header state in
+  let name_token, name, parameters, result, missing = named_header state in
   enter_procedure state parameters procedure_token.line;
   let parameters, any_order = procedure_top state parameters in
-  (name_token, { procedure_name = name; parameters; result; any_order })
+  (name_token, { procedure_name = name; parameters; result; any_order }, missing)
 
 (* trace: D96 *)
 (* Reads every named procedure's header before any body is checked, so a call
@@ -2641,35 +2716,43 @@ let collect_signatures state =
           let scratch = { state with position = index } in
           let found =
             match signature_of scratch with
-            | _, signature -> Some signature
+            | _, signature, _ -> Some signature
             | exception Message.Stop _ -> None
           in
           state.signatures <- (name, found) :: state.signatures
       | _ -> ())
     state.tokens
 
-let closer state signature body =
+(* trace: D100 *)
+let main_signature =
+  {
+    procedure_name = "procedure.main";
+    parameters = [];
+    result = Some Nothing_type;
+    any_order = false;
+  }
+
+let closer state ~main signature body =
   let end_token = expect_keyword state End_word in
   record_depth state end_token 0;
   ignore (expect_keyword state Procedure_word);
   let last =
-    match signature with
-    | None ->
-        ignore (expect_symbol state '.');
-        expect_keyword state Main_word
-    | Some signature ->
-        let token = next state in
-        (match token.kind with
-        | Word word when word = signature.procedure_name -> advance state
-        | Word _ | Symbol '.' ->
-            stop Message.Not_designed_yet token
-              (Printf.sprintf "closing `%s` with another name isn't decided yet"
-                 signature.procedure_name)
-        | _ -> not_built state token);
-        token
+    if main then (
+      ignore (expect_symbol state '.');
+      expect_keyword state Main_word)
+    else
+      let token = next state in
+      (match token.kind with
+      | Word word when word = signature.procedure_name -> advance state
+      | Word _ | Symbol '.' ->
+          stop Message.Not_designed_yet token
+            (Printf.sprintf "closing `%s` with another name isn't decided yet"
+               signature.procedure_name)
+      | _ -> not_built state token);
+      token
   in
-  (match signature with
-  | Some { result = Some result; procedure_name; _ } when not (leaves body) ->
+  (match signature.result with
+  | Some result when result <> Nothing_type && not (leaves body) ->
       (* trace: D95 *)
       refuse state
         {
@@ -2680,16 +2763,55 @@ let closer state signature body =
           body =
             Message.What
               (Printf.sprintf "`%s` can reach its end without returning a `%s`"
-                 procedure_name (type_name result));
+                 signature.procedure_name (type_name result));
           why =
             Some
               "every way through a procedure that returns something ends in \
                `return`.";
         }
   | _ -> ());
+  (* trace: D99 *)
+  (* trace: D101 *)
+  (match List.rev body with
+  | Return (None, Some place) :: _ ->
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = place.line;
+          byte = place.byte;
+          length = place.length;
+          body =
+            Message.What
+              (Printf.sprintf "`%s` is the last line, so it does nothing"
+                 (text_of state place));
+          why = Some "a procedure leaves by itself at its end.";
+        }
+  | _ -> ());
   match current state with
   | Some token when token.line = last.line -> not_built state token
   | _ -> ()
+
+(* The type of the first value a body returns, for the fix when a header has no
+   `returns`. *)
+let rec first_returned statements =
+  List.find_map
+    (function
+      | Return (Some { value_type = Some found; _ }, _)
+        when found <> Nothing_type ->
+          Some found
+      | If (branches, otherwise) ->
+          List.find_map first_returned
+            (List.map snd branches @ Option.to_list otherwise)
+      | _ -> None)
+    statements
+
+(* trace: D101 *)
+let refuse_missing_returns state (closing : Token.t) body =
+  refuse_missing state closing
+    (match first_returned body with
+    | Some found -> "returns " ^ type_name found
+    | None -> "returns nothing")
+    "a header says what its procedure gives back, even when that's nothing."
 
 type procedure =
   | Main_procedure of statement list
@@ -2708,15 +2830,22 @@ let procedure state =
     ignore (expect_symbol state '.');
     ignore (expect_keyword state Main_word);
     let closing, _ = parameters_of state ~main:true in
-    header_colon state closing;
+    let last, result, missing = result_of state closing in
+    (match result with
+    | Some found when found <> Nothing_type ->
+        stop Message.Not_designed_yet last
+          "a result on `procedure.main` isn't decided yet"
+    | _ -> ());
+    header_colon state last;
     enter_procedure state [] procedure_token.line;
-    state.current_procedure <- None;
+    state.current_procedure <- Some main_signature;
     let body = statements state 1 [] in
-    closer state None body;
+    if missing then refuse_missing_returns state closing body;
+    closer state ~main:true main_signature body;
     Main_procedure body
   end
   else
-    let name_token, signature = signature_of state in
+    let name_token, signature, missing = signature_of state in
     if List.mem signature.procedure_name state.defined then
       stop Message.Not_designed_yet name_token
         (Printf.sprintf "two procedures named `%s` aren't decided yet"
@@ -2724,7 +2853,10 @@ let procedure state =
     state.defined <- signature.procedure_name :: state.defined;
     state.current_procedure <- Some signature;
     let body = statements state 1 [] in
-    closer state (Some signature) body;
+    Option.iter
+      (fun closing -> refuse_missing_returns state closing body)
+      missing;
+    closer state ~main:false signature body;
     Named_procedure (signature.procedure_name, signature.parameters, body)
 
 let program source tokens lexer_stop =

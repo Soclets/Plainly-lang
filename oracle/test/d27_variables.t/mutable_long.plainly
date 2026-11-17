@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     mutable #lives: Whole = 3;
     change #lives = #lives + 1;
     show_text(be.Text(#lives));

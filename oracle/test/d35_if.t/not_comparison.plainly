@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #hp: Whole = 5;
     if #hp:
         show_text("yes");

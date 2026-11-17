@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text(be.Text(factorial(5)));
     countdown(3);
 end procedure.main
@@ -13,7 +13,7 @@ procedure factorial[#n: Whole] returns Whole:
     end if
 end procedure factorial
 
-procedure countdown[#from: Whole]:
+procedure countdown[#from: Whole] returns nothing:
     show_text(be.Text(#from));
     if #from > 1:
         countdown(#from - 1);

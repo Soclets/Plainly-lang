@@ -1,9 +1,9 @@
 A header missing its `:` is clear, so checking carries on into the body, and every error is shown (D58, D62).
 
   $ plainoracle broken.plainly
-  refused: broken.plainly:2:21, line 2 column 21
-   2 | procedure.main[none]
-     |                     ^
+  refused: broken.plainly:2:37, line 2 column 37
+   2 | procedure.main[none] returns nothing
+     |                                     ^
    fix:  `:`
    why:  a block's opening line ends with `:`.
   

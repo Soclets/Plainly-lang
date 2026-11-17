@@ -17,6 +17,11 @@ type keyword =
   | Same_line_word
   | If_word
   | Else_word
+  (* trace: D46 *)
+  (* trace: D100 *)
+  | Returns_word
+  | Return_word
+  | Nothing_word
 
 (* trace: D57 *)
 (* One grammar, two word tables. *)
@@ -54,6 +59,9 @@ let keyword_of_word = function
   | "same_line" -> Some (Same_line_word, English)
   | "if" -> Some (If_word, English)
   | "else" -> Some (Else_word, English)
+  | "returns" -> Some (Returns_word, English)
+  | "return" -> Some (Return_word, English)
+  | "nothing" -> Some (Nothing_word, English)
   | "กระบวนการ" -> Some (Procedure_word, Thai)
   | "หลัก" -> Some (Main_word, Thai)
   | "ไม่มี" -> Some (None_word, Thai)
@@ -70,6 +78,10 @@ let keyword_of_word = function
   | "บรรทัดเดิม" -> Some (Same_line_word, Thai)
   | "ถ้า" -> Some (If_word, Thai)
   | "ไม่งั้น" -> Some (Else_word, Thai)
+  (* Thai verbs don't change form, so `คืน` is both `returns` and `return`;
+     where it stands shows which. *)
+  | "คืน" -> Some (Return_word, Thai)
+  | "ไม่มีอะไร" -> Some (Nothing_word, Thai)
   | _ -> None
 
 (* The word a keyword is written as in each table, where one is decided. *)
@@ -91,6 +103,9 @@ let spelling keyword table =
   | Same_line_word, English -> Some "same_line"
   | If_word, English -> Some "if"
   | Else_word, English -> Some "else"
+  | Returns_word, English -> Some "returns"
+  | Return_word, English -> Some "return"
+  | Nothing_word, English -> Some "nothing"
   | Procedure_word, Thai -> Some "กระบวนการ"
   | Main_word, Thai -> Some "หลัก"
   | None_word, Thai -> Some "ไม่มี"
@@ -107,6 +122,8 @@ let spelling keyword table =
   | Same_line_word, Thai -> Some "บรรทัดเดิม"
   | If_word, Thai -> Some "ถ้า"
   | Else_word, Thai -> Some "ไม่งั้น"
+  | (Returns_word | Return_word), Thai -> Some "คืน"
+  | Nothing_word, Thai -> Some "ไม่มีอะไร"
 
 (* trace: D75 *)
 let language_of_word = function

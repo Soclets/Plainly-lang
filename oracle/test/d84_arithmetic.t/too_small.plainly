@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #a: Whole = -9223372036854775808;
     #b: Whole = 1;
     show_text(be.Text(#a - #b));

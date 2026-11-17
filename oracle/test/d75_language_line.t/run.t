@@ -12,7 +12,7 @@ A file must start with its language (D75, D77).
 
   $ plainoracle no_language.plainly
   refused: no_language.plainly:1:1, line 1 column 1
-   1 | procedure.main[none]:
+   1 | procedure.main[none] returns nothing:
      | ^
    what: the file doesn't say its language
    why:  a file starts with its language: `english` or `ไทย`.

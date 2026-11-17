@@ -389,7 +389,7 @@ and run_statements source variables statements =
           store source variables variables name limits expression
       | Check.Expression_statement expression ->
           ignore (evaluate source variables expression)
-      | Check.Return value ->
+      | Check.Return (value, _) ->
           raise
             (Returned
                (match value with

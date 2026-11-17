@@ -1,4 +1,4 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text(be.Text(7 divide 2));
 end procedure.main

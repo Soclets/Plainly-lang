@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     mut #hp: Whole[min: 0, max: 100] = 50;
     change #hp = #hp + 60;
 end procedure.main

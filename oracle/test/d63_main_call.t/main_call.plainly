@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text("again");
     procedure.main();
 end procedure.main

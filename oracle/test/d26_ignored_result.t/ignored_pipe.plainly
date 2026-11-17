@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #hp: Whole = 50;
     #hp |> heal(by: 300);
 end procedure.main

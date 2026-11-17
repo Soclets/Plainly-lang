@@ -1,0 +1,6 @@
+english
+
+procedure.main[none] returns nothing:
+    return nothing;
+    show_text("never shown");
+end procedure.main

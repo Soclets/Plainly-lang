@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     mutable #hp: Whole = 50;
     change #hp = #hp |> heal(by: 30) |> heal;
     #hp |> be.Text |> show_text;
@@ -17,7 +17,7 @@ procedure heal[#health: Whole, #amount: Whole] returns Whole:
     return #health + #amount;
 end procedure heal
 
-procedure greet[#name: Text]:
+procedure greet[#name: Text] returns nothing:
     show_text.format("Hi, {#name}!");
 end procedure greet
 

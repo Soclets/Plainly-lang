@@ -1,0 +1,6 @@
+english
+
+procedure.main[none] returns nothing:
+    show_text("hi");
+    return nothing;
+end procedure.main

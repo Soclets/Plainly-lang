@@ -1,4 +1,4 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     shadow #score: Whole = 10;
 end procedure.main

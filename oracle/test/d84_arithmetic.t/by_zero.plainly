@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #a: Whole = 7;
     #b: Whole = 0;
     show_text(be.Text(#a divide.down #b));

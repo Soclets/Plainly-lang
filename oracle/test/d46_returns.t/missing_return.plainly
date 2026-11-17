@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text(be.Text(sign(5)));
 end procedure.main
 

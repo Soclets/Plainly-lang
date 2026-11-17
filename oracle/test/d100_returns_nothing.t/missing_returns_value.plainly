@@ -1,0 +1,9 @@
+english
+
+procedure.main[none] returns nothing:
+    show_text(be.Text(double(4)));
+end procedure.main
+
+procedure double[#n: Whole]:
+    return #n x 2;
+end procedure double

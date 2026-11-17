@@ -1,0 +1,13 @@
+english
+
+procedure.main[none] returns nothing:
+    show_text(be.Text(double(4)));
+end procedure.main
+
+procedure double[#n: Whole] returns Whole:
+    if #n > 100:
+        return nothing;
+    else:
+        return #n x 2;
+    end if
+end procedure double

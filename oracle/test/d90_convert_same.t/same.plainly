@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #name: Text = "Mia";
     show_text(be.Text(#name));
 end procedure.main

@@ -1,0 +1,7 @@
+english
+
+procedure.main[none] returns nothing:
+    if 1 > 0:
+        return;
+    end if
+end procedure.main

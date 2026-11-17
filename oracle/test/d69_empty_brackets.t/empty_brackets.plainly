@@ -1,4 +1,4 @@
 english
-procedure.main[]:
+procedure.main[] returns nothing:
     show_text("Hi");
 end procedure.main

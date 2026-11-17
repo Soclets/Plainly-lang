@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #n: Whole = 1;
     show_text.format("{#n + 1}");
 end procedure.main

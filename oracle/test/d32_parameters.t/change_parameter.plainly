@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text(be.Text(heal(50, by: 30)));
 end procedure.main
 

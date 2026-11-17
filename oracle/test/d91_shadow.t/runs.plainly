@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     #score: Whole = 10;
     shadow #score: Text = "ten";
     show_text(#score);

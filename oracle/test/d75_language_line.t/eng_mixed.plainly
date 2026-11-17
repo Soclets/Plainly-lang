@@ -1,4 +1,4 @@
 eng
-procedure.main[none]:
+procedure.main[none] returns nothing:
     แสดงข้อความ("Hi");
 end procedure.main

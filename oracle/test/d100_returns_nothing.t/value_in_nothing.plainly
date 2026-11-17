@@ -1,0 +1,10 @@
+english
+
+procedure.main[none] returns nothing:
+    greet("Mia");
+end procedure.main
+
+procedure greet[#name: Text] returns nothing:
+    show_text(#name);
+    return #name;
+end procedure greet

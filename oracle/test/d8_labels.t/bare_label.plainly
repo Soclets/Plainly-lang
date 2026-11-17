@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     mutable #hp: Whole = 50;
     change #hp = heal(#hp, 300);
 end procedure.main

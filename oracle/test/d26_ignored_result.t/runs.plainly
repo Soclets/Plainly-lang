@@ -1,9 +1,9 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     greet("Mia");
 end procedure.main
 
-procedure greet[#name: Text]:
+procedure greet[#name: Text] returns nothing:
     show_text.format("Hi, {#name}!");
 end procedure greet

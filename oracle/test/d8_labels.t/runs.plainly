@@ -1,6 +1,6 @@
 english
 
-procedure.main[none]:
+procedure.main[none] returns nothing:
     mutable #hp: Whole = 50;
     change #hp = heal(#hp, by: 30, times: 2);
     show_text(be.Text(#hp));
@@ -16,7 +16,7 @@ procedure heal[#health: Whole, #amount: Whole, #count: Whole] returns Whole:
     return #health + #amount x #count;
 end procedure heal
 
-procedure move[#start: Whole, #x: Whole, #y: Whole]:
+procedure move[#start: Whole, #x: Whole, #y: Whole] returns nothing:
     labels.any_order [#x as across, #y as down];
     show_text.format("{#start}: {#x}, {#y}");
 end procedure move

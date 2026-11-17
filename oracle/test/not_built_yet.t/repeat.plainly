@@ -1,5 +1,5 @@
 english
-procedure.main[none]:
+procedure.main[none] returns nothing:
     repeat 3 times:
         show_text("yes");
     end repeat

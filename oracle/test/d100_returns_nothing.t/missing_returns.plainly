@@ -1,0 +1,5 @@
+english
+
+procedure.main[none]:
+    show_text("hi");
+end procedure.main

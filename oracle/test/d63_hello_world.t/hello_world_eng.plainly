@@ -1,4 +1,4 @@
 eng
-procedure.main[none]:
+procedure.main[none] returns nothing:
     show_text("Hello, World!");
 end procedure.main
