@@ -118,9 +118,11 @@ on whole numbers (D34); `not`, then `and`, then `or` (D92), short-circuiting, wi
 Refused, tested: a lone `=` in a condition, with `fix: ==`; `==` between two `Text`s; comparing different types; an
 `if` given a plain value; a missing `end if`; a block's body at the wrong level (D93, D94).
 
-Stops: using or declaring again a variable declared inside an `if`, after its `end if`, since block scope isn't
-decided (found by Mult's Claude, 2026-11-17: before, the checker let it through and the oracle crashed with OCaml's
-`Not_found`); chains of comparisons, ordering text with `<`, comparing true or false values, and true or false values outside
+Block scope (D102): a variable declared inside an `if` branch or `else` ends at the block's end, `shadow` included, in
+the checker and while running; using it after is refused with D81's message, tested. (Found by Mult's Claude: before,
+the checker let it through and the oracle crashed with OCaml's `Not_found`.)
+
+Stops: chains of comparisons, ordering text with `<`, comparing true or false values, and true or false values outside
 an `if` (`NotDesignedYet`); `<` or `>` without spaces (`NotBuiltYet`).
 
 D50 is built in slice 5, with `return`. The Thai words for `and`, `or`, `not`, `at_least`,
@@ -228,4 +230,4 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93
 14. ~~Whether `|>` comes after `+` and `&`~~: decided as D97, and built.
 15. Thai words for `labels`, `defaults`, `units`, `as` and `in`. (`returns` and `return` are `คืน`, and `nothing` is
     `ไม่มีอะไร`.)
-16. Block scope: whether a variable declared inside a block lasts after the block ends.
+16. ~~Block scope~~: decided as D102, and built.

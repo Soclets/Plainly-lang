@@ -74,12 +74,3 @@ An `if`'s body is indented one more level (D70).
 
   $ plainoracle thai.เพลนลี่
   ผ่าน
-
-Whether a variable declared inside an `if` lasts after `end if` isn't decided, so using it there stops.
-
-  $ plainoracle block_variable.plainly
-  NotDesignedYet: block_variable.plainly:7:15, line 7 column 15
-   7 |     show_text(#message);
-     |               ^^^^^^^^
-   what: using `#message` after the block it was declared in isn't decided yet
-  [3]

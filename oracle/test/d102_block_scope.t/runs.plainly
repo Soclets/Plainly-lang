@@ -1,0 +1,18 @@
+english
+
+procedure.main[none] returns nothing:
+    mutable #n: Whole = 1;
+    #word: Text = "outer";
+    if #n > 0:
+        #step: Whole = 4;
+        change #n = #n + #step;
+        shadow #word: Whole = 7;
+        show_text(be.Text(#word));
+    end if
+    if #n > 1:
+        #step: Text = "again";
+        show_text(#step);
+    end if
+    show_text(be.Text(#n));
+    show_text(#word);
+end procedure.main

@@ -107,6 +107,6 @@ end for rows
 
 Any loop can be named, as in `forever named game:` closed by `end forever game` (D54).
 
-A variable declared in a loop's body ends with each pass's end of the body (D102, chapter 4).
+A variable declared in a loop's body ends where the body ends, on every pass (D102, chapter 4).
 
 **Not decided:** whether a `for each` loop's variable can be changed; changing a list while looping over it.

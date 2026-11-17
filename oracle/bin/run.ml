@@ -379,8 +379,8 @@ and run_statements source variables statements =
               branches
           in
           match (chosen, otherwise) with
-          | Some (_, body), _ -> run_statements source variables body
-          | None, Some body -> run_statements source variables body
+          | Some (_, body), _ | None, Some body ->
+              run_block source variables body
           | None, None -> ())
       | Check.Show_text (expression, same_line) ->
           show (evaluate source variables expression) same_line
@@ -396,6 +396,27 @@ and run_statements source variables statements =
                | Some value -> evaluate source variables value
                | None -> Nothing_value)))
     statements
+
+(* trace: D102 *)
+(* A block's declarations end with it: each name it declares gets back the
+   value it had before, or is gone again. A `return` leaves the whole
+   procedure, so nothing needs putting back then. *)
+and run_block source variables body =
+  let declared =
+    List.filter_map
+      (function
+        | Check.Declare (name, _, _) ->
+            Some (name, Hashtbl.find_opt variables name)
+        | _ -> None)
+      body
+  in
+  run_statements source variables body;
+  List.iter
+    (fun (name, before) ->
+      match before with
+      | Some value -> Hashtbl.replace variables name value
+      | None -> Hashtbl.remove variables name)
+    declared
 
 let program source (main, named) =
   Hashtbl.reset procedures;
