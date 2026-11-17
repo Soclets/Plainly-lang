@@ -40,6 +40,7 @@ let keyword_of_word = function
   | "สิ้นสุด" -> Some (End_word, Thai)
   | "แสดงข้อความ" -> Some (Show_text_word, Thai)
   | "เปลี่ยนได้" -> Some (Mut_word, Thai)
+  | "เปลี่ยน" -> Some (Change_word, Thai)
   | _ -> None
 
 (* The word a keyword is written as in each table, where one is decided. *)
@@ -59,7 +60,8 @@ let spelling keyword table =
   | End_word, Thai -> Some "สิ้นสุด"
   | Show_text_word, Thai -> Some "แสดงข้อความ"
   | Mut_word, Thai -> Some "เปลี่ยนได้"
-  | (Change_word | Shadow_word), Thai -> None
+  | Change_word, Thai -> Some "เปลี่ยน"
+  | Shadow_word, Thai -> None
 
 (* trace: D75 *)
 let language_of_word = function
