@@ -1369,6 +1369,8 @@ The Thai commands are fully Thai, so nothing needs the English keyboard layout (
 key). The command is `เอพาย`, `apy` in Thai letters (owner: "That's why we make it fully Thai, sherlock", then
 "เอพาย").
 
-Open: the Thai words for `run`, `build`, `check` and `convert`, the mode flags, and the extension.
+`run` is `รัน`, the loanword Thai programmers say; `เรียกใช้` was offered (owner: "รัน").
+
+Open: the Thai words for `build`, `check` and `convert`, the mode flags, and the extension.
 
 Owner: has code.
