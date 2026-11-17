@@ -1279,3 +1279,17 @@ These lines, written for PlainOracle's first slice in D59's style, are the wordi
     what: a procedure's opening line has no indentation
 
 Owner, asked whether any read wrong: "no".
+
+## D74: An indentation fix shows the whole corrected line (2026-11-17)
+
+    refused: not_indented:2:1, line 2 column 1
+     2 | show_text("Hello, World!");
+       | ^
+     fix:  `    show_text("Hello, World!");`
+     why:  a body is indented 4 spaces per level, never with a tab.
+
+The `^` marks the wrong indentation, or the line's start when there's none, and `fix:` shows the whole line as it should
+be. Showing only four spaces as code, `` `    ` ``, was turned down: with no indentation, the `^` under the first
+letter read as "replace this letter".
+
+Owner: "yup".
