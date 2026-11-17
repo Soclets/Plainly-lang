@@ -1293,3 +1293,21 @@ be. Showing only four spaces as code, `` `    ` ``, was turned down: with no ind
 letter read as "replace this letter".
 
 Owner: "yup".
+
+## D75: Every file starts with its language (2026-11-17)
+
+    English
+    procedure.main[none]:
+        show_text("Hello, World!");
+    end procedure.main
+
+    ไทย
+    กระบวนการ.หลัก[ไม่มี]:
+        แสดงข้อความ("สวัสดีชาวโลก!");
+    สิ้นสุด กระบวนการ.หลัก
+
+A file's first line is its language, `English` or `ไทย`, and it's required. It decides both the file's keyword table
+(D57) and the language of its error messages. A keyword from the other table is refused, which settles D57's open
+question about mixing tables. Choosing by the person's system language, or by a flag, was offered.
+
+Owner: "You say at the top. `Thai` in Thai or `English`in English", "Rule", then "Required".
