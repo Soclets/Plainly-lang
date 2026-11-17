@@ -41,6 +41,5 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 
 - `procedure greet[...] returns Text:` as the header, with `:` at the end.
 - `end procedure greet` as the closer.
-- `procedure.main[]` with empty brackets, versus Cyborg's `[none]`.
 - `proc` as the short form of `procedure`.
 - Bodies not indented.
