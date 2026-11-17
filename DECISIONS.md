@@ -946,6 +946,8 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `change` (D27) | `เปลี่ยน` |
 | `shadow` (D91) | `บัง` ("block from view"), since shadowing hides the old variable behind the new one |
 | `be` (D6) | `เป็น` ("as"), as in `เป็น.…(#คะแนน)` |
+| `Whole` | `จำนวนเต็ม` ("whole number"), the term from Thai maths class |
+| `Text` | `ข้อความ` ("text"), the word inside `แสดงข้อความ` |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
