@@ -1380,6 +1380,8 @@ And we'll bring back `--mode=` and `--language=`".
 `check` is `ตรวจ` ("check, inspect"), what teachers write on homework; `ตรวจสอบ` was offered (owner: "ตรวจ. And why are
 you slipping the 5000th time?").
 
-Open: the Thai words for `convert`, for `--mode=` and `--language=` and the mode names, and the extension.
+`convert` is `แปลง` ("convert, transform"); `แปลภาษา` ("translate") was offered (owner: "แปลง").
+
+Open: the Thai words for `--mode=` and `--language=` and the mode names, and the extension.
 
 Owner: has code.
