@@ -1237,3 +1237,18 @@ formatter as Go's `gofmt` does. Blocks still end with `end …`, so indentation 
 One level is 4 spaces. A tab in indentation is refused.
 
 Owner: "Indented, it's just that I can't format in chat", "Refused", then "4 spaces".
+
+## D71: Exit statuses (2026-11-17)
+
+| Status | When |
+|---|---|
+| 0 | The program builds and runs to its end. |
+| 1 | Anything is refused while building. |
+| 2 | The file can't be read. |
+| 3 | `NotBuiltYet` or `NotDesignedYet`: the implementation can't handle something yet. |
+
+These hold for PlainOracle and AroundPy alike, since tests record them.
+
+Open: the status for a failure leaving `main` (D63) and for a failed check while running.
+
+Owner: "yup".
