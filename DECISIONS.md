@@ -1035,7 +1035,11 @@ and `เพราะ:` ("because") would clash with the `because:` label (owner:
 `when:` is `เมื่อ:` ("when"). `กรณี:` ("in the case") was turned down, since it's the draft Thai word for the `case`
 keyword (owner: "เมื่อ:").
 
-Open: the other Thai labels (`check failed:`, `warning:`).
+`check failed:` is `หยุดทำงาน:` ("stopped running"), which says what happened to the program and reads differently from
+`ไม่ผ่าน:` while building. `ตรวจไม่ผ่าน:` ("check didn't pass") was turned down as too close to `ไม่ผ่าน:` (owner:
+"หยุดทำงาน:").
+
+Open: the Thai label for `warning:`.
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
