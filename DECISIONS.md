@@ -959,3 +959,34 @@ Open:
 
 Owner: too long, "Whatever, but `ขั้นตอน` means step in Thai, not a entire procedure", too long, then "We support Thai,
 yeah".
+
+## D58: Error messages start from Cyborg's format, with its anti-cascade rules (2026-11-17)
+
+    refused: game.plain_code:12:1, line 12 column 1
+    12 | change #lives = #lives - 1;
+       | ^^^^^^^^^^^^^^^^^^^^^^^^^^^
+     what: `#lives` isn't mutable
+     why:  `change` needs a variable declared `mut` (D27)
+
+The starting point is Cyborg's format (Cyborg D16, from Radium):
+- The first word is the kind: `refused:`, `check failed:` (while running) or `warning:`.
+- The place is written twice: `file:line:col` for tools, then `line N column M` for people.
+- `^` marks exactly the part in question.
+- `what:` says what's wrong, `why:` gives the rule, `when:` the values that break it, and `because:` earlier steps, each
+  only when known.
+- A `fix:` line replaces `what:` when there's a fix.
+- No error codes, and no "did you mean" guesses: only what's certain. PlainOracle and AroundPy print identical text.
+- Every error is shown, with no limit.
+
+Against cascades, as in Cyborg:
+- After an error, only that statement is skipped. A broken declaration still creates its variable with its written type,
+  so later lines don't fail because it "doesn't exist" (Cyborg D215). That works because Plainly always writes types.
+- To sort knock-on errors from independent ones, the first error's single fix is applied in memory and the program
+  checked again. Whatever disappears was caused by it, and is shown with a `because:` pointing back (Cyborg D207).
+
+Open, to be changed one at a time: a plain sentence first in `why:`, with decision numbers dropped or moved aside; more
+than one `fix:` when each is real, as Fale does; Thai labels (D57) with code untranslated and the `file:line:col` place
+unchanged, and columns counted in graphemes; what happens after a broken block opener or header, which Cyborg never
+decided.
+
+Owner: "yea".
