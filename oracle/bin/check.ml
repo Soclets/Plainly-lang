@@ -525,15 +525,33 @@ let rec expression state =
 (* trace: D1 *)
 and operators state left seen =
   match current state with
-  | Some ({ kind = Symbol (('+' | '&') as operator); _ } as token) ->
-      (match seen with
+  | Some ({ kind = Symbol (('+' | '&') as operator); _ } as token) -> (
+      match seen with
       | Some earlier when earlier <> operator ->
-          stop Message.Not_designed_yet token
-            "mixing `+` and `&` without brackets isn't decided yet"
-      | _ -> ());
-      advance state;
-      let right = primary state in
-      operators state (combine state operator token left right) (Some operator)
+          (* trace: D83 *)
+          (* Maths doesn't say whether `+` or `&` goes first, so brackets have
+             to. Since the order is unknown, so is the result's type, and
+             nothing after is refused because of it. *)
+          refuse state
+            {
+              Message.kind = Message.Refused;
+              line = token.line;
+              byte = token.byte;
+              length = token.length;
+              body = Message.What "`+` and `&` are mixed without brackets";
+              why =
+                Some "maths doesn't say which goes first, so brackets show it.";
+            };
+          advance state;
+          let right = primary state in
+          let mixed = joined left right (Join (left, right)) None in
+          operators state mixed (Some operator)
+      | _ ->
+          advance state;
+          let right = primary state in
+          operators state
+            (combine state operator token left right)
+            (Some operator))
   | _ -> left
 
 and combine state operator (token : Token.t) left right =

@@ -101,14 +101,15 @@ Overflow is a check that stops the program in `Working` (D19), reported with the
    why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
   [4]
 
-Mixing `+` and `&` without brackets isn't decided, since which goes first isn't.
+Mixing `+` and `&` needs brackets, since maths doesn't say which goes first (D83). Within brackets, either is fine.
 
   $ plainoracle mixed.plainly
-  NotDesignedYet: mixed.plainly:4:25, line 4 column 25
+  refused: mixed.plainly:4:25, line 4 column 25
    4 |     show_text("x" & "y" + "z");
      |                         ^
-   what: mixing `+` and `&` without brackets isn't decided yet
-  [3]
+   what: `+` and `&` are mixed without brackets
+   why:  maths doesn't say which goes first, so brackets show it.
+  [1]
 
 The Thai word for `mut` isn't decided yet (D57).
 
