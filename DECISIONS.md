@@ -1265,3 +1265,17 @@ Plainly errors but an implementation's own limits: `NotBuiltYet` for something d
 `NotDesignedYet` for something the decisions don't cover yet. Each ends the check there, with exit status 3 (D71).
 
 Owner: "yup".
+
+## D73: The wording of the first refusals (2026-11-17)
+
+These lines, written for PlainOracle's first slice in D59's style, are the wording for their refusals:
+
+    why:  every statement ends with `;`.
+    why:  a block's opening line ends with `:`.
+    why:  a procedure that takes nothing says `[none]`.
+    why:  a body is indented 4 spaces per level, never with a tab.
+    what: a block's closer lines up with its opening line
+    why:  only a body is indented, 4 spaces per level.
+    what: a procedure's opening line has no indentation
+
+Owner, asked whether any read wrong: "no".
