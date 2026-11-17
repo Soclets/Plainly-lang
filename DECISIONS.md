@@ -1377,6 +1377,9 @@ key). The command is `เอพาย`, `apy` in Thai letters (owner: "That's wh
 Owner, on `build` and the flags: "สร้าง
 And we'll bring back `--mode=` and `--language=`".
 
-Open: the Thai words for `check` and `convert`, for `--mode=` and `--language=` and the mode names, and the extension.
+`check` is `ตรวจ` ("check, inspect"), what teachers write on homework; `ตรวจสอบ` was offered (owner: "ตรวจ. And why are
+you slipping the 5000th time?").
+
+Open: the Thai words for `convert`, for `--mode=` and `--language=` and the mode names, and the extension.
 
 Owner: has code.
