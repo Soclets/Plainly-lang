@@ -1,0 +1,7 @@
+english
+procedure.main[none]:
+    #name: Text = "Mia";
+    if #name == "Mia":
+        show_text("Mia");
+    end if
+end procedure.main

@@ -15,7 +15,7 @@ opam exec --switch=. -- dune fmt
 ```
 
 To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`, then
-`opam install --switch=./oracle dune uuseg ocamlformat`, from the repository root.
+`opam install --switch=./oracle dune uuseg uunf ocamlformat`, from the repository root.
 
 ## Slices
 
@@ -24,8 +24,9 @@ To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`,
 | 1. Hello world, English and Thai, the error format, `;`, `[none]`, indentation | Done, 2026-11-17 |
 | 2. Variables, `Whole` and `Text`, `mut`, `change`, `+`, `&`, `be.Text` | Done, 2026-11-17 |
 | 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` | Done, 2026-11-17 |
-| 4. `if`, `else if`, `else`, comparisons, `and`/`or`/`not`, D50 | Next |
-| 5 to 9 | Not started |
+| 4. `if`, `else if`, `else`, comparisons, `and`/`or`/`not`, D50 | Done, 2026-11-17, except D50 |
+| 5. Procedures with parameters, results, labels, defaults, the pipe | Next |
+| 6 to 9 | Not started |
 
 ## Slice 1
 
@@ -107,6 +108,26 @@ values, a bare `plus`, and `max:` written before `min:` (`NotDesignedYet`).
 
 Traced decisions added: D84, D85, D86, D87, D88, D89.
 
+## Slice 4
+
+Runs: `if`, `else if`, `else` and `end if`, nested, with each block's body indented one more level, which is now
+checked from the level each line's statement was found at (D35, D70); `==`, `!=`, `<`, `>`, `at_least` and `at_most`
+on whole numbers (D34); `not`, then `and`, then `or` (D92), short-circuiting, with `and.both` and `or.both` (D36, D37);
+`compare_Text.stored_same` and `compare_Text.looks_same`, normalizing with `uunf` (D94); `ถ้า` and `ไม่งั้น` in Thai.
+
+Refused, tested: a lone `=` in a condition, with `fix: ==`; `==` between two `Text`s; comparing different types; an
+`if` given a plain value; a missing `end if`; a block's body at the wrong level (D93, D94).
+
+Stops: chains of comparisons, ordering text with `<`, comparing true or false values, and true or false values outside
+an `if` (`NotDesignedYet`); `<` or `>` without spaces (`NotBuiltYet`).
+
+Not built yet: D50, since `return` and `break` aren't built. The Thai words for `and`, `or`, `not`, `at_least`,
+`at_most`, `compare_Text` and its methods aren't decided, so those stop in Thai files.
+
+Traced decisions added: D34, D35, D36, D37, D92, D93, D94.
+
+The opam switch now also has `uunf`.
+
 ## Waiting for the owner
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
@@ -128,7 +149,7 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90 and D91.
+All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93 and D94.
 
 ## Questions slice 2 raised
 

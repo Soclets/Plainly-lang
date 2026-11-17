@@ -15,6 +15,8 @@ type keyword =
   | New_line_word
   | Format_word
   | Same_line_word
+  | If_word
+  | Else_word
 
 (* trace: D57 *)
 (* One grammar, two word tables. *)
@@ -26,6 +28,8 @@ type kind =
   | Name of string
   | Text of string
   | Symbol of char
+  (* trace: D34 *)
+  | Compare of string
 
 (* [byte] is the 1-based byte column where the token starts, and [length] its
    length in bytes. *)
@@ -46,6 +50,8 @@ let keyword_of_word = function
   | "new_line" -> Some (New_line_word, English)
   | "format" -> Some (Format_word, English)
   | "same_line" -> Some (Same_line_word, English)
+  | "if" -> Some (If_word, English)
+  | "else" -> Some (Else_word, English)
   | "กระบวนการ" -> Some (Procedure_word, Thai)
   | "หลัก" -> Some (Main_word, Thai)
   | "ไม่มี" -> Some (None_word, Thai)
@@ -60,6 +66,8 @@ let keyword_of_word = function
   | "บรรทัดใหม่" -> Some (New_line_word, Thai)
   | "แทนค่า" -> Some (Format_word, Thai)
   | "บรรทัดเดิม" -> Some (Same_line_word, Thai)
+  | "ถ้า" -> Some (If_word, Thai)
+  | "ไม่งั้น" -> Some (Else_word, Thai)
   | _ -> None
 
 (* The word a keyword is written as in each table, where one is decided. *)
@@ -79,6 +87,8 @@ let spelling keyword table =
   | New_line_word, English -> Some "new_line"
   | Format_word, English -> Some "format"
   | Same_line_word, English -> Some "same_line"
+  | If_word, English -> Some "if"
+  | Else_word, English -> Some "else"
   | Procedure_word, Thai -> Some "กระบวนการ"
   | Main_word, Thai -> Some "หลัก"
   | None_word, Thai -> Some "ไม่มี"
@@ -93,6 +103,8 @@ let spelling keyword table =
   | New_line_word, Thai -> Some "บรรทัดใหม่"
   | Format_word, Thai -> Some "แทนค่า"
   | Same_line_word, Thai -> Some "บรรทัดเดิม"
+  | If_word, Thai -> Some "ถ้า"
+  | Else_word, Thai -> Some "ไม่งั้น"
 
 (* trace: D75 *)
 let language_of_word = function

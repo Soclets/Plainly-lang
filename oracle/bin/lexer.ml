@@ -40,6 +40,13 @@ let tokens (source : Source.t) =
       if index < size then
         match text.[index] with
         | ' ' | '\t' | '\r' -> go (index + 1)
+        (* trace: D34 *)
+        | ('=' | '!') when index + 1 < size && text.[index + 1] = '=' ->
+            add (Compare (String.sub text index 2)) index 2;
+            go (index + 2)
+        | ('<' | '>') as symbol ->
+            add (Compare (String.make 1 symbol)) index 1;
+            go (index + 1)
         | ('.' | '[' | ']' | '(' | ')' | ':' | ';' | '=' | '+' | '&' | '-' | ',')
           as symbol ->
             add (Symbol symbol) index 1;

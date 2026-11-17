@@ -1,0 +1,7 @@
+english
+procedure.main[none]:
+    #hp: Whole = 5;
+    if #hp == "full":
+        show_text("full");
+    end if
+end procedure.main

@@ -1,7 +1,10 @@
 (* Running a checked program, one statement after another. PlainOracle's
    answers are `Working`'s answers: every check is made (D19, D66). *)
 
-type value = Whole_value of Int64.t | Text_value of string
+type value =
+  | Whole_value of Int64.t
+  | Text_value of string
+  | Bool_value of bool
 
 let text_of (source : Source.t) (part : Check.expression) =
   String.sub (Source.line source part.line) (part.byte - 1) part.length
@@ -11,13 +14,18 @@ let text_of (source : Source.t) (part : Check.expression) =
 let rec variables_in (expression : Check.expression) =
   match expression.shape with
   | Check.Variable name -> [ name ]
-  | Check.Arithmetic (_, left, right, _) | Check.Join (left, right) ->
+  | Check.Arithmetic (_, left, right, _)
+  | Check.Join (left, right)
+  | Check.Compare_values (_, left, right)
+  | Check.Logic (_, _, left, right)
+  | Check.Compare_text (_, left, right) ->
       let left_names = variables_in left in
       left_names
       @ List.filter
           (fun name -> not (List.mem name left_names))
           (variables_in right)
-  | Check.Negate (inner, _) | Check.Be_text inner -> variables_in inner
+  | Check.Negate (inner, _) | Check.Be_text inner | Check.Not inner ->
+      variables_in inner
   | Check.Format pieces ->
       List.concat_map
         (function
@@ -114,8 +122,8 @@ let rec evaluate source variables (expression : Check.expression) =
             (describe variables (variables_in inner))
             whole_range
       | Whole_value number -> Whole_value (Int64.neg number)
-      | Text_value _ ->
-          invalid_arg "Run.evaluate: `-` on text passed the checker")
+      | Text_value _ | Bool_value _ ->
+          invalid_arg "Run.evaluate: `-` on a non-number passed the checker")
   | Check.Arithmetic (Check.Saturate operation, left, right, _) ->
       saturate source variables Check.no_limits operation left right
   | Check.Arithmetic (operation, left, right, place) -> (
@@ -167,7 +175,67 @@ let rec evaluate source variables (expression : Check.expression) =
   | Check.Be_text inner -> (
       match evaluate source variables inner with
       | Whole_value number -> Text_value (Int64.to_string number)
-      | Text_value words -> Text_value words)
+      | Text_value words -> Text_value words
+      | Bool_value _ ->
+          invalid_arg "Run.evaluate: be.Text of a condition passed the checker")
+  (* trace: D34 *)
+  | Check.Compare_values (operator, left, right) -> (
+      match
+        (evaluate source variables left, evaluate source variables right)
+      with
+      | Whole_value first, Whole_value second ->
+          Bool_value
+            (match operator with
+            | "==" -> first = second
+            | "!=" -> first <> second
+            | "<" -> first < second
+            | ">" -> first > second
+            | "at_least" -> first >= second
+            | _ -> first <= second)
+      | _ ->
+          invalid_arg
+            "Run.evaluate: a comparison of non-numbers passed the checker")
+  (* trace: D37 *)
+  (* `and` and `or` stop early; `.both` evaluates both sides every time. *)
+  | Check.Logic (word, both, left, right) -> (
+      let truth part =
+        match evaluate source variables part with
+        | Bool_value value -> value
+        | _ ->
+            invalid_arg
+              "Run.evaluate: logic on a non-condition passed the checker"
+      in
+      let first = truth left in
+      match (word, both) with
+      | "and", false -> Bool_value (first && truth right)
+      | "or", false -> Bool_value (first || truth right)
+      | "and", true ->
+          let second = truth right in
+          Bool_value (first && second)
+      | _ ->
+          let second = truth right in
+          Bool_value (first || second))
+  | Check.Not inner -> (
+      match evaluate source variables inner with
+      | Bool_value value -> Bool_value (not value)
+      | _ ->
+          invalid_arg
+            "Run.evaluate: `not` on a non-condition passed the checker")
+  (* trace: D94 *)
+  | Check.Compare_text (looks_same, left, right) -> (
+      match
+        (evaluate source variables left, evaluate source variables right)
+      with
+      | Text_value first, Text_value second ->
+          if looks_same then
+            Bool_value
+              (String.equal
+                 (Uunf_string.normalize_utf_8 `NFC first)
+                 (Uunf_string.normalize_utf_8 `NFC second))
+          else Bool_value (String.equal first second)
+      | _ ->
+          invalid_arg
+            "Run.evaluate: compare_Text of non-text passed the checker")
   (* trace: D2 *)
   | Check.Format pieces ->
       Text_value
@@ -178,7 +246,11 @@ let rec evaluate source variables (expression : Check.expression) =
                 | Check.Fill inner -> (
                     match evaluate source variables inner with
                     | Whole_value number -> Int64.to_string number
-                    | Text_value words -> words))
+                    | Text_value words -> words
+                    | Bool_value _ ->
+                        invalid_arg
+                          "Run.evaluate: a condition in braces passed the \
+                           checker"))
               pieces))
 
 (* trace: D87 *)
@@ -240,23 +312,41 @@ let store source variables name limits (expression : Check.expression) =
           failed
             (Printf.sprintf "`%s` is below `%s`'s minimum of %Ld" text name low)
       | _ -> ())
-  | Text_value _ -> ());
+  | Text_value _ | Bool_value _ -> ());
   Hashtbl.replace variables name value
 
-let program source statements =
-  let variables = Hashtbl.create 16 in
+(* trace: D35 *)
+let rec run_statements source variables statements =
   List.iter
     (function
+      | Check.If (branches, otherwise) -> (
+          let chosen =
+            List.find_opt
+              (fun (value, _) ->
+                match evaluate source variables value with
+                | Bool_value truth -> truth
+                | _ ->
+                    invalid_arg
+                      "Run: an `if` without a condition passed the checker")
+              branches
+          in
+          match (chosen, otherwise) with
+          | Some (_, body), _ -> run_statements source variables body
+          | None, Some body -> run_statements source variables body
+          | None, None -> ())
       | Check.Show_text (expression, same_line) -> (
           match evaluate source variables expression with
           | Text_value words ->
               print_string words;
               (* trace: D12 *)
               if not same_line then print_char '\n'
-          | Whole_value _ ->
+          | _ ->
               invalid_arg
-                "Run.program: show_text of a number passed the checker")
+                "Run.program: show_text of a non-text passed the checker")
       | Check.Declare (name, expression, limits)
       | Check.Change (name, expression, limits) ->
           store source variables name limits expression)
     statements
+
+let program source statements =
+  run_statements source (Hashtbl.create 16) statements

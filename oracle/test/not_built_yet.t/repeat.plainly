@@ -1,0 +1,6 @@
+english
+procedure.main[none]:
+    repeat 3 times:
+        show_text("yes");
+    end repeat
+end procedure.main

@@ -4,9 +4,12 @@
 
 open Token
 
-type value_type = Whole_type | Text_type
+type value_type = Whole_type | Text_type | Bool_type
 
-let type_name = function Whole_type -> "Whole" | Text_type -> "Text"
+let type_name = function
+  | Whole_type -> "Whole"
+  | Text_type -> "Text"
+  | Bool_type -> "true or false"
 
 (* An expression, with the place it covers and its type. Its type is [None]
    when the expression was refused, so nothing after it is refused because of
@@ -29,6 +32,14 @@ and shape =
   | Arithmetic of operation * expression * expression * Token.t
   | Negate of expression * Token.t
   | Join of expression * expression
+  (* trace: D34 *)
+  | Compare_values of string * expression * expression
+  (* trace: D36 *)
+  (* trace: D37 *)
+  | Logic of string * bool * expression * expression
+  | Not of expression
+  (* trace: D94 *)
+  | Compare_text of bool * expression * expression
   | Be_text of expression
   | Format of piece list
 
@@ -54,6 +65,7 @@ type limits = { minimum : Int64.t option; maximum : Int64.t option }
 let no_limits = { minimum = None; maximum = None }
 
 type statement =
+  | If of (expression * statement list) list * statement list option
   | Show_text of expression * bool
   | Declare of string * expression * limits
   | Change of string * expression * limits
@@ -72,6 +84,11 @@ type state = {
   (* Refusals of `+` on text, held until it's known whether that `+` sits next
      to `&`, which is refused instead (D83). *)
   mutable pending : (Token.t * Message.t) list;
+  (* Comparisons and true or false values are only read inside an `if`'s
+     condition, since storing them isn't decided. *)
+  mutable in_condition : bool;
+  (* The indentation level each line's statement should have (D70). *)
+  mutable depths : (int * int) list;
 }
 
 let stop kind (token : Token.t) words =
@@ -198,6 +215,10 @@ let refuse_missing state (after : Token.t) code why =
       why = Some why;
     }
 
+let record_depth_line state line depth =
+  if not (List.mem_assoc line state.depths) then
+    state.depths <- (line, depth) :: state.depths
+
 (* trace: D75 *)
 (* A file's first line is its language, alone on the line. *)
 let language_line state =
@@ -218,6 +239,7 @@ let language_line state =
       | Some table -> (
           state.declared <- Some table;
           state.declared_word <- word;
+          record_depth_line state token.line 0;
           (* trace: D79 *)
           (* trace: D80 *)
           (* The extension must match the language line. When it doesn't, the
@@ -802,6 +824,9 @@ and joins state left =
       else
         let check_side side =
           match side.value_type with
+          | Some Bool_type ->
+              stop Message.Not_designed_yet operator.place
+                "true or false values joined with `&` aren't decided yet"
           | Some Whole_type ->
               refuse_at state side
                 (Message.Fix
@@ -842,6 +867,11 @@ and calculate state operator left right =
       top_operator = Some (operator.text, operator.place);
     }
   in
+  (match (left.value_type, right.value_type) with
+  | Some Bool_type, _ | _, Some Bool_type ->
+      stop Message.Not_designed_yet operator.place
+        "true or false values in calculations aren't decided yet"
+  | _ -> ());
   match (operator.doing, left.value_type, right.value_type) with
   | Calculate operation, Some Whole_type, Some Whole_type ->
       whole (Arithmetic (operation, left, right, operator.place))
@@ -964,6 +994,165 @@ and whole_number state (first : Token.t) (last : Token.t) text =
           };
         spanning first last (Whole_literal 0L) (Some Whole_type)
 
+(* trace: D36 *)
+(* trace: D92 *)
+(* A condition: `not` first, then `and`, then `or`, with comparisons tighter
+   than all three. *)
+and condition state = or_level state
+
+and logic_word state word =
+  match current state with
+  | Some ({ kind = Word found; _ } as token) when found = word ->
+      english_only state token;
+      let both =
+        match
+          ( token_at state (state.position + 1),
+            token_at state (state.position + 2) )
+        with
+        | ( Some { kind = Symbol '.'; _ },
+            Some ({ kind = Word "both"; _ } as narrowing) ) ->
+            english_only state narrowing;
+            true
+        | _ -> false
+      in
+      state.position <- (state.position + if both then 3 else 1);
+      Some both
+  | _ -> None
+
+and or_level state =
+  let rec more left =
+    match logic_word state "or" with
+    | Some both ->
+        let right = and_level state in
+        require_condition state left;
+        require_condition state right;
+        more
+          (joined left right (Logic ("or", both, left, right)) (Some Bool_type))
+    | None -> left
+  in
+  more (and_level state)
+
+and and_level state =
+  let rec more left =
+    match logic_word state "and" with
+    | Some both ->
+        let right = not_level state in
+        require_condition state left;
+        require_condition state right;
+        more
+          (joined left right
+             (Logic ("and", both, left, right))
+             (Some Bool_type))
+    | None -> left
+  in
+  more (not_level state)
+
+and not_level state =
+  match current state with
+  | Some ({ kind = Word "not"; _ } as token) ->
+      english_only state token;
+      advance state;
+      let inner = not_level state in
+      require_condition state inner;
+      {
+        (spanning token token (Not inner) (Some Bool_type)) with
+        length = inner.byte + inner.length - token.byte;
+      }
+  | _ -> comparison state
+
+(* trace: D34 *)
+(* trace: D93 *)
+(* trace: D94 *)
+and comparison state =
+  let left = expression state in
+  let operator =
+    match current state with
+    | Some ({ kind = Compare text; _ } as token) ->
+        if (text = "<" || text = ">") && not (spaced state token) then
+          stop Message.Not_built_yet token
+            (Printf.sprintf
+               "`%s` without a space on each side isn't in PlainOracle yet" text);
+        Some (text, token)
+    | Some ({ kind = Word (("at_least" | "at_most") as word); _ } as token) ->
+        english_only state token;
+        Some (word, token)
+    | Some ({ kind = Symbol '='; _ } as token) ->
+        refuse state
+          {
+            Message.kind = Message.Refused;
+            line = token.line;
+            byte = token.byte;
+            length = token.length;
+            body = Message.Fix "==";
+            why = Some "`=` gives a variable its value, and `==` compares.";
+          };
+        Some ("==", token)
+    | _ -> None
+  in
+  match operator with
+  | None -> left
+  | Some (text, token) -> (
+      advance state;
+      let right = expression state in
+      (match current state with
+      | Some
+          ({ kind = Compare _ | Word ("at_least" | "at_most"); _ } as next_token)
+        ->
+          stop Message.Not_designed_yet next_token
+            "a chain of comparisons isn't decided yet"
+      | _ -> ());
+      let compared =
+        joined left right (Compare_values (text, left, right)) (Some Bool_type)
+      in
+      match (left.value_type, right.value_type) with
+      | Some Whole_type, Some Whole_type -> compared
+      | Some Text_type, Some Text_type ->
+          if text = "==" || text = "!=" then
+            refuse state
+              {
+                Message.kind = Message.Refused;
+                line = token.line;
+                byte = token.byte;
+                length = token.length;
+                body =
+                  Message.What
+                    (Printf.sprintf "`%s` doesn't compare `Text`" text);
+                why =
+                  Some
+                    "text is compared with `compare_Text.stored_same` or \
+                     `compare_Text.looks_same`.";
+              }
+          else
+            stop Message.Not_designed_yet token
+              (Printf.sprintf "`%s` between two `Text`s isn't decided yet" text);
+          compared
+      | Some Bool_type, _ | _, Some Bool_type ->
+          stop Message.Not_designed_yet token
+            "comparing true or false values isn't decided yet"
+      | Some found_left, Some found_right ->
+          refuse_at state compared
+            (Message.What
+               (Printf.sprintf
+                  "`%s` is `%s` and `%s` is `%s`, so they can't be compared"
+                  (text_of_expression state left)
+                  (type_name found_left)
+                  (text_of_expression state right)
+                  (type_name found_right)))
+            "only values of the same type can be compared.";
+          compared
+      | _ -> { compared with value_type = None })
+
+(* trace: D93 *)
+and require_condition state (value : expression) =
+  match value.value_type with
+  | Some (Whole_type | Text_type) ->
+      refuse_at state value
+        (Message.What
+           (Printf.sprintf "`%s` isn't a comparison"
+              (text_of_expression state value)))
+        "an `if` needs something true or false, like `#score > 0`."
+  | _ -> ()
+
 and primary state =
   let token = next state in
   match token.kind with
@@ -1028,9 +1217,42 @@ and primary state =
   | Symbol '(' ->
       (* trace: D51 *)
       advance state;
-      let inner = expression state in
+      let inner =
+        if state.in_condition then condition state else expression state
+      in
       let closing = expect_symbol state ')' in
       spanning token closing inner.shape inner.value_type
+  | Word "compare_Text" -> (
+      (* trace: D94 *)
+      english_only state token;
+      if not state.in_condition then
+        stop Message.Not_designed_yet token
+          "true or false values outside an `if` aren't decided yet";
+      advance state;
+      ignore (expect_symbol state '.');
+      let method_token = next state in
+      match method_token.kind with
+      | Word (("stored_same" | "looks_same") as method_word) ->
+          english_only state method_token;
+          advance state;
+          ignore (expect_symbol state '(');
+          let first = expression state in
+          ignore (expect_symbol state ',');
+          let second = expression state in
+          let closing = expect_symbol state ')' in
+          List.iter
+            (fun (argument : expression) ->
+              match argument.value_type with
+              | Some Text_type | None -> ()
+              | Some _ ->
+                  stop Message.Not_built_yet method_token
+                    "`compare_Text` of something that isn't `Text` isn't in \
+                     PlainOracle yet")
+            [ first; second ];
+          spanning token closing
+            (Compare_text (method_word = "looks_same", first, second))
+            (Some Bool_type)
+      | _ -> not_built state method_token)
   | _ -> not_built state token
 
 (* trace: D88 *)
@@ -1302,38 +1524,142 @@ let show_text state =
   finish state;
   Show_text (value, List.mem "same_line" words)
 
-let rec body state found =
+let record_depth state (token : Token.t) depth =
+  if not (List.mem_assoc token.line state.depths) then
+    state.depths <- (token.line, depth) :: state.depths
+
+(* trace: D35 *)
+(* trace: D62 *)
+(* A block's opening line ends with `:`; a missing one is clear, so checking
+   carries on. *)
+let colon state =
+  let last = previous state in
+  match current state with
+  | Some { kind = Symbol ':'; _ } -> advance state
+  | Some token when token.line = last.line -> not_built state token
+  | _ -> refuse_missing state last ":" "a block's opening line ends with `:`."
+
+let condition_of state =
+  state.in_condition <- true;
+  let value = condition state in
+  state.in_condition <- false;
+  require_condition state value;
+  value
+
+(* Statements until an `end` or `else`, each recorded at its indentation level
+   (D70). *)
+let rec statements state depth found =
   let token = next state in
   match token.kind with
-  | Keyword (End_word, _) -> List.rev found
-  | Keyword (Show_text_word, _) -> body state (show_text state :: found)
-  | Keyword (Mut_word, table) ->
-      check_table state token table;
-      advance state;
-      body state
-        (declaration state ~shadow:false ~mutable_variable:true :: found)
-  | Keyword (Shadow_word, table) ->
-      check_table state token table;
-      advance state;
-      let mutable_variable =
-        match current state with
-        | Some ({ kind = Keyword (Mut_word, mut_table); _ } as mut_token) ->
-            check_table state mut_token mut_table;
+  | Keyword ((End_word | Else_word), _) -> List.rev found
+  | _ ->
+      record_depth state token depth;
+      let statement =
+        match token.kind with
+        | Keyword (Show_text_word, _) -> show_text state
+        | Keyword (Mut_word, table) ->
+            check_table state token table;
             advance state;
-            true
-        | _ -> false
+            declaration state ~shadow:false ~mutable_variable:true
+        | Keyword (Shadow_word, table) ->
+            check_table state token table;
+            advance state;
+            let mutable_variable =
+              match current state with
+              | Some ({ kind = Keyword (Mut_word, mut_table); _ } as mut_token)
+                ->
+                  check_table state mut_token mut_table;
+                  advance state;
+                  true
+              | _ -> false
+            in
+            declaration state ~shadow:true ~mutable_variable
+        | Keyword (Change_word, table) ->
+            check_table state token table;
+            change state
+        | Keyword (If_word, table) ->
+            check_table state token table;
+            advance state;
+            if_statement state token depth
+        | Name _ -> declaration state ~shadow:false ~mutable_variable:false
+        | _ -> not_built state token
       in
-      body state (declaration state ~shadow:true ~mutable_variable :: found)
-  | Keyword (Change_word, table) ->
-      check_table state token table;
-      body state (change state :: found)
-  | Name _ ->
-      body state
-        (declaration state ~shadow:false ~mutable_variable:false :: found)
-  | _ -> not_built state token
+      statements state depth (statement :: found)
+
+(* trace: D35 *)
+and if_statement state (if_token : Token.t) depth =
+  let branch () =
+    let value = condition_of state in
+    colon state;
+    let body = statements state (depth + 1) [] in
+    (value, body)
+  in
+  let rec more branches =
+    let token = next state in
+    match token.kind with
+    | Keyword (Else_word, table) -> (
+        check_table state token table;
+        record_depth state token depth;
+        advance state;
+        match current state with
+        | Some ({ kind = Keyword (If_word, if_table); _ } as else_if) ->
+            check_table state else_if if_table;
+            advance state;
+            more (branch () :: branches)
+        | _ ->
+            colon state;
+            let otherwise = statements state (depth + 1) [] in
+            close (List.rev branches) (Some otherwise))
+    | _ -> close (List.rev branches) None
+  and close branches otherwise =
+    let end_token = next state in
+    (match end_token.kind with
+    | Keyword (End_word, _) -> ()
+    | _ -> not_built state end_token);
+    match token_at state (state.position + 1) with
+    | Some ({ kind = Keyword (If_word, table); _ } as if_word) ->
+        check_table state end_token table;
+        check_table state if_word table;
+        record_depth state end_token depth;
+        advance state;
+        advance state;
+        If (branches, otherwise)
+    | Some { kind = Keyword (Procedure_word, _); _ } ->
+        (* trace: D93 *)
+        (* A missing `end if`, found where the procedure closes. The procedure's
+           closer is left for the procedure. *)
+        let last =
+          match token_at state (state.position + 3) with
+          | Some found -> found
+          | None -> end_token
+        in
+        refuse state
+          {
+            Message.kind = Message.Refused;
+            line = end_token.line;
+            byte = end_token.byte;
+            length = last.byte + last.length - end_token.byte;
+            body =
+              Message.What
+                (Printf.sprintf
+                   "`%s` closes the procedure while the `if` on line %d is \
+                    still open"
+                   (String.sub
+                      (Source.line state.source end_token.line)
+                      (end_token.byte - 1)
+                      (last.byte + last.length - end_token.byte))
+                   if_token.line);
+            why = Some "each block closes with its own `end`, inside out.";
+          };
+        If (branches, otherwise)
+    | Some token -> not_built state token
+    | None -> end_of_file state
+  in
+  more [ branch () ]
 
 let closer state =
-  ignore (expect_keyword state End_word);
+  let end_token = expect_keyword state End_word in
+  record_depth state end_token 0;
   ignore (expect_keyword state Procedure_word);
   ignore (expect_symbol state '.');
   ignore (expect_keyword state Main_word);
@@ -1353,23 +1679,32 @@ let program source tokens lexer_stop =
       limits = [];
       declared_on = [];
       pending = [];
+      in_condition = false;
+      depths = [];
     }
   in
-  match
-    language_line state;
-    header state;
-    let statements = body state [] in
-    closer state;
-    statements
-  with
-  | statements -> (statements, List.rev state.refusals, None, state.declared)
-  | exception Message.Stop message ->
-      ([], List.rev state.refusals, Some message, state.declared)
+  let result =
+    match
+      language_line state;
+      (match current state with
+      | Some token -> record_depth state token 0
+      | None -> ());
+      header state;
+      let found = statements state 1 [] in
+      closer state;
+      found
+    with
+    | found -> (found, List.rev state.refusals, None, state.declared)
+    | exception Message.Stop message ->
+        ([], List.rev state.refusals, Some message, state.declared)
+  in
+  (result, state.depths)
 
 (* trace: D70 *)
-(* Every line is indented 4 spaces per level: a procedure's header and closer
-   at no indentation, and its body one level in. *)
-let indentation (source : Source.t) tokens =
+(* Every line is indented 4 spaces per level, at the level its statement was
+   found at: a procedure's header and closer at none, its body one level in,
+   and a block's body one level further. *)
+let indentation (source : Source.t) tokens depths =
   let firsts = Hashtbl.create 16 in
   List.iter
     (fun (token : Token.t) ->
@@ -1378,40 +1713,43 @@ let indentation (source : Source.t) tokens =
     tokens;
   Hashtbl.fold
     (fun line (first : Token.t) messages ->
-      let depth =
-        match first.kind with
-        | Keyword ((Procedure_word | End_word), _) -> 0
-        | Word word when line = 1 && Option.is_some (language_of_word word) -> 0
-        | _ -> 1
-      in
-      let text = Source.line source line in
-      let indent = String.sub text 0 (first.byte - 1) in
-      let rest =
-        String.sub text (first.byte - 1) (String.length text - first.byte + 1)
-      in
-      let wanted = String.make (4 * depth) ' ' in
-      if indent = wanted then messages
-      else
-        let body, why =
-          if depth > 0 then
+      match List.assoc_opt line depths with
+      | None -> messages
+      | Some depth -> (
+          let text = Source.line source line in
+          let indent = String.sub text 0 (first.byte - 1) in
+          let rest =
+            String.sub text (first.byte - 1)
+              (String.length text - first.byte + 1)
+          in
+          let wanted = String.make (4 * depth) ' ' in
+          let message body why =
+            {
+              Message.kind = Message.Refused;
+              line;
+              byte = 1;
+              length = String.length indent;
+              body;
+              why = Some why;
+            }
+            :: messages
+          in
+          if indent = wanted then messages
+          else if depth > 0 then
             (* trace: D74 *)
-            ( Message.Fix (wanted ^ rest),
-              "a body is indented 4 spaces per level, never with a tab." )
+            message
+              (Message.Fix (wanted ^ rest))
+              "a body is indented 4 spaces per level, never with a tab."
           else
-            ( Message.What
-                (match first.kind with
-                | Keyword (End_word, _) ->
-                    "a block's closer lines up with its opening line"
-                | _ -> "a procedure's opening line has no indentation"),
-              "only a body is indented, 4 spaces per level." )
-        in
-        {
-          Message.kind = Message.Refused;
-          line;
-          byte = 1;
-          length = String.length indent;
-          body;
-          why = Some why;
-        }
-        :: messages)
+            match first.kind with
+            | Keyword (End_word, _) ->
+                message
+                  (Message.What
+                     "a block's closer lines up with its opening line")
+                  "only a body is indented, 4 spaces per level."
+            | Keyword (Procedure_word, _) ->
+                message
+                  (Message.What "a procedure's opening line has no indentation")
+                  "only a body is indented, 4 spaces per level."
+            | _ -> messages))
     firsts []

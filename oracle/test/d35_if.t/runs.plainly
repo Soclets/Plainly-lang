@@ -1,0 +1,32 @@
+english
+procedure.main[none]:
+    #hp: Whole = 5;
+    #name: Text = "Mia";
+    if #hp at_least 1:
+        show_text("alive");
+    else:
+        show_text("gone");
+    end if
+    if #hp > 10:
+        show_text("strong");
+    else if #hp == 5:
+        show_text("five");
+    else:
+        show_text("weak");
+    end if
+    if #hp == 5 or #hp > 100 and #hp < 0:
+        show_text("and first");
+    end if
+    if not #hp > 10 and.both #hp at_most 5:
+        show_text("not strong");
+    end if
+    if compare_Text.stored_same(#name, "Mia"):
+        show_text("same");
+    end if
+    if compare_Text.looks_same("é", "é"):
+        show_text("looks same");
+    end if
+    if not compare_Text.stored_same("é", "é"):
+        show_text("stored differently");
+    end if
+end procedure.main

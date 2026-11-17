@@ -10,10 +10,10 @@ let run file =
       2
   | source -> (
       let tokens, lexer_stop = Lexer.tokens source in
-      let statements, refusals, stop, declared =
+      let (statements, refusals, stop, declared), depths =
         Check.program source tokens lexer_stop
       in
-      let refusals = refusals @ Check.indentation source tokens in
+      let refusals = refusals @ Check.indentation source tokens depths in
       let refusals =
         match stop with
         | Some limit ->

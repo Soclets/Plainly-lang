@@ -1,6 +1,7 @@
 english
 procedure.main[none]:
-    if 1 at_least 1:
-        show_text("yes");
+    #hp: Whole = 5;
+    if #hp > 1:
+    show_text("x");
     end if
 end procedure.main
