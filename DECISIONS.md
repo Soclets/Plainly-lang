@@ -1730,3 +1730,65 @@ Open: Thai names.
 Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
 codepoints, graphemes", "I think it should be a function instead", "How about `compare_Text.`, and no labels?", "What does
 `exact` do?", then "`stored_same`?".
+
+## D95: The wording of slice 5's messages (2026-11-17)
+
+For calls and labels (D8 to D10):
+
+    fix:  `by: 300`
+    why:  `heal` labels this argument, so every call writes the label.
+
+    what: `heal` has no label `with:`
+    why:  a call writes only the labels its procedure declares.
+
+    what: `heal` needs `by:`
+    why:  only a label with a default can be left off.
+
+    fix:  `heal(#hp, by: 300, times: 2)`
+    why:  labels are written in the order the procedure declares them, unless it says `labels.any_order`.
+
+    fix:  `labels`
+    why:  keeping the order is already what `labels` does.
+
+    what: `heal` takes 2 values, but this call gives 3
+    why:  a call gives each of a procedure's parameters once.
+
+for a missing label, a label that wasn't declared, a missing label with no default, labels out of order,
+`labels.in_order`, and too many arguments.
+
+For results and parameters (D26, D32, D46, D63):
+
+    what: `heal(#hp, by: 300)` gives a `Whole`, and it isn't used
+    why:  a result that's thrown away is usually a bug, so it's refused.
+
+    what: `#health` is a parameter, so it can't be changed
+    why:  a procedure only reads its parameters, and gives a new value back instead.
+
+    what: `"x"` is `Text`, but `heal` returns a `Whole`
+    why:  a procedure returns the type its header says.
+
+    what: `heal` can reach its end without returning a `Whole`
+    why:  every way through a procedure that returns something ends in `return`.
+
+    what: `procedure.main` can't be called
+    why:  `procedure.main` runs once, when the program starts.
+
+`procedure.main`'s `why:` first said "only the runtime calls `procedure.main`"; the owner asked for another word than
+"runtime", and the sentence now says when it runs instead.
+
+For units (D45, D47), a missing unit and a wrong one alike:
+
+    fix:  `300 pixels`
+    why:  `across:` is in pixels, so a number written here says so.
+
+For code after an `if` that always leaves (D50):
+
+    what: this line comes after an `if` that always leaves
+    why:  after an `if` that always leaves, the rest goes in its `else:`.
+
+D50 said this refusal has a fix moving the code into `else:`, but moving a block of lines can't be shown as one piece of
+code, so it has `what:` instead.
+
+A wrong-typed argument reuses D81's wording, as in "`"ten"` is `Text`, but `#health` is a `Whole`".
+
+Owner: "yea, draft it", has code, "yea", then "yea".
