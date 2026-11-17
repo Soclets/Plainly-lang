@@ -1695,6 +1695,12 @@ Owner, asked whether any read wrong: "no, and refuse `==` with Text and Text."
 
 `==` between two `Text` values is refused. How two texts are compared instead isn't decided.
 
-Open: how texts are compared; whether `!=` follows `==`; the refusal's wording.
+Text can be equal in more than one sense. Bytes and code points always agree for equality, but the same visible text can
+be stored in different ways (`é` as one code point or as `e` and an accent; a Thai tone mark and vowel mark typed in
+either order), so the method has to be named: exact bytes, or the same after Unicode normalization (NFC). Text is
+compared with a procedure that names its method, not an operator.
 
-Owner: "no, and refuse `==` with Text and Text."
+Open: the procedure's name and its narrowings for the two methods; whether `!=` follows `==`; the refusal's wording.
+
+Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
+codepoints, graphemes", then "I think it should be a function instead".
