@@ -961,6 +961,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `plus`, `minus`, `times` (D87) | `บวก`, `ลบ`, `คูณ`, the words Thai kids say for + − × |
 | `.saturate` (D87) | `.ไม่เกิน` ("not past it"), which says what happens, and fits the floor as well as the ceiling |
 | `minimum`, `min`, `maximum`, `max` (D88) | `ต่ำสุด` ("lowest") and `สูงสุด` ("highest"), with no short forms |
+| `returns`, `return` (D46, D100) | `คืน` ("give back"), one word for both, since Thai verbs don't change form, and a header or a line's start shows which; `คืนค่า` ("give back a value") was turned down, since before "nothing" it contradicts itself |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
