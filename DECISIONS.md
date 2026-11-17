@@ -1487,7 +1487,9 @@ Owner, on the wording: "What kind of brackets", then "yea".
 
 Division's rounding: D85. Negatives: D86.
 
-Open: overflow on `-` and `x`.
+Overflow on `-` and `x` works exactly like on `+`: a failed check that depends on the build mode (D19), stopping with
+D82's message and exit status 4 in `Working` and `FinalSafe`, and unchecked in `FinalPerf`. So every arithmetic
+operator shares one rule. Cyborg left this undecided for its own `-` and `x` (owner: "yea").
 
 Owner: "`x`. Short as alts, `divide` is probably the better main".
 
