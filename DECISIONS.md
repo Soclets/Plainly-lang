@@ -1382,6 +1382,10 @@ you slipping the 5000th time?").
 
 `convert` is `แปลง` ("convert, transform"); `แปลภาษา` ("translate") was offered (owner: "แปลง").
 
-Open: the Thai words for `--mode=` and `--language=` and the mode names, and the extension.
+`--mode=` is `--โหมด=`, the loanword Thai uses for game and phone modes; `--แบบ=` was offered. In English, `--lang=`
+is the short form of `--language=`, and `eng` works as its value, as in `--lang=eng` (owner: "โหมด. `lang` and `eng`
+there as alts").
+
+Open: the Thai words for `--language=` and the mode names, and the extension.
 
 Owner: has code.
