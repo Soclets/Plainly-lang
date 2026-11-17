@@ -1847,3 +1847,29 @@ The line after `return` can never run, so it's a leftover or a bug, as with code
 isn't decided.
 
 Owner: "refuse. Also, what's `return;`?"
+
+## D99: A `return` with no value is `return early` (2026-11-17)
+
+    procedure greet[#name: Text]:
+        if compare_Text.stored_same(#name, .empty):
+            return early;
+        else:
+            show_text.format("Hi, {#name}!");
+        end if
+    end procedure greet
+
+A bare `return;` leaves a gap after the word, which D68 fills with a word. "Early" is always true of a `return` with no
+value: one at the very end of a procedure does nothing, so the only useful one leaves early, and the word says why the
+line is there. A `return` with a value is written as before, `return #health + #amount;`, since the value fills the
+place.
+
+- A bare `return;` is refused, with `return early` as the fix.
+- `return early` as a procedure's last line is refused, since there's nothing to be early for.
+
+The wording of both refusals isn't decided. `return none;`, reusing `[none]`'s word, was turned down: it reads like
+giving back a value called `none`.
+
+Open: the Thai words.
+
+Owner: "Shouldn't it be `return early`?", then "yea. Now, a question, should we make them write `returns early` in
+header?"
