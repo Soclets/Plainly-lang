@@ -17,7 +17,7 @@ standard says what the rules are now.
 
 1. [Files](01-files.md): the language line, extensions, procedures in a file, lines, `;` and indentation
 2. [Words](02-words.md): keywords in both tables, names, text, numbers and symbols
-3. Types and values: `Whole` and its limits, the number family, `Float`, `Text`, lists and arrays
+3. [Types and values](03-types.md): `Whole` and its limits, the number family, `Float`, `Text`, lists and arrays
 4. Variables: declaring, `mutable`, `change`, `shadow`, `copy` and `share`
 5. Expressions: maths order, operators, division and rounding, `&`, `.format`, comparisons, logic and the pipe
 6. Control flow: `if`, loops and ranges, and what comes after an `if` that leaves
