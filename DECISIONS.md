@@ -1485,8 +1485,9 @@ Owner, on the wording: "What kind of brackets", then "yea".
 `divide`, with `div` as its short form, the way `proc` is short for `procedure`. They follow maths order (D83): `x` and
 `divide` before `+` and `-`.
 
-Open: how whole-number division rounds (Cyborg names it every time, as in `div.trunc` and `div.floor`); division of
-floats; the remainder; negative numbers; overflow on `-` and `x`.
+Division's rounding: D85.
+
+Open: negative numbers; overflow on `-` and `x`.
 
 Owner: "`x`. Short as alts, `divide` is probably the better main".
 
