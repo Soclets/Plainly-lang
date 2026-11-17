@@ -107,8 +107,8 @@ Mixing `+` and `&` needs brackets, since maths doesn't say which goes first (D83
   refused: mixed.plainly:4:25, line 4 column 25
    4 |     show_text("x" & "y" + "z");
      |                         ^
-   what: `+` and `&` are mixed without brackets
-   why:  maths doesn't say which goes first, so brackets show it.
+   what: `+` and `&` are mixed without `( )`
+   why:  maths doesn't say which goes first, so `( )` shows it.
   [1]
 
 The Thai word for `mut` isn't decided yet (D57).

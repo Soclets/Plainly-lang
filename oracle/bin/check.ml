@@ -538,9 +538,9 @@ and operators state left seen =
               line = token.line;
               byte = token.byte;
               length = token.length;
-              body = Message.What "`+` and `&` are mixed without brackets";
+              body = Message.What "`+` and `&` are mixed without `( )`";
               why =
-                Some "maths doesn't say which goes first, so brackets show it.";
+                Some "maths doesn't say which goes first, so `( )` shows it.";
             };
           advance state;
           let right = primary state in

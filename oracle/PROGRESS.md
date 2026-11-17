@@ -108,9 +108,8 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80, D81 and D82, except:
-- the `when:` line for two variables, joined with ", and";
-- `what: `+` and `&` are mixed without brackets`, with `why:  maths doesn't say which goes first, so brackets show it.`
+All wording so far is approved: D73, D76, D80, D81 and D82, except the `when:` line for
+two variables, joined with ", and". The mixed-operator wording is in D83.
 
 ## Questions slice 2 raised
 
