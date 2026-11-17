@@ -1505,7 +1505,12 @@ A bare `divide` on whole numbers is refused, since there's more than one way to 
 options rather than one fix (D60). Floats get a plain `divide`, since there's nothing to round. This is Cyborg's named
 rounding (Cyborg D48), with plainer words than its `.floor` and `.trunc`.
 
-Open: whether `.exact` with a remainder is a failure the program can handle or a failed check; dividing by zero; the
-remainder; the refusal's wording.
+Dividing by zero is a failed check, like overflow, so it depends on the build mode (D19): it stops the program with
+D82's `check failed:` message and exit status 4 in `Working` and `FinalSafe`, and isn't checked in `FinalPerf`. Making
+it a failure the program handles was turned down, since that would put `otherwise` on nearly every division (D43)
+(owner: "yea, depends on mode").
+
+Open: whether `.exact` with a remainder is a failure the program can handle or a failed check; the remainder; the
+refusal's wording.
 
 Owner: "yea".
