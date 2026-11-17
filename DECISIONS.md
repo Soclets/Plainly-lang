@@ -952,6 +952,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `.same_line` (D12) | `.บรรทัดเดิม` ("the same line"), the pair of `บรรทัดใหม่` |
 | `.format` (D2) | `.แทนค่า` ("substitute the values"), the maths-class term, as in แทนค่า x = 2; `.เติม` was turned down |
 | `divide`, `div` (D84) | `หาร` ("divide"), from maths class, with no short form |
+| `.down` (D85) | `.ปัดลง` ("round down"), the maths-class term |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
