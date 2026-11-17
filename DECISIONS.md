@@ -987,7 +987,7 @@ Against cascades, as in Cyborg:
 Thai labels: D61, with code left untranslated and the `file:line:col` place unchanged. The column for tools counts
 UTF-8 bytes and the column for people counts graphemes, as in Cyborg, so they differ in Thai. Wording: D59, D60.
 
-Open: what happens after a broken block opener or header, which Cyborg never decided.
+A broken block opener or header: D62.
 
 Owner: "yea".
 
@@ -1059,3 +1059,17 @@ All of D58's labels now have Thai:
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
+
+## D62: After a broken header, recover if it's clear, and stop if it isn't (2026-11-17)
+
+When the first line of a block is broken, such as a procedure's header or an `if`:
+- **If it's clear what was meant**, as in `procedure greet[#name Text]:` missing the `:` after `#name`, it's treated as
+  fixed and the body is checked too, so every real error shows in one build. It's the same idea as D58's broken
+  declaration that still creates its variable.
+- **If it isn't clear**, checking stops there. The header's error, and everything found before it, are shown.
+
+Skipping to the block's `end` and carrying on was turned down: with a header too broken to read, the matching `end` can
+be misjudged, and every error after it would be wrong, and a wrong error message is worse than a missing one (D60).
+Cyborg never decided this, and its oracle stops.
+
+Owner: "Why not 3rd bullet, and fall back to 1st bullet?", then "yea, rec it".
