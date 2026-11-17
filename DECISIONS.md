@@ -1024,7 +1024,10 @@ as in "ตัวแปร x" (owner: "yea").
 `what:` is `ปัญหา:` ("problem"), which says what the line is. `อะไร:` ("what") was turned down: as a label it reads
 like a bare question (owner: "I'm back. I think problem in Thai").
 
-Open: the other Thai labels (`why:`, `when:`, `because:`, `fix:`, `check failed:`, `warning:`).
+`why:` is `เหตุผล:` ("reason"), naming what the line is, like `ปัญหา:`. `ทำไม:` ("why") reads like a bare question,
+and `เพราะ:` ("because") would clash with the `because:` label (owner: "yea, เหตุผล").
+
+Open: the other Thai labels (`when:`, `because:`, `fix:`, `check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
