@@ -1514,7 +1514,7 @@ A remainder in `.exact` is a failure the program handles (D43, D55), since `.exa
 is possible and should be noticed:
 
     #each: Whole = #coins divide.exact #players otherwise:
-        case remainder:
+        case has_remainder:
             show_text("The coins don't split evenly.");
             instead 0;
     end otherwise
@@ -1529,7 +1529,9 @@ The remainder matches the division it goes with, with `mod` as its short form, t
 They only differ for negative numbers: -7 `remainder.down` 2 is 1, and -7 `remainder.toward_zero` 2 is -1. `%` and a
 bare `mod` were the jargon alternatives (owner: "yea").
 
-Open: the refusal's wording for a bare `divide` on whole numbers; the name of `.exact`'s failure, since the placeholder
-`remainder` is now also the operator's name.
+`.exact`'s failure is `has_remainder`, so it can't be mistaken for the `remainder` operator: `case has_remainder:`.
+`not_even` and `left_over` were offered (owner: "`has_remainder`?").
+
+Open: the refusal's wording for a bare `divide` on whole numbers.
 
 Owner: "yea".
