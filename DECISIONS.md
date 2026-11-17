@@ -1296,6 +1296,8 @@ Owner: "yup".
 
 ## D75: Every file starts with its language (2026-11-17)
 
+Changed by D77: the English line is `english`, or `eng` for short.
+
     English
     procedure.main[none]:
         show_text("Hello, World!");
@@ -1324,3 +1326,15 @@ A file with no language line gets this message in English, since there's no lang
 before D77 made it `english`.)
 
 Owner, asked whether any read wrong: "no. Also, shouldn't it be `english` with alt as `eng`?"
+
+## D77: The language line is `english`, or `eng` for short (2026-11-17)
+
+    english
+    procedure.main[none]:
+        show_text("Hello, World!");
+    end procedure.main
+
+The English language line is lowercase like every other keyword, with `eng` as its short form, the way `proc` is short
+for `procedure`. The Thai line stays `ไทย`. A refusal that names the line quotes the word the file actually wrote.
+
+Owner: "no. Also, shouldn't it be `english` with alt as `eng`?"
