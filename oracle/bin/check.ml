@@ -896,9 +896,9 @@ and primary state =
       advance state;
       let value_type = Option.map fst (find_variable state token name) in
       spanning token token (Variable name) value_type
-  | Word "be" -> (
+  | Keyword (Be_word, table) -> (
       (* trace: D6 *)
-      english_only state token;
+      check_table state token table;
       advance state;
       ignore (expect_symbol state '.');
       let type_token = next state in

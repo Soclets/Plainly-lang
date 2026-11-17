@@ -9,6 +9,7 @@ type keyword =
   | Mut_word
   | Change_word
   | Shadow_word
+  | Be_word
 
 (* trace: D57 *)
 (* One grammar, two word tables. *)
@@ -34,6 +35,7 @@ let keyword_of_word = function
   | "mut" | "mutable" -> Some (Mut_word, English)
   | "change" -> Some (Change_word, English)
   | "shadow" -> Some (Shadow_word, English)
+  | "be" -> Some (Be_word, English)
   | "กระบวนการ" -> Some (Procedure_word, Thai)
   | "หลัก" -> Some (Main_word, Thai)
   | "ไม่มี" -> Some (None_word, Thai)
@@ -42,6 +44,7 @@ let keyword_of_word = function
   | "เปลี่ยนได้" -> Some (Mut_word, Thai)
   | "เปลี่ยน" -> Some (Change_word, Thai)
   | "บัง" -> Some (Shadow_word, Thai)
+  | "เป็น" -> Some (Be_word, Thai)
   | _ -> None
 
 (* The word a keyword is written as in each table, where one is decided. *)
@@ -55,6 +58,7 @@ let spelling keyword table =
   | Mut_word, English -> Some "mut"
   | Change_word, English -> Some "change"
   | Shadow_word, English -> Some "shadow"
+  | Be_word, English -> Some "be"
   | Procedure_word, Thai -> Some "กระบวนการ"
   | Main_word, Thai -> Some "หลัก"
   | None_word, Thai -> Some "ไม่มี"
@@ -63,6 +67,7 @@ let spelling keyword table =
   | Mut_word, Thai -> Some "เปลี่ยนได้"
   | Change_word, Thai -> Some "เปลี่ยน"
   | Shadow_word, Thai -> Some "บัง"
+  | Be_word, Thai -> Some "เป็น"
 
 (* trace: D75 *)
 let language_of_word = function
