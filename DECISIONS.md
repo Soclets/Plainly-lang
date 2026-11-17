@@ -1310,4 +1310,5 @@ A file's first line is its language, `English` or `ไทย`, and it's required
 (D57) and the language of its error messages. A keyword from the other table is refused, which settles D57's open
 question about mixing tables. Choosing by the person's system language, or by a flag, was offered.
 
-Owner: "You say at the top. `Thai` in Thai or `English`in English", "Rule", then "Required".
+Owner: "You say at the top.
+`Thai` in Thai or `English`in English", "Rule", then "Required".
