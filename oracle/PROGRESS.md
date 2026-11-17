@@ -113,7 +113,7 @@ Traced decisions added: D84, D85, D86, D87, D88, D89.
 Runs: `if`, `else if`, `else` and `end if`, nested, with each block's body indented one more level, which is now
 checked from the level each line's statement was found at (D35, D70); `==`, `!=`, `<`, `>`, `at_least` and `at_most`
 on whole numbers (D34); `not`, then `and`, then `or` (D92), short-circuiting, with `and.both` and `or.both` (D36, D37);
-`compare_Text.stored_same` and `compare_Text.looks_same`, normalizing with `uunf` (D94); `ถ้า` and `ไม่งั้น` in Thai.
+`compare_Text.same_bytes` and `compare_Text.same_normalized` (renamed by D103), normalizing with `uunf` (D94); `ถ้า` and `ไม่งั้น` in Thai.
 
 Refused, tested: a lone `=` in a condition, with `fix: ==`; `==` between two `Text`s; comparing different types; an
 `if` given a plain value; a missing `end if`; a block's body at the wrong level (D93, D94).

@@ -20,13 +20,16 @@ procedure.main[none] returns nothing:
     if not #hp > 10 and.both #hp at_most 5:
         show_text("not strong");
     end if
-    if compare_Text.stored_same(#name, "Mia"):
+    if compare_Text.same_bytes(#name, "Mia"):
         show_text("same");
     end if
-    if compare_Text.looks_same("é", "é"):
-        show_text("looks same");
+    if compare_Text.same_normalized("é", "é"):
+        show_text("same normalized");
     end if
-    if not compare_Text.stored_same("é", "é"):
+    if not compare_Text.same_bytes("é", "é"):
         show_text("stored differently");
+    end if
+    if not compare_Text.same_normalized("ก่ิ", "กิ่"):
+        show_text("above vowel order differs");
     end if
 end procedure.main

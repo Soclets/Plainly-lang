@@ -244,12 +244,12 @@ let rec evaluate source variables (expression : Check.expression) =
           invalid_arg
             "Run.evaluate: `not` on a non-condition passed the checker")
   (* trace: D94 *)
-  | Check.Compare_text (looks_same, left, right) -> (
+  | Check.Compare_text (normalized, left, right) -> (
       match
         (evaluate source variables left, evaluate source variables right)
       with
       | Text_value first, Text_value second ->
-          if looks_same then
+          if normalized then
             Bool_value
               (String.equal
                  (Uunf_string.normalize_utf_8 `NFC first)

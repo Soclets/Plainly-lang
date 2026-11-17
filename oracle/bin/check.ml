@@ -1212,8 +1212,8 @@ and comparison state =
                     (Printf.sprintf "`%s` doesn't compare `Text`" text);
                 why =
                   Some
-                    "text is compared with `compare_Text.stored_same` or \
-                     `compare_Text.looks_same`.";
+                    "text is compared with `compare_Text.same_bytes` or \
+                     `compare_Text.same_normalized`.";
               }
           else
             stop Message.Not_designed_yet token
@@ -1325,7 +1325,8 @@ and primary state =
       ignore (expect_symbol state '.');
       let method_token = next state in
       match method_token.kind with
-      | Word (("stored_same" | "looks_same") as method_word) ->
+      (* trace: D103 *)
+      | Word (("same_bytes" | "same_normalized") as method_word) ->
           english_only state method_token;
           advance state;
           ignore (expect_symbol state '(');
@@ -1343,7 +1344,7 @@ and primary state =
                      PlainOracle yet")
             [ first; second ];
           spanning token closing
-            (Compare_text (method_word = "looks_same", first, second))
+            (Compare_text (method_word = "same_normalized", first, second))
             (Some Bool_type)
       | _ -> not_built state method_token)
   | Word name when next_is_symbol state '(' -> (

@@ -5,7 +5,7 @@ procedure.main[none] returns nothing:
 end procedure.main
 
 procedure greet[#name: Text] returns nothing:
-    if compare_Text.stored_same(#name, ""):
+    if compare_Text.same_bytes(#name, ""):
         return nothing;
     end if
     show_text.format("Hi, {#name}!");

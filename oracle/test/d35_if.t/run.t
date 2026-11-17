@@ -1,5 +1,6 @@
 `if`, `else if`, `else` and `end if` (D35); comparisons (D34); `not`, then `and`, then `or` (D36, D92), with
-`and.both` evaluating both sides (D37); `compare_Text.stored_same` and `.looks_same` (D94).
+`and.both` evaluating both sides (D37); `compare_Text.same_bytes` and `.same_normalized` (D94, D103), where a Thai tone mark and
+a vowel above the letter typed in the other order still differ.
 
   $ plainoracle runs.plainly
   alive
@@ -7,8 +8,9 @@
   and first
   not strong
   same
-  looks same
+  same normalized
   stored differently
+  above vowel order differs
 
 A lone `=` in a condition is refused, with `==` as the fix (D34, D93).
 
@@ -27,7 +29,7 @@ A lone `=` in a condition is refused, with `==` as the fix (D34, D93).
    4 |     if #name == "Mia":
      |              ^^
    what: `==` doesn't compare `Text`
-   why:  text is compared with `compare_Text.stored_same` or `compare_Text.looks_same`.
+   why:  text is compared with `compare_Text.same_bytes` or `compare_Text.same_normalized`.
   [1]
 
 Different types can't be compared (D93).
