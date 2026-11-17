@@ -1719,9 +1719,11 @@ the way (owner: "yea").
 The refusal has no `fix:`, since there are two methods to choose from (D60):
 
     what: `==` doesn't compare `Text`
-    why:  text can be the same in more than one way, so `compare_Text` names which.
+    why:  text is compared with `compare_Text.stored_same` or `compare_Text.looks_same`.
 
-with "`!=` doesn't compare `Text`" for `!=` (owner, asked whether it read right: "yea").
+with "`!=` doesn't compare `Text`" for `!=`. The `why:` names both methods, as D89's division message names its
+roundings. A first version said "text can be the same in more than one way, so `compare_Text` names which" (owner:
+"yea", then "Wait, it should probably say what narrowings `compare_text` has", then "yes").
 
 Open: Thai names.
 
