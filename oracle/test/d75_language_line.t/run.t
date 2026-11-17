@@ -20,8 +20,8 @@ A file must start with its language (D75, D77).
 
 A Thai file's messages are in Thai, and only their labels are decided so far (D61, D75).
 
-  $ plainoracle thai_refusal.plainly
-  NotDesignedYet: thai_refusal.plainly:3:60, line 3 column 23
+  $ plainoracle thai_refusal.เพลนลี่
+  NotDesignedYet: thai_refusal.เพลนลี่:3:60, line 3 column 23
    3 |     แสดงข้อความ("สวัสดี")
      |                       ^
    what: the Thai wording of this message isn't decided yet
@@ -35,4 +35,24 @@ A Thai file's messages are in Thai, and only their labels are decided so far (D6
      |     ^^^^^^^^^^
    fix:  `show_text`
    why:  this file says `eng`, so its keywords are English.
+  [1]
+
+A file's extension must match its language line (D79, D80).
+
+  $ plainoracle mismatch.plainly
+  refused: mismatch.plainly:1:1, line 1 column 1
+   1 | ไทย
+     | ^^^
+   what: this file says `ไทย`, but its name ends in `.plainly`
+   why:  a file's name ends in `.plainly` for English and `.เพลนลี่` for Thai.
+  [1]
+
+Any other extension is refused too.
+
+  $ plainoracle other.txt
+  refused: other.txt:1:1, line 1 column 1
+   1 | english
+     | ^^^^^^^
+   what: this file's name doesn't end in `.plainly` or `.เพลนลี่`
+   why:  a file's name ends in `.plainly` for English and `.เพลนลี่` for Thai.
   [1]

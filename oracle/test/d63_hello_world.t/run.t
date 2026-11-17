@@ -5,7 +5,7 @@ Hello world prints its text and ends the line (D12, D44, D63, D69, D70).
 
 The same program in Thai keywords (D57).
 
-  $ plainoracle hello_world_thai.plainly
+  $ plainoracle hello_world_thai.เพลนลี่
   สวัสดีชาวโลก!
 
 `eng` is the short form of `english` (D77).

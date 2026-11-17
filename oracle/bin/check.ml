@@ -139,6 +139,37 @@ let language_line state =
       | Some table -> (
           state.declared <- Some table;
           state.declared_word <- word;
+          (* trace: D79 *)
+          (* trace: D80 *)
+          (* The extension must match the language line. When it doesn't, the
+             file's language is in doubt, so its keywords aren't checked
+             against either table, and its messages stay in English. *)
+          let extension = Filename.extension state.source.file in
+          (match (table, extension) with
+          | English, ".plainly" | Thai, ".เพลนลี่" -> ()
+          | _ ->
+              refuse state
+                {
+                  Message.kind = Message.Refused;
+                  line = token.line;
+                  byte = token.byte;
+                  length = token.length;
+                  body =
+                    Message.What
+                      (match extension with
+                      | ".plainly" | ".เพลนลี่" ->
+                          Printf.sprintf
+                            "this file says `%s`, but its name ends in `%s`"
+                            word extension
+                      | _ ->
+                          "this file's name doesn't end in `.plainly` or \
+                           `.เพลนลี่`");
+                  why =
+                    Some
+                      "a file's name ends in `.plainly` for English and \
+                       `.เพลนลี่` for Thai.";
+                };
+              state.declared <- None);
           advance state;
           match current state with
           | Some next when next.line = token.line -> not_built state next
