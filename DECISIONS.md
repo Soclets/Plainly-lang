@@ -1418,3 +1418,27 @@ An extension that's neither gets `what: this file's name doesn't end in `.plainl
 (owner, asked whether it read right: "yea").
 
 Owner: "yea".
+
+## D81: The wording of slices 2 and 3's refusals (2026-11-17)
+
+These lines, written for PlainOracle's slices 2 and 3 in D73's style, are the wording for their refusals:
+
+    what: `"ten"` is `Text`, but `#score` is a `Whole`
+    why:  a variable (#) holds only the type written for it.
+    why:  `+` is only for numbers, and `&` joins text.
+    what: `+` can't add `Text`
+    why:  `&` joins text, and doesn't turn a number into text by itself.
+    why:  `show_text` shows text, and doesn't turn a number into text by itself.
+    what: `#nmae` isn't declared before this line
+    why:  a variable (#) is declared, with its type, before it's used.
+    what: `9223372036854775808` doesn't fit in a `Whole`
+    why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
+    why:  `.format` changes what's shown, so it comes before `.same_line`.
+    what: `{#n + 1}` holds a calculation, not a value
+    why:  a fill-in only reads a value, so it can never hide work.
+    what: this `{` has no `}`
+    why:  a fill-in starts with `{` and ends with `}`.
+
+`what: `#score` isn't mutable` is D58's own example.
+
+Owner, asked whether any read wrong: "no".
