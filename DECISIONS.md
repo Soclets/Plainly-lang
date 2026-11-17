@@ -1672,3 +1672,21 @@ reads as `(#hp at_least 1 and #lives > 0) or #cheat == 1`. Following D83, logic'
 arithmetic, and before `not`. Requiring brackets whenever `and` meets `or` was offered.
 
 Owner: "hm? I can read it correctly, though".
+
+## D93: The wording of slice 4's messages (2026-11-17)
+
+    fix:  `==`
+    why:  `=` gives a variable its value, and `==` compares.
+
+    what: `#hp` is `Whole` and `"full"` is `Text`, so they can't be compared
+    why:  only values of the same type can be compared.
+
+    what: `#score` isn't a comparison
+    why:  an `if` needs something true or false, like `#score > 0`.
+
+    what: `end procedure.main` closes the procedure while the `if` on line 4 is still open
+    why:  each block closes with its own `end`, inside out.
+
+For a lone `=` in a condition (D34), comparing different types, an `if` given a plain value, and a missing `end if`.
+
+Owner, asked whether any read wrong: "no, and refuse `==` with Text and Text."
