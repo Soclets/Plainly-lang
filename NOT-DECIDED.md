@@ -39,8 +39,6 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 
 ## Floats
 
-- What Plainly's floats promise, now that Cyborg's stable floats are out (D18): plain IEEE 754 behaviour, with NaN and
-  infinity allowed?
 - Whether `~` on an exact literal, like `~0.5`, is refused (D64).
 
 ## Used in the README, but not decided
