@@ -36,6 +36,11 @@ names the decision it came from, or when the owner gave it.
    count, so after a compaction it reads the files again before correcting anything. Each correction says in its commit
    what was stale and which decision shows it. It never overrules the owner's recorded words: an entry in DECISIONS.md
    changes only through a new decision. (Owner, 2026-11-17)
+7. **Push after committing.** Every commit goes to `main` as it's made, without asking, so nothing piles up locally.
+   (Owner, 2026-11-17, from `design/plainoracle-prompt.md`)
+8. **Talk in chat.** One question at a time, asked in the message itself, with no popups or pre-made answer buttons:
+   no question dialogs, and no question or buttons in the app's next-step box. (Owner, 2026-11-16 and 2026-11-17, from
+   Cyborg's CLAUDE.md)
 
 ## Tracing
 
