@@ -1459,3 +1459,11 @@ the rule, since the code alone doesn't show them, and comes between `what:` and 
 status 4, the next free one after D71's.
 
 Owner: "yea".
+
+## D83: Operators follow maths, and need brackets where maths doesn't say (2026-11-17)
+
+Where maths has an order, operators follow it, as in `*` before `+` once those are decided. Where maths doesn't say,
+as when `+` meets `&`, which isn't a maths operator, brackets are required: `"Total: " & (#a + #b)`. A mix without them
+is refused, since the reader would have to guess the order.
+
+Owner: "Follow maths, and require grouping when maths doesn't answer".
