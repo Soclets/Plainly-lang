@@ -1535,3 +1535,17 @@ bare `mod` were the jargon alternatives (owner: "yea").
 Open: the refusal's wording for a bare `divide` on whole numbers.
 
 Owner: "yea".
+
+## D86: A `-` with no space after it negates (2026-11-17)
+
+    #start: Whole = -7;
+    #back: Whole = -#speed;
+    #gap: Whole = #a - -7;
+
+A `-` directly before a number or a name negates it. Subtracting has a space on each side, `#a - #b`, so the spacing
+tells the two apart, as in Cyborg and like D33's rule for `<` and `>`. Negating binds tighter than `x` and `divide`
+(D83).
+
+Open: whether subtracting with a missing space, as in `#a -#b` or `#a-#b`, is refused, and its wording.
+
+Owner: "yea".
