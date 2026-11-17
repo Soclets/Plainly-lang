@@ -47,8 +47,7 @@ later errors.
 ## Waiting for the owner
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
-1. **Exit statuses.** 0 when the program runs, 1 when anything is refused, 3 for `NotBuiltYet` or `NotDesignedYet`,
-   2 when the file can't be read. D63 only says a failure leaving `main` gives "a failure exit status".
+1. ~~Exit statuses~~: decided as D71.
 2. **The layout of `NotBuiltYet` and `NotDesignedYet`.** They copy D58's first line and source lines, with `what:` and
    no `why:`. They aren't Plainly errors, but the oracle's own limits.
 3. **New wording,** written in D59's style and needing the owner's eye:
