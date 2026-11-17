@@ -24,4 +24,4 @@ standard says what the rules are now.
 7. [Procedures](07-procedures.md): headers, `returns`, labels, defaults, units, calls, `return` and `procedure.main`
 8. [Failures](08-failures.md): `fails`, `?`, `otherwise` and handlers
 9. [Messages](09-messages.md): the error layout, the kinds of message, and exit statuses
-10. Tools: the `apy` commands, build modes, and PlainOracle
+10. [Tools](10-tools.md): the `apy` commands, build modes, and PlainOracle
