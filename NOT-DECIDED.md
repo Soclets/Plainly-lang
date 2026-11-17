@@ -39,5 +39,5 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 
 ## Layout
 
-- Whether bodies may be indented, must be, or mustn't be. Examples so far aren't indented, but it was never discussed.
-  The header, closer and `proc` were on this list by mistake: D9, D28, D40, D46, D63 and D69 settle them.
+- Bodies are indented (D70). Open: whether wrong indentation is refused or only fixed by a formatter, and how wide a
+  level is, spaces or tabs.
