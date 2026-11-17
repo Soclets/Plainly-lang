@@ -944,6 +944,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `none` (D69) | `ไม่มี` |
 | `mutable` (D28) | `เปลี่ยนได้` |
 | `change` (D27) | `เปลี่ยน` |
+| `shadow` (D91) | `บัง` ("block from view"), since shadowing hides the old variable behind the new one |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
@@ -1644,6 +1645,6 @@ message has no `fix:` (D60):
 
 Refusing every redeclaration was offered first.
 
-Open: `shadow` on a name that wasn't declared before; the Thai word for `shadow`.
+Open: `shadow` on a name that wasn't declared before. The Thai word for `shadow` is `บัง` (D57).
 
 Owner: "`shadow` infront?", then "yea. And it's `mutable` as main".
