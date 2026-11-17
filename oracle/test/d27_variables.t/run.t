@@ -111,11 +111,11 @@ Mixing `+` and `&` needs brackets, since maths doesn't say which goes first (D83
    why:  maths doesn't say which goes first, so `( )` shows it.
   [1]
 
-The Thai word for `mut` isn't decided yet (D57).
+The Thai word for `Whole` isn't decided yet (D57).
 
-  $ plainoracle thai_mut.เพลนลี่
-  NotDesignedYet: thai_mut.เพลนลี่:3:5, line 3 column 5
-   3 |     mut #score: Whole = 10;
-     |     ^^^
-   what: the Thai word for `mut` isn't decided yet
+  $ plainoracle thai_whole.เพลนลี่
+  NotDesignedYet: thai_whole.เพลนลี่:3:44, line 3 column 21
+   3 |     เปลี่ยนได้ #score: Whole = 10;
+     |                     ^^^^^
+   what: the Thai word for `Whole` isn't decided yet
   [3]
