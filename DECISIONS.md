@@ -1521,6 +1521,15 @@ is possible and should be noticed:
 
 (owner: "yea").
 
-Open: the remainder operator; the refusal's wording; the failure's name, `remainder` being a placeholder.
+The remainder matches the division it goes with, with `mod` as its short form, the way `div` is for `divide`:
+
+    #left: Whole = 7 remainder.down 2;
+    #left: Whole = 7 remainder.toward_zero 2;
+
+They only differ for negative numbers: -7 `remainder.down` 2 is 1, and -7 `remainder.toward_zero` 2 is -1. `%` and a
+bare `mod` were the jargon alternatives (owner: "yea").
+
+Open: the refusal's wording for a bare `divide` on whole numbers; the name of `.exact`'s failure, since the placeholder
+`remainder` is now also the operator's name.
 
 Owner: "yea".
