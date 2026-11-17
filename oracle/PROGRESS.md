@@ -41,7 +41,8 @@ Also refused, tested: a file with no language line, and a keyword from the other
 Stops, tested: a variable (`NotBuiltYet`), and any refusal in a Thai file (`NotDesignedYet`, until Thai sentences are
 decided).
 
-Traced decisions: D3, D12, D31, D44, D57, D58, D60, D61, D62, D63, D69, D70, D74, D75.
+Traced decisions: D3, D12, D31, D44, D57, D58, D60, D61, D62, D63, D69, D70, D74, D75, D77. The wording of
+D75's refusals is D76.
 
 Not built yet: D58's knock-on sorting (apply the first fix, check again, add `because:`). Nothing in slice 1 can cause a
 knock-on error, so there's nothing to test it with yet. It's needed from slice 2, when a broken declaration can cause
@@ -54,7 +55,7 @@ These are choices slice 1 had to make so that anything could run. They're provis
 2. ~~The layout of `NotBuiltYet` and `NotDesignedYet`~~: decided as D72.
 3. ~~New wording~~: decided as D73.
 4. ~~The indentation fix~~: decided as D74, and built.
-5. ~~Which language a message is in~~: decided as D75 (a required first line, `English` or `ไทย`), and built. A Thai
+5. ~~Which language a message is in~~: decided as D75 and D77 (a required first line, `english`, `eng` or `ไทย`), and built. A Thai
    file's first refusal stops with `NotDesignedYet`, since only the Thai labels are decided (D61), not the sentences.
 6. **The file extension and command line.** `plainoracle <file>`, any file name.
 
@@ -64,10 +65,3 @@ These are choices slice 1 had to make so that anything could run. They're provis
   like Chinese, which take two.
 - A line's role for indentation comes from its first token: `procedure` and `end` lines are at level 0, everything else
   at level 1. That's only enough for slice 1, which has one block.
-
-## New wording waiting for review
-
-Written for D75, in D73's style:
-- `what: the file doesn't say its language`, with `why:  a file starts with its language: `English` or `ไทย`.`
-- `why:  this file says `English`, so its keywords are English.` (and the Thai file's version, which can't show yet)
-- A file with no language line gets its messages in English, since there's no language to go by.

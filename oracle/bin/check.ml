@@ -12,6 +12,7 @@ type state = {
   lexer_stop : Message.t option;
   mutable position : int;
   mutable declared : table option;
+  mutable declared_word : string;
   mutable refusals : Message.t list;
 }
 
@@ -82,10 +83,9 @@ let check_table state (token : Token.t) table =
           body = Message.Fix (spelling keyword declared);
           why =
             Some
-              (match declared with
-              | English ->
-                  "this file says `English`, so its keywords are English."
-              | Thai -> "this file says `ไทย`, so its keywords are Thai.");
+              (Printf.sprintf "this file says `%s`, so its keywords are %s."
+                 state.declared_word
+                 (match declared with English -> "English" | Thai -> "Thai"));
         }
   | _ -> ()
 
@@ -130,7 +130,7 @@ let language_line state =
         byte = 1;
         length = 0;
         body = Message.What "the file doesn't say its language";
-        why = Some "a file starts with its language: `English` or `ไทย`.";
+        why = Some "a file starts with its language: `english` or `ไทย`.";
       }
   in
   match current state with
@@ -138,6 +138,7 @@ let language_line state =
       match language_of_word word with
       | Some table -> (
           state.declared <- Some table;
+          state.declared_word <- word;
           advance state;
           match current state with
           | Some next when next.line = token.line -> not_built state next
@@ -243,6 +244,7 @@ let program source tokens lexer_stop =
       lexer_stop;
       position = 0;
       declared = None;
+      declared_word = "";
       refusals = [];
     }
   in

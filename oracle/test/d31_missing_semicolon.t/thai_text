@@ -1,4 +1,4 @@
-English
+english
 procedure.main[none]:
     show_text("สวัสดี")
 end procedure.main

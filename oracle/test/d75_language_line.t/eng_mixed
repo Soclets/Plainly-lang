@@ -1,0 +1,4 @@
+eng
+procedure.main[none]:
+    แสดงข้อความ("Hi");
+end procedure.main

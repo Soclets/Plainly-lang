@@ -1,21 +1,21 @@
-A file that says `English` and uses a Thai keyword is refused, with the English word as the fix (D57, D75).
+A file that says `english` and uses a Thai keyword is refused, with the English word as the fix (D57, D75).
 
   $ plainoracle mixed
   refused: mixed:3:5, line 3 column 5
    3 |     แสดงข้อความ("สวัสดี");
      |     ^^^^^^^^^^
    fix:  `show_text`
-   why:  this file says `English`, so its keywords are English.
+   why:  this file says `english`, so its keywords are English.
   [1]
 
-A file must start with its language (D75).
+A file must start with its language (D75, D77).
 
   $ plainoracle no_language
   refused: no_language:1:1, line 1 column 1
    1 | procedure.main[none]:
      | ^
    what: the file doesn't say its language
-   why:  a file starts with its language: `English` or `ไทย`.
+   why:  a file starts with its language: `english` or `ไทย`.
   [1]
 
 A Thai file's messages are in Thai, and only their labels are decided so far (D61, D75).
@@ -26,3 +26,13 @@ A Thai file's messages are in Thai, and only their labels are decided so far (D6
      |                       ^
    what: the Thai wording of this message isn't decided yet
   [3]
+
+`eng` is the short form of `english`, and a refusal quotes the word the file wrote (D77).
+
+  $ plainoracle eng_mixed
+  refused: eng_mixed:3:5, line 3 column 5
+   3 |     แสดงข้อความ("Hi");
+     |     ^^^^^^^^^^
+   fix:  `show_text`
+   why:  this file says `eng`, so its keywords are English.
+  [1]

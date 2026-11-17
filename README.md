@@ -5,7 +5,7 @@ It's... Plain?
 ## Code snippet
 
 ```
-English
+english
 procedure greet[#name: Text] returns Text:
     return be.Text.format("Hello, {#name}!");
 end procedure greet

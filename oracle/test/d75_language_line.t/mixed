@@ -1,4 +1,4 @@
-English
+english
 procedure.main[none]:
     แสดงข้อความ("สวัสดี");
 end procedure.main

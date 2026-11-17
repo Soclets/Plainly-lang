@@ -1,4 +1,4 @@
-English
+english
 procedure.main[none]:
   show_text("Hello, World!");
 end procedure.main

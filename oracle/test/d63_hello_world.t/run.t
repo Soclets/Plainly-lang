@@ -7,3 +7,8 @@ The same program in Thai keywords (D57).
 
   $ plainoracle hello_world_thai
   สวัสดีชาวโลก!
+
+`eng` is the short form of `english` (D77).
+
+  $ plainoracle hello_world_eng
+  Hello, World!

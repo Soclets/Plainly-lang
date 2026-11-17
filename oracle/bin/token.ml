@@ -51,6 +51,6 @@ let spelling keyword table =
 
 (* trace: D75 *)
 let language_of_word = function
-  | "English" -> Some English
+  | "english" | "eng" -> Some English
   | "ไทย" -> Some Thai
   | _ -> None
