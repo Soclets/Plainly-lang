@@ -1346,3 +1346,25 @@ editors can map it to Plainly without a clash, and it's searchable. `.code` was 
 language, and Mult's `.plain_code` was the starting idea.
 
 Owner: "You know what's plain? `.code`, hahah", "Or just `.plainly`?", then "yea. Now, commands".
+
+## D79: The `apy` commands (2026-11-17)
+
+    apy run game.plainly --Working
+    apy build game.plainly --FinalSafe
+    apy check game.plainly
+    apy convert game.plainly --<lang>
+
+- `run` builds to a temporary file and runs it, as `go run` does (D16).
+- `build` makes the binary to ship.
+- `check` shows the refusals without building.
+- `convert` rewrites the file into the other word table (D57), language line included. Its flag is a language line's
+  word (D75, D77), as in `--ไทย` or `--english`.
+- A build mode is a flag with the mode's own name: `--Working`, `--FinalSafe`, `--FinalPerf` (D19). `run` and `build`
+  need one, since there's no default mode.
+
+The command is `apy`, the compiler's short name (D23), rather than `plainly`, which would read
+`plainly run game.plainly`.
+
+Open: the Thai words for the commands.
+
+Owner: has code.
