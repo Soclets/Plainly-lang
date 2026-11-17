@@ -1608,3 +1608,17 @@ The first and fourth are refusals while building, the others failed checks while
 case. Mixing `&` with `-`, `x` or `divide` uses D83's wording, naming the operator.
 
 Owner, asked whether any read wrong: "no".
+
+## D90: `be.Text` of something that's already `Text` is refused (2026-11-17)
+
+    refused: game.plainly:4:15, line 4 column 15
+     4 |     show_text(be.Text(#name));
+       |               ^^^^^^^^^^^^^^
+     fix:  `#name`
+     why:  `#name` is already `Text`, so there's nothing to convert.
+
+It does nothing, so writing it almost always means a misunderstanding, and refusing it teaches where allowing it would
+hide that, as with ignored results (D26) and code after an `if` that always leaves (D50). There's exactly one fix,
+removing the `be.Text( )`. Generic code, where a value might already be `Text`, can revisit this once generics exist.
+
+Owner: "What do you recom?", then "yes".
