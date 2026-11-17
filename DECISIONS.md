@@ -1252,3 +1252,16 @@ These hold for PlainOracle and AroundPy alike, since tests record them.
 Open: the status for a failure leaving `main` (D63) and for a failed check while running.
 
 Owner: "yup".
+
+## D72: How `NotBuiltYet` and `NotDesignedYet` look (2026-11-17)
+
+    NotBuiltYet: variable:2:5, line 2 column 5
+     2 |     #total: Whole = 0;
+       |     ^^^^^^
+     what: variables (#) aren't in PlainOracle yet
+
+They use D58's layout, with their own name in place of the kind, a `what:` line, and no `why:`, since they aren't
+Plainly errors but an implementation's own limits: `NotBuiltYet` for something decided but not built, and
+`NotDesignedYet` for something the decisions don't cover yet. Each ends the check there, with exit status 3 (D71).
+
+Owner: "yup".
