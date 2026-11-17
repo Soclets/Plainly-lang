@@ -1662,3 +1662,13 @@ Refusing every redeclaration was offered first.
 Open: `shadow` on a name that wasn't declared before. The Thai word for `shadow` is `บัง` (D57).
 
 Owner: "`shadow` infront?", then "yea. And it's `mutable` as main".
+
+## D92: `and` goes before `or` (2026-11-17)
+
+    if #hp at_least 1 and #lives > 0 or #cheat == 1:
+
+reads as `(#hp at_least 1 and #lives > 0) or #cheat == 1`. Following D83, logic's own order is used: `not` first, then
+`and`, then `or`, as in Cyborg and almost every language, so no brackets are required. Comparisons come after
+arithmetic, and before `not`. Requiring brackets whenever `and` meets `or` was offered.
+
+Owner: "hm? I can read it correctly, though".
