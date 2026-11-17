@@ -23,3 +23,34 @@ names the decision it came from, or when the owner gave it.
    AI as Markdown and reads the file itself, in full, and again after every compaction. Never through a fetch tool's
    summary, which can drop parts. Messaging another session isn't prompting, and is written like one colleague talking
    to another. (Owner, 2026-11-17, from Cyborg's rule 11)
+5. **Style and checks.** Comments say why, not what.
+   - **Rust** (AroundPy, the runtime, PlainGC): `rustfmt` and `clippy`. `unwrap`, `expect` and `panic` are denied on
+     any path a real program takes, so a bad program never crashes AroundPy; if AroundPy itself fails, it says so and how
+     to report it. `unsafe` is forbidden except in the runtime and PlainGC, which can't be written without it, and there
+     each `unsafe` block has a comment saying why it's safe.
+   - **OCaml** (PlainOracle): `ocamlformat`, and compiler warnings are errors.
+   (Owner, 2026-11-17, from Cyborg's rules 6 and 7)
+
+## Tracing
+
+Code that carries out a decision says so with a comment, in PlainOracle and AroundPy alike:
+
+```rust
+// trace: D27
+```
+
+```ocaml
+(* trace: D27 *)
+```
+
+A check fails on a tag that names no decision, and lists the decisions nothing traces yet.
+
+## Naming
+
+The code uses Plainly's own words, so the code, the decisions and the error messages all say the same thing.
+
+- **Full words.** `expression`, not `expr`.
+- **One name per concept.**
+- **Plainly's words over textbook words.** `narrowing`, `label`, `failure`, `handler`.
+- **Each language's own casing**, which `clippy` and `ocamlformat` enforce.
+- **Tests are named after their decision.**
