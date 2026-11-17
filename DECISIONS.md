@@ -1032,7 +1032,10 @@ and `เพราะ:` ("because") would clash with the `because:` label (owner:
 `because:` is `เพราะ:` ("because"), which is free since `why:` became `เหตุผล:`. `สาเหตุ:` ("cause") was offered
 (owner: "เพราะ:").
 
-Open: the other Thai labels (`when:`, `check failed:`, `warning:`).
+`when:` is `เมื่อ:` ("when"). `กรณี:` ("in the case") was turned down, since it's the draft Thai word for the `case`
+keyword (owner: "เมื่อ:").
+
+Open: the other Thai labels (`check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
