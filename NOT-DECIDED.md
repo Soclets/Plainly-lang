@@ -41,8 +41,8 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 
 - What Plainly's floats promise, now that Cyborg's stable floats are out (D18): plain IEEE 754 behaviour, with NaN and
   infinity allowed?
-- `f32` or `f64` behind `Float`. `Float` means 32-bit in C, Java, C#, Swift and Kotlin, and 64-bit in Python.
-- Whether Fale's `~` mark on inexact float literals, like `~0.1`, stays.
+- Whether `Float` (D64) is 32-bit or 64-bit. `Float` means 32-bit in C, Java, C#, Swift and Kotlin, and 64-bit in Python.
+- Whether `~` on an exact literal, like `~0.5`, is refused (D64).
 
 ## Used in the README, but not decided
 
