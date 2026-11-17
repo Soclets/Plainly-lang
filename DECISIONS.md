@@ -1565,3 +1565,17 @@ than the type's own, since a `Whole`'s lowest value is far below 0, so a health 
 like `u8` (D65), or bounds Plainly doesn't have yet.
 
 Owner: "That's pretty long, how about learning `saturate`?"
+
+## D88: A number type can carry its own limits (2026-11-17)
+
+    mut #hp: Whole[min: 0, max: 100] = 100;
+    change #hp = #hp minus.saturate 30;
+
+A number type can be narrowed with limits in `[ ]`, which hold its details (D51): `minimum:` and `maximum:`, or `min:`
+and `max:` for short, as with lists' lengths (D68). `.saturate` (D87) sticks at these limits, so a health bar stops at 0
+and 100. This is Cyborg's bounded numbers (Cyborg D372).
+
+Open: what happens when a value outside the limits is stored: refused while building where it can be seen, as with a bad
+position (D20), and a failed check while running otherwise, depending on the build mode, would match D19.
+
+Owner: "yea".
