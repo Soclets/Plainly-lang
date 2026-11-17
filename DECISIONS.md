@@ -984,9 +984,10 @@ Against cascades, as in Cyborg:
 - To sort knock-on errors from independent ones, the first error's single fix is applied in memory and the program
   checked again. Whatever disappears was caused by it, and is shown with a `because:` pointing back (Cyborg D207).
 
-Open, to be changed one at a time: Thai labels (D57) with code untranslated and the `file:line:col` place
-unchanged, and columns counted in graphemes; what happens after a broken block opener or header, which Cyborg never
-decided.
+Thai labels: D61, with code left untranslated and the `file:line:col` place unchanged. The column for tools counts
+UTF-8 bytes and the column for people counts graphemes, as in Cyborg, so they differ in Thai. Wording: D59, D60.
+
+Open: what happens after a broken block opener or header, which Cyborg never decided.
 
 Owner: "yea".
 
