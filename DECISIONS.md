@@ -1713,7 +1713,10 @@ the same, so it fits an `if`, and `not` covers "different":
 
 `same_text.exact(…, as: …)` was offered first.
 
-Open: whether `!=` between two `Text`s is refused like `==`; the refusal's wording; Thai names.
+`!=` between two `Text`s is refused like `==`, since "different" has the same two meanings, so `not compare_Text.…` is
+the way (owner: "yea").
+
+Open: the refusal's wording; Thai names.
 
 Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
 codepoints, graphemes", "I think it should be a function instead", "How about `compare_Text.`, and no labels?", "What does
