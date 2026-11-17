@@ -11,7 +11,7 @@ type state = {
   tokens : Token.t array;
   lexer_stop : Message.t option;
   mutable position : int;
-  mutable table : table option;
+  mutable declared : table option;
   mutable refusals : Message.t list;
 }
 
@@ -67,14 +67,27 @@ let next state =
 
 let refuse state message = state.refusals <- message :: state.refusals
 
-(* trace: D57 *)
-let check_table state token table =
-  match state.table with
-  | None -> state.table <- Some table
-  | Some first when first = table -> ()
-  | Some _ ->
-      stop Message.Not_designed_yet token
-        "mixing English and Thai keywords in one file isn't decided yet"
+(* trace: D75 *)
+(* A keyword from the other table than the file's language line is refused,
+   with its word in the file's table as the fix. *)
+let check_table state (token : Token.t) table =
+  match (state.declared, token.kind) with
+  | Some declared, Keyword (keyword, _) when declared <> table ->
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = token.line;
+          byte = token.byte;
+          length = token.length;
+          body = Message.Fix (spelling keyword declared);
+          why =
+            Some
+              (match declared with
+              | English ->
+                  "this file says `English`, so its keywords are English."
+              | Thai -> "this file says `ไทย`, so its keywords are Thai.");
+        }
+  | _ -> ()
 
 let expect_keyword state keyword =
   let token = next state in
@@ -105,6 +118,32 @@ let refuse_missing state (after : Token.t) code why =
       body = Message.Fix code;
       why = Some why;
     }
+
+(* trace: D75 *)
+(* A file's first line is its language, alone on the line. *)
+let language_line state =
+  let missing () =
+    refuse state
+      {
+        Message.kind = Message.Refused;
+        line = 1;
+        byte = 1;
+        length = 0;
+        body = Message.What "the file doesn't say its language";
+        why = Some "a file starts with its language: `English` or `ไทย`.";
+      }
+  in
+  match current state with
+  | Some ({ kind = Word word; line = 1; _ } as token) -> (
+      match language_of_word word with
+      | Some table -> (
+          state.declared <- Some table;
+          advance state;
+          match current state with
+          | Some next when next.line = token.line -> not_built state next
+          | _ -> ())
+      | None -> missing ())
+  | _ -> missing ()
 
 (* trace: D63 *)
 let header state =
@@ -203,18 +242,20 @@ let program source tokens lexer_stop =
       tokens = Array.of_list tokens;
       lexer_stop;
       position = 0;
-      table = None;
+      declared = None;
       refusals = [];
     }
   in
   match
+    language_line state;
     header state;
     let statements = body state [] in
     closer state;
     statements
   with
-  | statements -> (statements, List.rev state.refusals, None)
-  | exception Message.Stop message -> ([], List.rev state.refusals, Some message)
+  | statements -> (statements, List.rev state.refusals, None, state.declared)
+  | exception Message.Stop message ->
+      ([], List.rev state.refusals, Some message, state.declared)
 
 (* trace: D70 *)
 (* Every line is indented 4 spaces per level: a procedure's header and closer
@@ -231,6 +272,7 @@ let indentation (source : Source.t) tokens =
       let depth =
         match first.kind with
         | Keyword ((Procedure_word | End_word), _) -> 0
+        | Word word when line = 1 && Option.is_some (language_of_word word) -> 0
         | _ -> 1
       in
       let text = Source.line source line in

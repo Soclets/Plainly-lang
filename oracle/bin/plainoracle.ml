@@ -10,7 +10,9 @@ let run file =
       2
   | source -> (
       let tokens, lexer_stop = Lexer.tokens source in
-      let statements, refusals, stop = Check.program source tokens lexer_stop in
+      let statements, refusals, stop, declared =
+        Check.program source tokens lexer_stop
+      in
       let refusals = refusals @ Check.indentation source tokens in
       let refusals =
         match stop with
@@ -24,7 +26,29 @@ let run file =
             compare (first.line, first.byte) (second.line, second.byte))
           refusals
       in
-      match refusals @ Option.to_list stop with
+      let messages = refusals @ Option.to_list stop in
+      (* trace: D61 *)
+      (* trace: D75 *)
+      (* A Thai file's messages are in Thai, and only their labels are decided,
+         so its first message stops with NotDesignedYet in its place. *)
+      let messages, stop =
+        match (declared, messages) with
+        | Some Token.Thai, ({ Message.kind = Message.Refused; _ } as first) :: _
+          ->
+            let thai =
+              {
+                first with
+                Message.kind = Message.Not_designed_yet;
+                body =
+                  Message.What
+                    "the Thai wording of this message isn't decided yet";
+                why = None;
+              }
+            in
+            ([ thai ], Some thai)
+        | _ -> (messages, stop)
+      in
+      match messages with
       | [] ->
           List.iter
             (fun (Check.Show_text words) ->

@@ -1,0 +1,3 @@
+procedure.main[none]:
+    show_text("Hi");
+end procedure.main
