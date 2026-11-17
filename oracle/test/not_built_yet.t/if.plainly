@@ -1,0 +1,6 @@
+english
+procedure.main[none]:
+    if 1 at_least 1:
+        show_text("yes");
+    end if
+end procedure.main

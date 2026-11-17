@@ -1,8 +1,8 @@
-Variables are decided but not built yet, so PlainOracle says so (D72).
+Something decided but not built yet stops with NotBuiltYet (D72). Here, `if` (D35).
 
-  $ plainoracle variable.plainly
-  NotBuiltYet: variable.plainly:3:5, line 3 column 5
-   3 |     #total: Whole = 0;
-     |     ^^^^^^
-   what: variables (#) aren't in PlainOracle yet
+  $ plainoracle if.plainly
+  NotBuiltYet: if.plainly:3:5, line 3 column 5
+   3 |     if 1 at_least 1:
+     |     ^^
+   what: `if` isn't in PlainOracle yet
   [3]

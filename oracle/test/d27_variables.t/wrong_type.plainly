@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    #score: Whole = "ten";
+end procedure.main

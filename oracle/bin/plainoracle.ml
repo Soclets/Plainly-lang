@@ -49,13 +49,13 @@ let run file =
         | _ -> (messages, stop)
       in
       match messages with
-      | [] ->
-          List.iter
-            (fun (Check.Show_text words) ->
-              print_string words;
-              print_char '\n')
-            statements;
-          0
+      | [] -> (
+          match Run.program statements with
+          | () -> 0
+          | exception Message.Stop message ->
+              flush stdout;
+              prerr_string (Message.render source message);
+              3)
       | messages ->
           prerr_string
             (String.concat "\n" (List.map (Message.render source) messages));

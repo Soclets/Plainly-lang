@@ -1,0 +1,8 @@
+english
+procedure.main[none]:
+    #name: Text = "Mia";
+    mut #score: Whole = 10;
+    change #score = #score + 5;
+    show_text("Hello, " & #name);
+    show_text("Score: " & be.Text(#score));
+end procedure.main

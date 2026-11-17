@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    mut #big: Whole = 9223372036854775807;
+    change #big = #big + 1;
+end procedure.main

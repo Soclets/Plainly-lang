@@ -22,8 +22,9 @@ To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`,
 | Slice | State |
 |---|---|
 | 1. Hello world, English and Thai, the error format, `;`, `[none]`, indentation | Done, 2026-11-17 |
-| 2. Variables, `Whole` and `Text`, `mut`, `change`, `+`, `&`, `be.Text` | Next |
-| 3 to 9 | Not started |
+| 2. Variables, `Whole` and `Text`, `mut`, `change`, `+`, `&`, `be.Text` | Done, 2026-11-17 |
+| 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` | Next |
+| 4 to 9 | Not started |
 
 ## Slice 1
 
@@ -50,6 +51,21 @@ Not built yet: D58's knock-on sorting (apply the first fix, check again, add `be
 knock-on error, so there's nothing to test it with yet. It's needed from slice 2, when a broken declaration can cause
 later errors.
 
+## Slice 2
+
+Runs: declarations with written types, `#name: Text = "Mia";` and `mut #score: Whole = 10;` (`mutable` too), `change`,
+`+` on `Whole`, `&` on `Text`, `be.Text` of a `Whole`, brackets for grouping, and `show_text` of any `Text` expression.
+
+Refused, tested: `change` on a variable that isn't `mut`; a value of the wrong type; `+` on text, with `fix: &`; a number
+joined with `&` or passed to `show_text`, with `fix: be.Text(…)`; a variable used before its declaration; a number too
+big for a `Whole`. A refused declaration still creates its variable with its written type (D58), tested.
+
+Stops, tested: overflow (decided as a check, but how a failed check is reported while running isn't); `+` and `&` mixed
+without brackets; `mut` in a Thai file. Also built: declaring a name twice, `be.Text` of `Text`, and numbers written
+with anything but digits, all `NotDesignedYet`.
+
+Traced decisions added: D1, D6, D19, D27, D28, D51.
+
 ## Waiting for the owner
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
@@ -68,3 +84,27 @@ These are choices slice 1 had to make so that anything could run. They're provis
   like Chinese, which take two.
 - A line's role for indentation comes from its first token: `procedure` and `end` lines are at level 0, everything else
   at level 1. That's only enough for slice 1, which has one block.
+
+## New wording waiting for review
+
+From slice 2, in D73's style:
+- `what: `"ten"` is `Text`, but `#score` is a `Whole``, with `why:  a variable (#) holds only the type written for it.`
+- `why:  `+` is only for numbers, and `&` joins text.`, with `fix: &` on text, or `what: `+` can't add `Text`` (built,
+  not tested) when only one side is text.
+- `why:  `&` joins text, and doesn't turn a number into text by itself.`
+- `why:  `show_text` shows text, and doesn't turn a number into text by itself.`
+- `what: `#nmae` isn't declared before this line`, with `why:  a variable (#) is declared, with its type, before it's
+  used.`
+- `what: `…` doesn't fit in a `Whole``, with `why:  a `Whole` holds whole numbers from -9223372036854775808 to
+  9223372036854775807.`
+- `what: `#score` isn't mutable` comes from D58's own example, and its `why:` is D59's.
+
+## Questions slice 2 raised
+
+1. How a failed check is reported while running: its wording and its exit status (D71 left it open). Overflow needs it.
+2. Which goes first when `+` and `&` are mixed without brackets.
+3. `-`, `*` and division.
+4. `be.Text` of something that's already `Text`: allowed, or refused?
+5. Declaring the same name twice in one procedure.
+6. The Thai words for `mut`, `mutable`, `change`, `be`, `Whole` and `Text`.
+7. Other ways of writing numbers, like `1_000`.

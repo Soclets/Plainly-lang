@@ -6,6 +6,8 @@ type keyword =
   | None_word
   | End_word
   | Show_text_word
+  | Mut_word
+  | Change_word
 
 (* trace: D57 *)
 (* One grammar, two word tables. *)
@@ -28,6 +30,8 @@ let keyword_of_word = function
   | "none" -> Some (None_word, English)
   | "end" -> Some (End_word, English)
   | "show_text" -> Some (Show_text_word, English)
+  | "mut" | "mutable" -> Some (Mut_word, English)
+  | "change" -> Some (Change_word, English)
   | "กระบวนการ" -> Some (Procedure_word, Thai)
   | "หลัก" -> Some (Main_word, Thai)
   | "ไม่มี" -> Some (None_word, Thai)
@@ -35,19 +39,22 @@ let keyword_of_word = function
   | "แสดงข้อความ" -> Some (Show_text_word, Thai)
   | _ -> None
 
-(* The word a keyword is written as in each table. *)
+(* The word a keyword is written as in each table, where one is decided. *)
 let spelling keyword table =
   match (keyword, table) with
-  | Procedure_word, English -> "procedure"
-  | Main_word, English -> "main"
-  | None_word, English -> "none"
-  | End_word, English -> "end"
-  | Show_text_word, English -> "show_text"
-  | Procedure_word, Thai -> "กระบวนการ"
-  | Main_word, Thai -> "หลัก"
-  | None_word, Thai -> "ไม่มี"
-  | End_word, Thai -> "สิ้นสุด"
-  | Show_text_word, Thai -> "แสดงข้อความ"
+  | Procedure_word, English -> Some "procedure"
+  | Main_word, English -> Some "main"
+  | None_word, English -> Some "none"
+  | End_word, English -> Some "end"
+  | Show_text_word, English -> Some "show_text"
+  | Mut_word, English -> Some "mut"
+  | Change_word, English -> Some "change"
+  | Procedure_word, Thai -> Some "กระบวนการ"
+  | Main_word, Thai -> Some "หลัก"
+  | None_word, Thai -> Some "ไม่มี"
+  | End_word, Thai -> Some "สิ้นสุด"
+  | Show_text_word, Thai -> Some "แสดงข้อความ"
+  | (Mut_word | Change_word), Thai -> None
 
 (* trace: D75 *)
 let language_of_word = function

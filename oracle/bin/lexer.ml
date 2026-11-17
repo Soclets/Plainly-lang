@@ -40,7 +40,8 @@ let tokens (source : Source.t) =
       if index < size then
         match text.[index] with
         | ' ' | '\t' | '\r' -> go (index + 1)
-        | ('.' | '[' | ']' | '(' | ')' | ':' | ';') as symbol ->
+        | ('.' | '[' | ']' | '(' | ')' | ':' | ';' | '=' | '+' | '&') as symbol
+          ->
             add (Symbol symbol) index 1;
             go (index + 1)
         | '"' -> go (text_literal index)

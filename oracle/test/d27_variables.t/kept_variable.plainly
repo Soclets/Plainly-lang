@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    #score: Whole = "ten";
+    show_text(be.Text(#score));
+end procedure.main

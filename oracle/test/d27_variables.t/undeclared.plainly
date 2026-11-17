@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    show_text(#nmae);
+end procedure.main

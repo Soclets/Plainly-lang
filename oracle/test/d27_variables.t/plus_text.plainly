@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    show_text("a" + "b");
+end procedure.main

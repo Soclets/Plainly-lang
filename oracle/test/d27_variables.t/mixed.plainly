@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    show_text("a" & be.Text(1 + 2) & "b");
+    show_text("x" & "y" + "z");
+end procedure.main

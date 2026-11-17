@@ -1,0 +1,6 @@
+english
+procedure.main[none]:
+    mutable #lives: Whole = 3;
+    change #lives = #lives + 1;
+    show_text(be.Text(#lives));
+end procedure.main

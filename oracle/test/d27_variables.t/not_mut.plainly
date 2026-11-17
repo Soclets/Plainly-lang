@@ -1,4 +1,5 @@
 english
 procedure.main[none]:
-    #total: Whole = 0;
+    #score: Whole = 10;
+    change #score = 11;
 end procedure.main

@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    #n: Whole = 9223372036854775808;
+end procedure.main
