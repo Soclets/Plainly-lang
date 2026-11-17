@@ -49,13 +49,7 @@ later errors.
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
 1. ~~Exit statuses~~: decided as D71.
 2. ~~The layout of `NotBuiltYet` and `NotDesignedYet`~~: decided as D72.
-3. **New wording,** written in D59's style and needing the owner's eye:
-   - `why:  every statement ends with `;`.`
-   - `why:  a block's opening line ends with `:`.`
-   - `why:  a procedure that takes nothing says `[none]`.`
-   - `why:  a body is indented 4 spaces per level, never with a tab.`
-   - `what: a block's closer lines up with its opening line`, with `why:  only a body is indented, 4 spaces per level.`
-   - `what: a procedure's opening line has no indentation` (built, not tested yet).
+3. ~~New wording~~: decided as D73.
 4. **The indentation fix** marks the indentation itself and shows four spaces as code, `` `    ` ``. When a line has no
    indentation, the `^` sits under its first letter, which can read as "replace this letter".
 5. **Which language a message is in** when the file uses Thai keywords. Slice 1 writes every message in English.
