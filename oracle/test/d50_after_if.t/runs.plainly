@@ -1,0 +1,14 @@
+english
+
+procedure.main[none]:
+    greet("");
+    greet("Mia");
+end procedure.main
+
+procedure greet[#name: Text]:
+    if compare_Text.stored_same(#name, ""):
+        return;
+    else:
+        show_text.format("Hi, {#name}!");
+    end if
+end procedure greet

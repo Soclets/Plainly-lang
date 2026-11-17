@@ -25,7 +25,7 @@ To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`,
 | 2. Variables, `Whole` and `Text`, `mut`, `change`, `+`, `&`, `be.Text` | Done, 2026-11-17 |
 | 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` | Done, 2026-11-17 |
 | 4. `if`, `else if`, `else`, comparisons, `and`/`or`/`not`, D50 | Done, 2026-11-17, except D50 |
-| 5. Procedures with parameters, results, labels, defaults, the pipe | Next |
+| 5. Procedures with parameters, results, labels, defaults, the pipe | Done, 2026-11-17 |
 | 6 to 9 | Not started |
 
 ## Slice 1
@@ -121,12 +121,47 @@ Refused, tested: a lone `=` in a condition, with `fix: ==`; `==` between two `Te
 Stops: chains of comparisons, ordering text with `<`, comparing true or false values, and true or false values outside
 an `if` (`NotDesignedYet`); `<` or `>` without spaces (`NotBuiltYet`).
 
-Not built yet: D50, since `return` and `break` aren't built. The Thai words for `and`, `or`, `not`, `at_least`,
+D50 is built in slice 5, with `return`. The Thai words for `and`, `or`, `not`, `at_least`,
 `at_most`, `compare_Text` and its methods aren't decided, so those stop in Thai files.
 
 Traced decisions added: D34, D35, D36, D37, D92, D93, D94.
 
 The opam switch now also has `uunf`.
+
+## Slice 5
+
+Runs: procedures with parameters and a result, `procedure name[#a: Whole, #b: Text] returns Whole:`, closed by
+`end procedure name`, in any order in the file (D96), calling each other and themselves; `return` with or without a
+value; `labels`, `labels.any_order` and `defaults` lines (D8 to D10); `units` lines, with a written number's unit word
+compared (D45, D47, D48); a parameter's limits checked when it's given a value, while building for a written number and
+while running otherwise (D88); the pipe, `|>`, with bare steps, steps with labels, `be.Text` and `show_text` as steps
+(D29, D30); a procedure with no result called as a statement; procedures in Thai files, as long as they use no word
+whose Thai isn't decided.
+
+Refused, tested, with D95's wording: a labelled argument written bare; an undeclared label; a missing label with no
+default; labels out of order; `labels.in_order`; too many arguments; an unused result, also at the end of a pipe (D26);
+`change` on a parameter (D32); a returned value of the wrong type; a procedure with a result that can reach its end
+without `return`; a call to `procedure.main` (D63); a written number without its unit or with another one; a line after
+an `if` with no `else` whose every branch leaves (D50). A wrong-typed argument uses D81's wording, untested.
+
+Stops (`NotDesignedYet`), each a refusal whose wording or rule isn't decided: leaving out a value without a label; using
+what a procedure with no result gives as a value; `shadow` on a parameter; a line after `return` in the same block; a
+line after an `if` where only some ways leave, or where every way leaves through an `else` too; `return` with a value in
+`procedure.main` or in a procedure with no result, and without one in a procedure with a result; a `|>` after an
+unbracketed calculation; `|>` into `show_text` from a number, `show_text.format` and `be.Text.format` as steps, `( )` on
+a step, and an unlabelled value in a step; a label, default or unit for something that isn't a parameter, a default or
+unit on a parameter without a label, a unit on a parameter that isn't `Whole`, and a unit word on anything but a written
+number; `labels`, `defaults` and `units` lines out of order; a default that isn't a written value; limits on a result;
+two procedures with one name, a second `procedure.main`, a file without one, and a closer with another name; a line that
+only works out a value.
+
+Stops (`NotBuiltYet`): a call to a name that isn't a procedure in the file, since it may be the standard library; calls
+and pipes written over several lines; `fails` in a header (slice 8).
+
+Not built yet: `external.rust procedure` (D40), `package::` (D39), and the Thai words for `labels`, `defaults`, `units`,
+`as`, `in`, `returns` and `return`, which aren't decided, so they stop in Thai files.
+
+Traced decisions added: D8, D9, D10, D26, D29, D30, D32, D45, D46, D47, D50, D95, D96.
 
 ## Waiting for the owner
 
@@ -144,12 +179,11 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 - The caret line counts one screen column per grapheme. That's right for English and Thai, but not for wide characters
   like Chinese, which take two.
-- A line's role for indentation comes from its first token: `procedure` and `end` lines are at level 0, everything else
-  at level 1. That's only enough for slice 1, which has one block.
+- A procedure's arguments are worked out in the order they're written, and defaults after them.
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93 and D94.
+All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93, D94 and D95.
 
 ## Questions slice 2 raised
 
@@ -169,3 +203,12 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90, D91, D93
 8. `{}`, and words other than `new_line` in braces.
 9. Settings in braces, like a width or decimal places (D7 left them open).
 10. `.format` of text that isn't written in quotes, like a variable holding a template.
+
+## Questions slice 5 raised
+
+11. The wording for the slice 5 stops listed above, most of all: a call leaving out a value without a label, using what
+    a procedure with no result gives, and `return` that doesn't match the procedure's result.
+12. `shadow` on a parameter.
+13. Code after `return` in the same block, and after an `if` where only some ways leave.
+14. Whether `|>` comes after `+` and `&`, so `#a + 1 |> be.Text` pipes `#a + 1`.
+15. Thai words for `labels`, `defaults`, `units`, `as`, `in`, `returns` and `return`.

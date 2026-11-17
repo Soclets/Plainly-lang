@@ -44,6 +44,10 @@ let tokens (source : Source.t) =
         | ('=' | '!') when index + 1 < size && text.[index + 1] = '=' ->
             add (Compare (String.sub text index 2)) index 2;
             go (index + 2)
+        (* trace: D30 *)
+        | '|' when index + 1 < size && text.[index + 1] = '>' ->
+            add Pipe index 2;
+            go (index + 2)
         | ('<' | '>') as symbol ->
             add (Compare (String.make 1 symbol)) index 1;
             go (index + 1)

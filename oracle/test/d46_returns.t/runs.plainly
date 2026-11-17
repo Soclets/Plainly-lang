@@ -1,0 +1,21 @@
+english
+
+procedure.main[none]:
+    show_text(be.Text(factorial(5)));
+    countdown(3);
+end procedure.main
+
+procedure factorial[#n: Whole] returns Whole:
+    if #n at_most 1:
+        return 1;
+    else:
+        return #n x factorial(#n - 1);
+    end if
+end procedure factorial
+
+procedure countdown[#from: Whole]:
+    show_text(be.Text(#from));
+    if #from > 1:
+        countdown(#from - 1);
+    end if
+end procedure countdown

@@ -1,0 +1,10 @@
+english
+
+procedure.main[none]:
+    show_text(be.Text(heal(50, by: 30)));
+end procedure.main
+
+procedure heal[#health: Whole, #amount: Whole] returns Whole:
+    labels [#amount as by];
+    return "x";
+end procedure heal

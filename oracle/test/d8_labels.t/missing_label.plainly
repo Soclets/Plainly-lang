@@ -1,0 +1,11 @@
+english
+
+procedure.main[none]:
+    mutable #hp: Whole = 50;
+    change #hp = heal(#hp);
+end procedure.main
+
+procedure heal[#health: Whole, #amount: Whole] returns Whole:
+    labels [#amount as by];
+    return #health + #amount;
+end procedure heal

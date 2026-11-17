@@ -30,6 +30,8 @@ type kind =
   | Symbol of char
   (* trace: D34 *)
   | Compare of string
+  (* trace: D30 *)
+  | Pipe
 
 (* [byte] is the 1-based byte column where the token starts, and [length] its
    length in bytes. *)

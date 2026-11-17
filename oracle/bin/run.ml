@@ -5,6 +5,17 @@ type value =
   | Whole_value of Int64.t
   | Text_value of string
   | Bool_value of bool
+  (* What a procedure with no result gives. *)
+  | Nothing_value
+
+(* trace: D46 *)
+(* A `return` leaves its procedure with its value. *)
+exception Returned of value
+
+(* Each named procedure's parameters, with their limits, and body. *)
+let procedures :
+    (string, (string * Check.limits) list * Check.statement list) Hashtbl.t =
+  Hashtbl.create 16
 
 let text_of (source : Source.t) (part : Check.expression) =
   String.sub (Source.line source part.line) (part.byte - 1) part.length
@@ -24,8 +35,19 @@ let rec variables_in (expression : Check.expression) =
       @ List.filter
           (fun name -> not (List.mem name left_names))
           (variables_in right)
-  | Check.Negate (inner, _) | Check.Be_text inner | Check.Not inner ->
+  | Check.Negate (inner, _)
+  | Check.Be_text inner
+  | Check.Not inner
+  | Check.Shown (inner, _) ->
       variables_in inner
+  | Check.Call (_, arguments) ->
+      List.fold_left
+        (fun names (_, argument) ->
+          names
+          @ List.filter
+              (fun name -> not (List.mem name names))
+              (variables_in argument))
+        [] arguments
   | Check.Format pieces ->
       List.concat_map
         (function
@@ -122,7 +144,7 @@ let rec evaluate source variables (expression : Check.expression) =
             (describe variables (variables_in inner))
             whole_range
       | Whole_value number -> Whole_value (Int64.neg number)
-      | Text_value _ | Bool_value _ ->
+      | Text_value _ | Bool_value _ | Nothing_value ->
           invalid_arg "Run.evaluate: `-` on a non-number passed the checker")
   | Check.Arithmetic (Check.Saturate operation, left, right, _) ->
       saturate source variables Check.no_limits operation left right
@@ -176,7 +198,7 @@ let rec evaluate source variables (expression : Check.expression) =
       match evaluate source variables inner with
       | Whole_value number -> Text_value (Int64.to_string number)
       | Text_value words -> Text_value words
-      | Bool_value _ ->
+      | Bool_value _ | Nothing_value ->
           invalid_arg "Run.evaluate: be.Text of a condition passed the checker")
   (* trace: D34 *)
   | Check.Compare_values (operator, left, right) -> (
@@ -247,11 +269,37 @@ let rec evaluate source variables (expression : Check.expression) =
                     match evaluate source variables inner with
                     | Whole_value number -> Int64.to_string number
                     | Text_value words -> words
-                    | Bool_value _ ->
+                    | Bool_value _ | Nothing_value ->
                         invalid_arg
                           "Run.evaluate: a condition in braces passed the \
                            checker"))
               pieces))
+  (* trace: D8 *)
+  (* Each argument is worked out in the caller's variables and stored in the
+     procedure's own, checking its limits as any variable's (D88). *)
+  | Check.Call (name, arguments) -> (
+      let parameters, body = Hashtbl.find procedures name in
+      let scope = Hashtbl.create 16 in
+      List.iter
+        (fun (index, argument) ->
+          let parameter, limits = List.nth parameters index in
+          store source variables scope parameter limits argument)
+        arguments;
+      match run_statements source scope body with
+      | () -> Nothing_value
+      | exception Returned value -> value)
+  (* trace: D30 *)
+  | Check.Shown (inner, same_line) ->
+      show (evaluate source variables inner) same_line;
+      Nothing_value
+
+and show value same_line =
+  match value with
+  | Text_value words ->
+      print_string words;
+      (* trace: D12 *)
+      if not same_line then print_char '\n'
+  | _ -> invalid_arg "Run: show_text of a non-text passed the checker"
 
 (* trace: D87 *)
 (* trace: D88 *)
@@ -282,7 +330,7 @@ and saturate source variables (limits : Check.limits) operation left right =
 (* trace: D88 *)
 (* Storing into a variable with limits: `.saturate` at the top sticks at them,
    and anything else outside them is a failed check. *)
-let store source variables name limits (expression : Check.expression) =
+and store source variables into name limits (expression : Check.expression) =
   let value =
     match expression.shape with
     | Check.Arithmetic (Check.Saturate operation, left, right, _) ->
@@ -312,11 +360,11 @@ let store source variables name limits (expression : Check.expression) =
           failed
             (Printf.sprintf "`%s` is below `%s`'s minimum of %Ld" text name low)
       | _ -> ())
-  | Text_value _ | Bool_value _ -> ());
-  Hashtbl.replace variables name value
+  | Text_value _ | Bool_value _ | Nothing_value -> ());
+  Hashtbl.replace into name value
 
 (* trace: D35 *)
-let rec run_statements source variables statements =
+and run_statements source variables statements =
   List.iter
     (function
       | Check.If (branches, otherwise) -> (
@@ -334,19 +382,32 @@ let rec run_statements source variables statements =
           | Some (_, body), _ -> run_statements source variables body
           | None, Some body -> run_statements source variables body
           | None, None -> ())
-      | Check.Show_text (expression, same_line) -> (
-          match evaluate source variables expression with
-          | Text_value words ->
-              print_string words;
-              (* trace: D12 *)
-              if not same_line then print_char '\n'
-          | _ ->
-              invalid_arg
-                "Run.program: show_text of a non-text passed the checker")
+      | Check.Show_text (expression, same_line) ->
+          show (evaluate source variables expression) same_line
       | Check.Declare (name, expression, limits)
       | Check.Change (name, expression, limits) ->
-          store source variables name limits expression)
+          store source variables variables name limits expression
+      | Check.Expression_statement expression ->
+          ignore (evaluate source variables expression)
+      | Check.Return value ->
+          raise
+            (Returned
+               (match value with
+               | Some value -> evaluate source variables value
+               | None -> Nothing_value)))
     statements
 
-let program source statements =
-  run_statements source (Hashtbl.create 16) statements
+let program source (main, named) =
+  Hashtbl.reset procedures;
+  List.iter
+    (fun (name, (parameters : Check.parameter list), body) ->
+      Hashtbl.replace procedures name
+        ( List.map
+            (fun (parameter : Check.parameter) ->
+              (parameter.parameter_name, parameter.parameter_limits))
+            parameters,
+          body ))
+    named;
+  match run_statements source (Hashtbl.create 16) main with
+  | () -> ()
+  | exception Returned _ -> ()

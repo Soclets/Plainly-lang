@@ -1,0 +1,22 @@
+english
+
+procedure.main[none]:
+    mutable #hp: Whole = 50;
+    change #hp = heal(#hp, by: 30, times: 2);
+    show_text(be.Text(#hp));
+    change #hp = heal(#hp, by: 5);
+    show_text(be.Text(#hp));
+    move(10, down: 1, across: 3);
+    move(10, across: 4, down: 2);
+end procedure.main
+
+procedure heal[#health: Whole, #amount: Whole, #count: Whole] returns Whole:
+    labels [#amount as by, #count as times];
+    defaults [#count = 1];
+    return #health + #amount x #count;
+end procedure heal
+
+procedure move[#start: Whole, #x: Whole, #y: Whole]:
+    labels.any_order [#x as across, #y as down];
+    show_text.format("{#start}: {#x}, {#y}");
+end procedure move

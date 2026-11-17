@@ -1,0 +1,11 @@
+english
+
+procedure.main[none]:
+    #hp: Whole = 50;
+    #hp |> heal(by: 300);
+end procedure.main
+
+procedure heal[#health: Whole, #amount: Whole] returns Whole:
+    labels [#amount as by];
+    return #health + #amount;
+end procedure heal

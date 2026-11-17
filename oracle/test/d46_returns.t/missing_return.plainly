@@ -1,0 +1,11 @@
+english
+
+procedure.main[none]:
+    show_text(be.Text(sign(5)));
+end procedure.main
+
+procedure sign[#n: Whole] returns Whole:
+    if #n < 0:
+        return -1;
+    end if
+end procedure sign

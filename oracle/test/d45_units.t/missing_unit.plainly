@@ -1,0 +1,13 @@
+english
+
+procedure.main[none]:
+    draw(1, across: 300, down: 2 pixels);
+    #x: Whole = 7;
+    draw(2, across: #x, down: 3 pixels);
+end procedure.main
+
+procedure draw[#id: Whole, #x: Whole, #y: Whole]:
+    labels [#x as across, #y as down];
+    units [#x in pixels, #y in pixels];
+    show_text.format("{#id} at {#x}, {#y}");
+end procedure draw
