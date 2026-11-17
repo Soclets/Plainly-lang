@@ -41,6 +41,8 @@ names the decision it came from, or when the owner gave it.
 8. **Talk in chat.** One question at a time, asked in the message itself, with no popups or pre-made answer buttons:
    no question dialogs, and no question or buttons in the app's next-step box. (Owner, 2026-11-16 and 2026-11-17, from
    Cyborg's CLAUDE.md)
+9. **The standard follows the decisions.** A decision that changes a rule updates `standard/` in the same commit, and
+   anything it leaves open is marked **Not decided** there (`standard/README.md`). (Owner, 2026-11-17)
 
 ## Tracing
 
