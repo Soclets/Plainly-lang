@@ -1371,6 +1371,8 @@ key). The command is `เอพาย`, `apy` in Thai letters (owner: "That's wh
 
 `run` is `รัน`, the loanword Thai programmers say; `เรียกใช้` was offered (owner: "รัน").
 
-Open: the Thai words for `build`, `check` and `convert`, the mode flags, and the extension.
+`build` is `สร้าง` ("build, create"), native and everyday; `บิลด์` was offered.
+
+Open: the Thai words for `check` and `convert`, the flags, and the extension.
 
 Owner: has code.
