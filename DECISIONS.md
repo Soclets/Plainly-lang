@@ -1163,3 +1163,14 @@ turned down checking every result.
 
 Owner: "let's do the NaN and infinity stuff", "Depends on the fucking buldd", "Uh, ask Cyborg, it found a more
 effiecient way to check", then "yea, rec it".
+
+## D67: Plainly has both lists and arrays (2026-11-17)
+
+A list grows and shrinks: you add to it and take from it, like Python's list or Rust's `Vec`. An array has a fixed size,
+known while building, so D20 can refuse a bad position like position 10 of a 9-item board before the game runs. Games
+are full of fixed-size things, like boards, grids and inventory slots.
+
+Open: how each is written, as a type and as a value; how an empty one is made. `Array<Text>[size: 9]` with every item
+written out was turned down.
+
+Owner: "both. But not that syntax. Ask Cyborg for how to make empty shit."
