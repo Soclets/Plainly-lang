@@ -48,8 +48,7 @@ later errors.
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
 1. ~~Exit statuses~~: decided as D71.
-2. **The layout of `NotBuiltYet` and `NotDesignedYet`.** They copy D58's first line and source lines, with `what:` and
-   no `why:`. They aren't Plainly errors, but the oracle's own limits.
+2. ~~The layout of `NotBuiltYet` and `NotDesignedYet`~~: decided as D72.
 3. **New wording,** written in D59's style and needing the owner's eye:
    - `why:  every statement ends with `;`.`
    - `why:  a block's opening line ends with `:`.`
