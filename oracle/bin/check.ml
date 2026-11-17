@@ -143,6 +143,9 @@ type state = {
   mutable statement_start : int;
   mutable defined : string list;
   mutable main_seen : bool;
+  (* Names declared inside a block that has ended. Whether they last after it
+     isn't decided, so using or declaring one stops. *)
+  mutable block_ended : string list;
 }
 
 let stop kind (token : Token.t) words =
@@ -438,6 +441,10 @@ let is_digit character = character >= '0' && character <= '9'
 
 (* trace: D27 *)
 let find_variable state (token : Token.t) name =
+  if List.mem name state.block_ended then
+    stop Message.Not_designed_yet token
+      (Printf.sprintf
+         "using `%s` after the block it was declared in isn't decided yet" name);
   match List.assoc_opt name state.variables with
   | Some found -> Some found
   | None ->
@@ -1952,6 +1959,12 @@ let declaration state ~shadow ~mutable_variable =
         (Printf.sprintf
            "`shadow` on `%s`, which isn't declared yet, isn't decided yet" name)
   | _ -> ());
+  if List.mem name state.block_ended then
+    stop Message.Not_designed_yet name_token
+      (Printf.sprintf
+         "declaring `%s` again, after the block it was declared in, isn't \
+          decided yet"
+         name);
   state.declared_on <- (name, name_token.line) :: state.declared_on;
   ignore (expect_symbol state ':');
   let variable_type, limits = type_of state in
@@ -2328,12 +2341,31 @@ let rec statements state depth found =
       in
       statements state depth (statement :: found)
 
+(* A block's own declarations end with it. Whether they could last after it
+   isn't decided, so their names are kept to stop on any later use. *)
+and block state body =
+  let variables = state.variables
+  and limits = state.limits
+  and declared_on = state.declared_on in
+  let found = body () in
+  let added =
+    List.filteri
+      (fun index _ ->
+        index < List.length state.declared_on - List.length declared_on)
+      state.declared_on
+  in
+  state.block_ended <- List.map fst added @ state.block_ended;
+  state.variables <- variables;
+  state.limits <- limits;
+  state.declared_on <- declared_on;
+  found
+
 (* trace: D35 *)
 and if_statement state (if_token : Token.t) depth =
   let branch () =
     let value = condition_of state in
     colon state;
-    let body = statements state (depth + 1) [] in
+    let body = block state (fun () -> statements state (depth + 1) []) in
     (value, body)
   in
   let rec more branches =
@@ -2350,7 +2382,9 @@ and if_statement state (if_token : Token.t) depth =
             more (branch () :: branches)
         | _ ->
             colon state;
-            let otherwise = statements state (depth + 1) [] in
+            let otherwise =
+              block state (fun () -> statements state (depth + 1) [])
+            in
             close (List.rev branches) (Some otherwise))
     | _ -> close (List.rev branches) None
   and close branches otherwise =
@@ -2527,7 +2561,8 @@ let enter_procedure state parameters line =
   state.declared_on <-
     List.map (fun parameter -> (parameter.parameter_name, line)) parameters;
   state.parameter_names <-
-    List.map (fun parameter -> parameter.parameter_name) parameters
+    List.map (fun parameter -> parameter.parameter_name) parameters;
+  state.block_ended <- []
 
 (* trace: D9 *)
 (* trace: D10 *)
@@ -2881,6 +2916,7 @@ let program source tokens lexer_stop =
       statement_start = 0;
       defined = [];
       main_seen = false;
+      block_ended = [];
     }
   in
   let result =

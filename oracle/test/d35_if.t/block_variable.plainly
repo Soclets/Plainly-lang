@@ -1,0 +1,8 @@
+english
+
+procedure.main[none] returns nothing:
+    if 1 == 2:
+        #message: Text = "hi";
+    end if
+    show_text(#message);
+end procedure.main
