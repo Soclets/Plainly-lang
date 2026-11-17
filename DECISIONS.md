@@ -1467,3 +1467,10 @@ as when `+` meets `&`, which isn't a maths operator, brackets are required: `"To
 is refused, since the reader would have to guess the order.
 
 Owner: "Follow maths, and require grouping when maths doesn't answer".
+
+The refusal says which brackets, since Plainly has four kinds and only `( )` groups (D51):
+
+    what: `+` and `&` are mixed without `( )`
+    why:  maths doesn't say which goes first, so `( )` shows it.
+
+Owner, on the wording: "What kind of brackets", then "yea".
