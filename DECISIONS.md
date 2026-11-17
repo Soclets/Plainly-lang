@@ -1205,3 +1205,18 @@ Open: filling an array from a range or a rule.
 
 Owner: "Where the fuck is setting a max length for List? And why the word `size:`?", "With alts too: `.empty` takes its
 type from left, `len`, `maximum`, `minimum`?", then "yea".
+
+## D69: A procedure with no parameters writes `[none]` (2026-11-17)
+
+    procedure.main[none]:
+    show_text("Hello, World!");
+    end procedure.main
+
+An empty `[]` is refused, with `fix: [none]`. It's D68's rule: an empty thing sitting on the page looks like unfinished
+work, so it gets a word. The brackets stay, so every procedure header has the same shape, and `none` says on purpose
+that it takes nothing, as in Cyborg. Leaving the brackets out, as in `procedure.main:`, was turned down. Examples in
+entries before this one write `[]`.
+
+Open: the Thai word for `none` (D57).
+
+Owner: "So, params now use `[none]`?", then "[none], rec it".
