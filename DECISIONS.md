@@ -1574,7 +1574,11 @@ A number type can be narrowed with limits in `[ ]`, which hold its details (D51)
 and `max:` for short, as with lists' lengths (D68). `.saturate` (D87) sticks at these limits, so a health bar stops at 0
 and 100. This is Cyborg's bounded numbers (Cyborg D372).
 
-Open: what happens when a value outside the limits is stored: refused while building where it can be seen, as with a bad
-position (D20), and a failed check while running otherwise, depending on the build mode, would match D19.
+Storing a value outside the limits without `.saturate`, as in `change #hp = 150;`, is refused while building where the
+compiler can see it, as with a bad position (D20), and is otherwise a failed check while running, depending on the
+build mode (D19): stopping with D82's message and exit status 4 in `Working` and `FinalSafe`, and unchecked in
+`FinalPerf` (owner: "yea").
+
+Open: the wording of both messages.
 
 Owner: "yea".
