@@ -1249,7 +1249,9 @@ Owner: "Indented, it's just that I can't format in chat", "Refused", then "4 spa
 
 These hold for PlainOracle and AroundPy alike, since tests record them.
 
-Open: the status for a failure leaving `main` (D63) and for a failed check while running.
+A failed check while running exits with 4 (D82).
+
+Open: the status for a failure leaving `main` (D63).
 
 Owner: "yup".
 
@@ -1442,3 +1444,18 @@ These lines, written for PlainOracle's slices 2 and 3 in D73's style, are the wo
 `what: `#score` isn't mutable` is D58's own example.
 
 Owner, asked whether any read wrong: "no".
+
+## D82: How a failed check is reported while running (2026-11-17)
+
+    check failed: game.plainly:4:24, line 4 column 24
+     4 |     change #big = #big + 1;
+       |                        ^
+     what: `#big + 1` is too big for a `Whole`
+     when: `#big` is 9223372036854775807
+     why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
+
+A failed check while running uses D58's layout with the kind `check failed:`. `when:` (D58) gives the values that broke
+the rule, since the code alone doesn't show them, and comes between `what:` and `why:`. The program stops with exit
+status 4, the next free one after D71's.
+
+Owner: "yea".
