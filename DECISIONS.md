@@ -1365,6 +1365,10 @@ Owner: "You know what's plain? `.code`, hahah", "Or just `.plainly`?", then "yea
 The command is `apy`, the compiler's short name (D23), rather than `plainly`, which would read
 `plainly run game.plainly`.
 
-Open: the Thai words for the commands.
+The Thai commands are fully Thai, so nothing needs the English keyboard layout (the `-` of `--` is on Kedmanee's `3`
+key). The command is `เอพาย`, `apy` in Thai letters (owner: "That's why we make it fully Thai, sherlock", then
+"เอพาย").
+
+Open: the Thai words for `run`, `build`, `check` and `convert`, the mode flags, and the extension.
 
 Owner: has code.
