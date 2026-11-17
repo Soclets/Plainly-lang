@@ -12,6 +12,7 @@ type keyword =
   | Be_word
   | Whole_word
   | Text_word
+  | New_line_word
 
 (* trace: D57 *)
 (* One grammar, two word tables. *)
@@ -40,6 +41,7 @@ let keyword_of_word = function
   | "be" -> Some (Be_word, English)
   | "Whole" -> Some (Whole_word, English)
   | "Text" -> Some (Text_word, English)
+  | "new_line" -> Some (New_line_word, English)
   | "กระบวนการ" -> Some (Procedure_word, Thai)
   | "หลัก" -> Some (Main_word, Thai)
   | "ไม่มี" -> Some (None_word, Thai)
@@ -51,6 +53,7 @@ let keyword_of_word = function
   | "เป็น" -> Some (Be_word, Thai)
   | "จำนวนเต็ม" -> Some (Whole_word, Thai)
   | "ข้อความ" -> Some (Text_word, Thai)
+  | "บรรทัดใหม่" -> Some (New_line_word, Thai)
   | _ -> None
 
 (* The word a keyword is written as in each table, where one is decided. *)
@@ -67,6 +70,7 @@ let spelling keyword table =
   | Be_word, English -> Some "be"
   | Whole_word, English -> Some "Whole"
   | Text_word, English -> Some "Text"
+  | New_line_word, English -> Some "new_line"
   | Procedure_word, Thai -> Some "กระบวนการ"
   | Main_word, Thai -> Some "หลัก"
   | None_word, Thai -> Some "ไม่มี"
@@ -78,6 +82,7 @@ let spelling keyword table =
   | Be_word, Thai -> Some "เป็น"
   | Whole_word, Thai -> Some "จำนวนเต็ม"
   | Text_word, Thai -> Some "ข้อความ"
+  | New_line_word, Thai -> Some "บรรทัดใหม่"
 
 (* trace: D75 *)
 let language_of_word = function

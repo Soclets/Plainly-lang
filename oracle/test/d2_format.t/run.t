@@ -79,3 +79,9 @@ Nor fields in a fill-in (D7).
      |                             ^
    what: fields in a fill-in aren't decided yet
   [3]
+
+`บรรทัดใหม่` is Thai `new_line` (D57).
+
+  $ plainoracle thai_new_line.เพลนลี่
+  ก
+  ข

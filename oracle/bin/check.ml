@@ -480,57 +480,70 @@ let format_text state (token : Token.t) text =
           why = Some "a fill-in only reads a value, so it can never hide work.";
         }
     in
-    if inside = "new_line" then Buffer.add_char buffer '\n'
-    else if String.length inside > 0 && inside.[0] = '#' then
-      let size = String.length inside in
-      let rec name_end position =
-        if position < size && is_name_byte inside.[position] then
-          name_end (position + 1)
-        else position
-      in
-      let finish = name_end 1 in
-      if finish = size then (
-        flush ();
-        let name_token =
+    match keyword_of_word inside with
+    | Some (New_line_word, table) ->
+        (* trace: D4 *)
+        check_table state
           {
-            Token.kind = Name inside;
+            Token.kind = Keyword (New_line_word, table);
             line = token.line;
             byte = token.byte + 2 + index;
-            length = size;
+            length = String.length inside;
           }
-        in
-        let value_type =
-          Option.map fst (find_variable state name_token inside)
-        in
-        pieces :=
-          Fill (spanning name_token name_token (Variable inside) value_type)
-          :: !pieces)
-      else
-        match inside.[finish] with
-        | '.' ->
-            raise
-              (Message.Stop
-                 (at
-                    (index + 1 + finish)
-                    1 Message.Not_designed_yet
-                    "fields in a fill-in aren't decided yet"))
-        | ',' ->
-            raise
-              (Message.Stop
-                 (at
-                    (index + 1 + finish)
-                    1 Message.Not_designed_yet
-                    "settings in a fill-in, like a width, aren't decided yet"))
-        | _ -> calculation ()
-    else if String.exists (fun c -> String.contains "+-*/&|()" c) inside then
-      calculation ()
-    else
-      raise
-        (Message.Stop
-           (at index
-              (closing - index + 1)
-              Message.Not_designed_yet
-              (Printf.sprintf "`{%s}` isn't decided yet" inside)))
+          table;
+        Buffer.add_char buffer '\n'
+    | _ ->
+        if String.length inside > 0 && inside.[0] = '#' then
+          let size = String.length inside in
+          let rec name_end position =
+            if position < size && is_name_byte inside.[position] then
+              name_end (position + 1)
+            else position
+          in
+          let finish = name_end 1 in
+          if finish = size then (
+            flush ();
+            let name_token =
+              {
+                Token.kind = Name inside;
+                line = token.line;
+                byte = token.byte + 2 + index;
+                length = size;
+              }
+            in
+            let value_type =
+              Option.map fst (find_variable state name_token inside)
+            in
+            pieces :=
+              Fill (spanning name_token name_token (Variable inside) value_type)
+              :: !pieces)
+          else
+            match inside.[finish] with
+            | '.' ->
+                raise
+                  (Message.Stop
+                     (at
+                        (index + 1 + finish)
+                        1 Message.Not_designed_yet
+                        "fields in a fill-in aren't decided yet"))
+            | ',' ->
+                raise
+                  (Message.Stop
+                     (at
+                        (index + 1 + finish)
+                        1 Message.Not_designed_yet
+                        "settings in a fill-in, like a width, aren't decided \
+                         yet"))
+            | _ -> calculation ()
+        else if String.exists (fun c -> String.contains "+-*/&|()" c) inside
+        then calculation ()
+        else
+          raise
+            (Message.Stop
+               (at index
+                  (closing - index + 1)
+                  Message.Not_designed_yet
+                  (Printf.sprintf "`{%s}` isn't decided yet" inside)))
   in
   go 0;
   flush ();
@@ -884,9 +897,9 @@ and primary state =
       advance state;
       plain_text token words;
       spanning token token (Text_literal words) (Some Text_type)
-  | Word "new_line" ->
+  | Keyword (New_line_word, table) ->
       (* trace: D4 *)
-      english_only state token;
+      check_table state token table;
       advance state;
       spanning token token (Text_literal "\n") (Some Text_type)
   | Word digits when String.length digits > 0 && is_digit digits.[0] ->
