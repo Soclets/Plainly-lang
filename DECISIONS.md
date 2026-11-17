@@ -949,6 +949,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `Whole` | `จำนวนเต็ม` ("whole number"), the term from Thai maths class |
 | `Text` | `ข้อความ` ("text"), the word inside `แสดงข้อความ` |
 | `new_line` (D4) | `บรรทัดใหม่` ("new line"), also inside `.format`'s braces |
+| `.same_line` (D12) | `.บรรทัดเดิม` ("the same line"), the pair of `บรรทัดใหม่` |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
