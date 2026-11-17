@@ -1195,7 +1195,13 @@ Owner: "both. But not that syntax. Ask Cyborg for how to make empty shit."
 - **A list literal** like `[1, 2, 3]` becomes a list or an array depending on where it goes, with its count checked
   against the type (Cyborg D141). With a GC, a literal goes straight into a growable list, with no allocator.
 
-Open: whether `[]` and `""` are refused, with `.empty` as the fix, as in Cyborg; filling an array from a range or a rule.
+`[]` and `""` are refused, with `.empty` as the fix, as in Cyborg (Cyborg D103), so an empty text is
+`#name: Text = .empty;`. An empty literal looks like unfinished work. This doesn't mean everything must be written out:
+a procedure with no result writes no `returns` (D46). Plainly asks for a word only where something empty would otherwise
+sit on the page, never to fill a place that's simply left out (owner: "refused. And if someone asks why writing no return
+isn't refused? It's because we only write more when there's already something empty").
+
+Open: filling an array from a range or a rule.
 
 Owner: "Where the fuck is setting a max length for List? And why the word `size:`?", "With alts too: `.empty` takes its
 type from left, `len`, `maximum`, `minimum`?", then "yea".
