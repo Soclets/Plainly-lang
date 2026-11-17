@@ -14,3 +14,6 @@ names the decision it came from, or when the owner gave it.
    quote, fix its typos, or use `[...]`. Notes outside the quotes, like what a "yea" answered, are fine. Decide before
    writing the line, never by picking the relevant part: in a commit subject, quote only a short message copied whole,
    like "yea", and write too long for anything longer. (Owner, 2026-11-16)
+3. **Stop at 8:30 PM.** Every session stops at 20:30 and suggests the owner stops too, since going past bedtime has made
+   the owner abandon languages. A `UserPromptSubmit` hook prints the time with every message, and a reminder from 20:30
+   until 05:00. (Owner, 2026-11-17)
