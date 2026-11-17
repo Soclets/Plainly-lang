@@ -10,7 +10,8 @@ replaces `join_text(...)` from the early sketch.
 
 Open: whether `&` turns a non-text value such as a `Whole` into text by itself. (Answered by D6: it doesn't.)
 
-Owner: too long.
+Owner: "`&` decided. I see another problem too, so let me get this problem first. `"` straying everywhere in print
+looks like a fucking stroke."
 
 ## D2: `show_text.format` fills in names, and `show_text` stays literal (2026-11-16)
 
@@ -35,7 +36,8 @@ A `\` makes the next character literal: `show_text.format("\#1 player: #name")` 
 Open: how a newline or tab is written; whether `\` before an ordinary letter is an error; how `\"` and `\\` work in plain
 (non-`.format`) text.
 
-Owner: too long.
+Owner: "Oh, I think I accidentally clicked it, and I'm listening to music rn, and the mic probably picked it up. `\`
+escapes, but it doesn't format like C".
 
 Since D4, a bare `#` in `.format` text is literal, so `"#1 player"` needs no escape. `\{` escapes a brace instead.
 
@@ -51,7 +53,7 @@ inside `.format`. It's one more thing to learn, but a small one, and it says wha
 Open: what may go in braces besides names and `new_line` (expressions such as `{#total + 1}`?); other named characters,
 such as a tab.
 
-Owner: too long.
+Owner: has code.
 
 Changed by D12: `show_text` ends the line by itself, so `new_line` is for line breaks inside text.
 
@@ -85,7 +87,8 @@ Open: field access, such as `{#player.score}`, once Plainly has records; width, 
 spells as words, like `{$price, places: 2}`; a version of `.format` that builds a `Text` value instead of printing,
 which Cyborg's design claude advises deciding early (D11).
 
-Owner: too long.
+Owner: "yea. As for Cyborg's units, that shit is extremely rich, it's checked at compile times, and you could do a lot
+of shit (like making correct celsius). So, idk if we'll have checked units. But we'll definitely have Cyborg's labels".
 
 ## D8: Plainly has Cyborg's labels (2026-11-16)
 
@@ -101,7 +104,8 @@ label's narrowing names a unit.
 
 Label order: D10.
 
-Owner: too long.
+Owner: "yea. As for Cyborg's units, that shit is extremely rich, it's checked at compile times, and you could do a lot
+of shit (like making correct celsius). So, idk if we'll have checked units. But we'll definitely have Cyborg's labels".
 
 How a label is declared: D9.
 
@@ -218,7 +222,7 @@ is, so it can't be mistaken for an offset from 0, which Cyborg writes as `offset
 `proc` is to `procedure`. Square brackets after a name hold which item, and after `procedure greet` they hold
 parameters, and the label keeps the two apart.
 
-Owner: too long, then "yea", to position 1 being the first item.
+Owner: has code, then "yea", to position 1 being the first item.
 
 ## D16: Plainly compiles ahead of time to native code, through Cranelift (2026-11-16)
 
@@ -272,7 +276,7 @@ bare names: where no default is obvious, there's no bare name.
 In `FinalPerf`, a dropped check means a bad position reads past the end of the list, with whatever happens next. That's
 the point of the mode: test in `Working` or `FinalSafe` first.
 
-Owner: too long, then "It's FinalPerf, bro. Test your shit".
+Owner: has code, then "It's FinalPerf, bro. Test your shit".
 
 ## D20: A bad position the compiler can see is refused while building (2026-11-16)
 
@@ -467,7 +471,7 @@ stops, and a long pipe can run over several lines, since a statement ends only a
 `labels [...];` and `defaults [...];` end with `;` too, as in Cyborg. A header ends with `:`, and a closer such as
 `end procedure.main` stands alone, with no `;`. Examples in entries before this one are written without `;`.
 
-Owner: too long, then "yea".
+Owner: has code, then "yea".
 
 ## D32: `copy` or `share` on assignment, and parameters can't be changed (2026-11-16)
 
@@ -558,7 +562,8 @@ Words, not C's `&&`, `||` and `!`.
 
 Whether they stop early: D37.
 
-Owner: too long.
+Owner: "words. But now the real question: short circuit by default? And then add a narrowing for it to run both? Shit
+rhymes, by the way, I layed down."
 
 ## D37: `and` and `or` stop early, and `and.both` and `or.both` don't (2026-11-16)
 
@@ -571,7 +576,8 @@ since the right side doesn't run when `#i` is past the end:
 plain word is the safe one, the reverse of Ada, whose plain `and` evaluates both sides, so its users learn to write
 `and then` everywhere.
 
-Owner: too long, then "Huh? How does Ada's problem even apply?", then "have".
+Owner: "words. But now the real question: short circuit by default? And then add a narrowing for it to run both? Shit
+rhymes, by the way, I layed down.", then "Huh? How does Ada's problem even apply?", then "have".
 
 ## D38: PlainGC is Go-style, from the start (2026-11-16)
 
@@ -660,7 +666,8 @@ can silently never run.
 
 Open: how a handler family is declared; the rest of error handling, of which this is one part.
 
-Owner: "Where's handler families?", "First of all why did you drop handler families?", "Why no `*` mark?", too long,
+Owner: "Where's handler families?", "First of all why did you drop handler families?", "Why no `*` mark?",
+"Motherfucker, ` otherwise.jumps word_failed.give_up` is a stroke",
 "Bro, that's the wrong place for it", then "yea".
 
 ## D42: `?` passes a failure up (2026-11-16)
@@ -910,7 +917,9 @@ purpose, and `otherwise crash` stops the program on purpose. Each is a searchabl
 every deliberate crash in a game can be found. They're Cyborg's `?? 8080`, `?? void` and `?? crash` in plain words.
 Every way of handling a failure except `?` (D42) starts with `otherwise`.
 
-Owner: too long.
+Owner: "yea. You know? I'm Thai, and I know a lot of Thai kids can't read English. So... What if we also support Thai
+syntax. Which, ik, ik, it's basically two languages. Okay, maybe not two languages, just wait, it is a lamguage. Holy
+fuck".
 
 ## D57: Plainly supports Thai: one grammar, two word tables (2026-11-16)
 
@@ -946,7 +955,8 @@ What was turned down on the way:
 - `ปิด` ("close") for `end`: `ปิด ถ้า` reads as "close, if…", the start of a condition.
 - `มิฉะนั้น` and `ไม่อย่างนั้น` for `else`: too formal, and too long. `ไม่งั้น` is the casual "or else", and one word.
 
-Owner, on the way: too long, then "Fuck, Thai sentence, mb", "Let me see a Thai senetcne", "So, what if we follow that
+Owner, on the way: "Wait, it's Thai. So, show me a Thai syntax, and explain it and diffs", "Fuck, Thai sentence, mb",
+"Let me see a Thai senetcne", "So, what if we follow that
 for names?", "yea, rec it", "`ปิด ถ้า` reads like close if, rather than end of section if. So, we could bring the old
 word bacl", "Look at normal Thai, what do they use?", then "yea, rec it".
 
@@ -957,7 +967,10 @@ Open:
 - requiring a space between keywords, since Thai doesn't put spaces between words;
 - measuring text by the columns it takes on screen, not by characters, since `ที่` is three characters in one column.
 
-Owner: too long, "Whatever, but `ขั้นตอน` means step in Thai, not a entire procedure", too long, then "We support Thai,
+Owner: "yea. You know? I'm Thai, and I know a lot of Thai kids can't read English. So... What if we also support Thai
+syntax. Which, ik, ik, it's basically two languages. Okay, maybe not two languages, just wait, it is a lamguage. Holy
+fuck", "Whatever, but `ขั้นตอน` means step in Thai, not a entire procedure", "`กระบวนก<I can't find this letter, it's
+called sara-r>ร", then "We support Thai,
 yeah".
 
 ## D58: Error messages start from Cyborg's format, with its anti-cascade rules (2026-11-17)
@@ -1000,7 +1013,7 @@ Where it names something the code writes with a symbol, the symbol follows in pa
 message ties the word to what's on the page. Writing "a `#` variable" was turned down: it sounds like a special kind of
 variable, rather than how Plainly writes every variable.
 
-Owner: too long, then "That kinda sounds like hastag variable is a special thing, rather than our language calls
+Owner: has code, then "That kinda sounds like hastag variable is a special thing, rather than our language calls
 variables as hashtags, or used as hashtags".
 
 ## D60: At most one `fix:`, as in Cyborg (2026-11-17)

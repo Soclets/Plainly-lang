@@ -9,11 +9,13 @@ names the decision it came from, or when the owner gave it.
 1. **Commits.** `kind.folder.narrowing: sentence`, and a decision adds `(owner: "their words"; D1)`. Kinds: `decision`,
    `design`, `feature`, `fix`, `test`, `house`. Each commit ends with its session's trailer, such as
    `Co-Authored-By: design claude <noreply@anthropic.com>`. One decision per commit.
-2. **The owner's words are exact, or `too long`.** In a commit and in `DECISIONS.md`, a quote is the owner's whole
-   message, exactly as written, typos included. If it won't fit, write too long, with no quotation marks. Never trim a
-   quote, fix its typos, or use `[...]`. Notes outside the quotes, like what a "yea" answered, are fine. Decide before
-   writing the line, never by picking the relevant part: in a commit subject, quote only a short message copied whole,
-   like "yea", and write too long for anything longer. (Owner, 2026-11-16)
+2. **The owner's words are exact, or a marker that says why not.** In a commit and in `DECISIONS.md`, a quote is the
+   owner's whole message, exactly as written, typos included. Never trim a quote, fix its typos, or use `[...]`. Notes
+   outside the quotes, like what a "yea" answered, are fine. Decide before writing the line, never by picking the
+   relevant part. When a message can't be quoted, write the marker for the real reason, with no quotation marks:
+   - **too long**: more than 300 characters in `DECISIONS.md`, or more than fits the line in a commit subject;
+   - **has code**: a code block, or in a commit subject any code formatting (backticks).
+   (Owner, 2026-11-16 and 2026-11-17)
 3. **Stop at 8:30 PM.** Every session stops at 20:30 and suggests the owner stops too, since going past bedtime has made
    the owner abandon languages. A `UserPromptSubmit` hook prints the time with every message, and a reminder from 20:30
    until 05:00. (Owner, 2026-11-17)
