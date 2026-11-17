@@ -1402,3 +1402,16 @@ Anything else is refused (owner: "must match").
 Open: the Thai mode names.
 
 Owner: has code.
+
+## D80: The wording of a mismatched extension (2026-11-17)
+
+    refused: game.plainly:1:1, line 1 column 1
+     1 | ไทย
+       | ^^^
+     what: this file says `ไทย`, but its name ends in `.plainly`
+     why:  a file's name ends in `.plainly` for English and `.เพลนลี่` for Thai.
+
+There's no `fix:`, since there are two ways to fix it, renaming the file or changing the line (D60). The message is in
+English, since the file's language is in doubt.
+
+Owner: "yea".
