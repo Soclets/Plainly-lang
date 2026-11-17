@@ -1341,6 +1341,8 @@ Owner: "no. Also, shouldn't it be `english` with alt as `eng`?"
 
 ## D78: Plainly files end in `.plainly` (2026-11-17)
 
+Changed by D79: there's also a Thai extension.
+
 `game.plainly`. It names the language, so people and editors know what the file is, it's unclaimed, so GitHub and
 editors can map it to Plainly without a clash, and it's searchable. `.code` was offered as the plainest, but it names no
 language, and Mult's `.plain_code` was the starting idea.
@@ -1388,6 +1390,9 @@ there as alts").
 
 `--language=` is `--ภาษา=` ("language") (owner: "yup").
 
-Open: the Thai mode names, and the extension.
+Plainly has two extensions: `.plainly` and a Thai one, so a fully Thai command needs no Latin letters at all. Keeping
+only `.plainly` for every file was offered (owner: "two").
+
+Open: the Thai mode names; the Thai extension's spelling; whether a file's extension must match its language line.
 
 Owner: has code.
