@@ -41,8 +41,8 @@ Read these in full before starting, and again after every compaction:
   prompting, style and checks, tracing, naming). A hook prints it at the start of every session.
 - `DECISIONS.md`: every decision, D1 onward, with the owner's words. This is the specification. Later entries can change
   earlier ones, and an entry says so ("Changed by D12", "Replaced by D38"), so read every entry, including the notes
-  added under old ones. Code examples in entries before D31 have no `;`, and examples before D69 write `[]` where it's
-  now `[none]`.
+  added under old ones. Code examples in entries before D31 have no `;`, examples before D69 write `[]` where it's
+  now `[none]`, and examples before D70 aren't indented, only because chat couldn't show indentation.
 - `NOT-DECIDED.md`: questions known to be open. Anything listed there is `NotDesignedYet` in PlainOracle.
 - `README.md`: the example program, which must run.
 The specification is only those files. Mult's early notes, Cyborg's repository and other sessions' messages are
@@ -67,18 +67,21 @@ Known gaps that look decided but aren't, so treat them as `NotDesignedYet` until
 - The true/false type's name and its literals. `Bool` has only been a placeholder.
 - Records (structs), maps, reading input, reading a letter out of text, and comments (`//` appears in early sketches
   but was never recorded).
-- Indentation: whether a body may be indented, must be, or mustn't be (NOT-DECIDED.md, Layout). Procedures themselves
-  are settled: the header `procedure name[...] returns T or fails [...]:` (D46, D9, D40), `[none]` (D69),
-  `procedure.main` (D63), the closer `end procedure name`, and `proc` as the short form (D28, D40).
 - The file extension (`.plain_code` was only Mult's idea) and PlainOracle's command line. Accept any file path, and
   keep the command line minimal: `plainoracle <file>`.
 - Error message wording in Thai beyond the labels in D61, and how the language of a message is chosen.
+
+Not gaps, though they once looked like it: procedures are settled, with the header `procedure name[...] returns T or
+fails [...]:` (D46, D9, D40), `[none]` (D69), `procedure.main` (D63), the closer `end procedure name`, and `proc` as the
+short form (D28, D40). So is layout: bodies are indented one level of 4 spaces, tabs are refused, and wrong indentation
+is refused while building (D70). Check NOT-DECIDED.md and DECISIONS.md for the current state either way, since both
+lists change as the design does.
 </the_central_rule>
 
 <order_of_work>
 Build in small vertical slices, each one complete with its tests before the next starts:
-1. Hello world, in English and Thai (D57, D63, D69, D12, D44), plus the error format (D58 to D62) for the first
-   refusals, such as a missing `;` (D31).
+1. Hello world, in English and Thai (D57, D63, D69, D70, D12, D44), plus the error format (D58 to D62) for the first
+   refusals, such as a missing `;` (D31) and wrong indentation (D70).
 2. Variables with written types, `Whole` and `Text` literals, `mut`/`mutable` and `change` (D27, D28), with `+` and `&`
    (D1) and `be.Text` (D6).
 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` (D2 to D5, D7, D11 to D14).
