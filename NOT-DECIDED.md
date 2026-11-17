@@ -39,5 +39,4 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 
 ## Layout
 
-- Bodies are indented (D70). Open: whether wrong indentation is refused or only fixed by a formatter, and how wide a
-  level is, spaces or tabs.
+- How wide one level of indentation is, and spaces or tabs (D70).

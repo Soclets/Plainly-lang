@@ -1231,6 +1231,9 @@ Owner: "So, params now use `[none]`?", "[none], rec it", then "ไม่มี, 
 A block's body is indented one level inside its header and closer. Examples in entries before this one aren't
 indented, only because the conversation's chat couldn't show indentation.
 
-Open: whether wrong indentation is refused, or only fixed by a formatter; how wide one level is, and spaces or tabs.
+Wrong indentation is refused while building, so every Plainly program looks the same, rather than being left to a
+formatter as Go's `gofmt` does. Blocks still end with `end …`, so indentation never decides where a block ends.
 
-Owner: "Indented, it's just that I can't format in chat".
+Open: how wide one level is, and spaces or tabs.
+
+Owner: "Indented, it's just that I can't format in chat", then "Refused".
