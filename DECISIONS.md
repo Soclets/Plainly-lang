@@ -1510,7 +1510,17 @@ D82's `check failed:` message and exit status 4 in `Working` and `FinalSafe`, an
 it a failure the program handles was turned down, since that would put `otherwise` on nearly every division (D43)
 (owner: "yea, depends on mode").
 
-Open: whether `.exact` with a remainder is a failure the program can handle or a failed check; the remainder; the
-refusal's wording.
+A remainder in `.exact` is a failure the program handles (D43, D55), since `.exact` is chosen exactly when a remainder
+is possible and should be noticed:
+
+    #each: Whole = #coins divide.exact #players otherwise:
+        case remainder:
+            show_text("The coins don't split evenly.");
+            instead 0;
+    end otherwise
+
+(owner: "yea").
+
+Open: the remainder operator; the refusal's wording; the failure's name, `remainder` being a placeholder.
 
 Owner: "yea".
