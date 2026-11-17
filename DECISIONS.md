@@ -1915,3 +1915,42 @@ It changes three earlier decisions:
 Open: the wording of the refusals; the Thai words.
 
 Owner: too long, then "yea".
+
+## D101: The wording of D98 and D100's refusals (2026-11-17)
+
+For a header with no `returns`, with the caret right after its `]`:
+
+    fix:  `returns nothing`
+    why:  a header says what its procedure gives back, even when that's nothing.
+
+When the body has a `return` with a value, the fix names that value's type instead, as in `returns Whole`.
+
+For a bare `return;`:
+
+    fix:  `return nothing`
+    why:  `return` is followed by what the procedure gives back.
+
+For `return nothing` as a procedure's last line:
+
+    what: `return nothing` is the last line, so it does nothing
+    why:  a procedure leaves by itself at its end.
+
+For a line after `return` in the same block (D98):
+
+    what: this line comes after `return`, so it never runs
+    why:  `return` leaves straight away, so nothing after it in the same block runs.
+
+For a `return` that doesn't match the header, following D95:
+
+    what: `heal` returns a `Whole`, not nothing
+    why:  a procedure returns the type its header says.
+
+    what: `#x` is `Whole`, but `greet` returns nothing
+    why:  a procedure returns the type its header says.
+
+For using what a `returns nothing` procedure gives, as in `#x: Text = greet("Mia");`:
+
+    what: `greet("Mia")` returns nothing, so there's no value to use
+    why:  a procedure that returns nothing is called on a line of its own.
+
+Owner, asked whether any read wrong: "no".
