@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    #name: Text = "Mia";
+    show_text(be.Text(#name));
+end procedure.main

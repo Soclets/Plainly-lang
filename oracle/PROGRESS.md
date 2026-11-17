@@ -67,8 +67,8 @@ status 4 (D82). With two variables, the `when:` line joins them with ", and", wh
 Refused, tested: `+` and `&` mixed without brackets (D83). The mixed expression's type becomes unknown, so nothing
 after it is refused because of it.
 
-Stops, tested: `mut` in a Thai file. Also built: declaring a name twice, `be.Text` of `Text`, and numbers written
-with anything but digits, all `NotDesignedYet`.
+Stops, tested: `mut` in a Thai file. Also built: declaring a name twice, and numbers written with anything but digits, both `NotDesignedYet`. `be.Text`
+of `Text` is refused, with the value as the fix (D90), tested.
 
 Traced decisions added: D1, D6, D19, D27, D28, D51, D71, D82, D83.
 
@@ -126,7 +126,7 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80, D81, D82, D83 and D89.
+All wording so far is approved: D73, D76, D80, D81, D82, D83, D89 and D90.
 
 ## Questions slice 2 raised
 
@@ -134,7 +134,7 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83 and D89.
 2. ~~Which goes first when `+` and `&` are mixed~~: decided as D83 (follow maths, brackets where maths doesn't say),
    and built.
 3. ~~`-`, `*` and division~~: decided as D84 to D89, and built.
-4. `be.Text` of something that's already `Text`: allowed, or refused?
+4. ~~`be.Text` of something that's already `Text`~~: refused, as D90, and built.
 5. Declaring the same name twice in one procedure.
 6. The Thai words for `mut`, `mutable`, `change`, `be`, `Whole` and `Text`.
 7. Other ways of writing numbers, like `1_000`.

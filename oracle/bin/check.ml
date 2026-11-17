@@ -916,17 +916,24 @@ and primary state =
           ignore (expect_symbol state '(');
           let inner = expression state in
           let closing = expect_symbol state ')' in
-          (match inner.value_type with
-          | Some Text_type ->
-              stop Message.Not_designed_yet type_token
-                "`be.Text` of something that's already `Text` isn't decided yet"
-          | _ -> ());
           let value_type =
             match inner.value_type with
             | None -> None
             | Some _ -> Some Text_type
           in
-          spanning token closing (Be_text inner) value_type
+          let converted = spanning token closing (Be_text inner) value_type in
+          (* trace: D90 *)
+          (* Converting text to text does nothing, so it's refused, with the
+             value itself as the fix. *)
+          (match inner.value_type with
+          | Some Text_type ->
+              let inner_text = text_of_expression state inner in
+              refuse_at state converted (Message.Fix inner_text)
+                (Printf.sprintf
+                   "`%s` is already `Text`, so there's nothing to convert."
+                   inner_text)
+          | _ -> ());
+          converted
       | _ -> not_built state type_token)
   | Symbol '(' ->
       (* trace: D51 *)
