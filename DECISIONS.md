@@ -1551,3 +1551,17 @@ tells the two apart, as in Cyborg and like D33's rule for `<` and `>`. Negating 
 Open: whether subtracting with a missing space, as in `#a -#b` or `#a-#b`, is refused, and its wording.
 
 Owner: "yea".
+
+## D87: `plus.saturate`, `minus.saturate` and `times.saturate` (2026-11-17)
+
+    change #hp = #hp minus.saturate 30;
+
+Overflow on purpose is written as a word with `.saturate`: the result sticks at the limit of its type instead of
+failing a check, the same in every build mode. `saturate` is a word worth learning, per "put plain words where we can,
+not learn nothing", and `.stop_at_limit` was offered as too long. These are Cyborg's word forms (Cyborg D295).
+
+Open: whether there's a `.wrap` form too; whether a bare `plus` is refused with `fix: +`, as in Cyborg; limits other
+than the type's own, since a `Whole`'s lowest value is far below 0, so a health bar sticking at 0 needs an unsigned type
+like `u8` (D65), or bounds Plainly doesn't have yet.
+
+Owner: "That's pretty long, how about learning `saturate`?"
