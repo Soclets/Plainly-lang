@@ -9,7 +9,7 @@ procedure greet[#name: Text] returns Text:
 return be.Text.format("Hello, {#name}!");
 end procedure greet
 
-procedure.main[]:
+procedure.main[none]:
 #name: Text = "Tankun";
 #score: Whole = 120;
 show_text(greet(#name));
