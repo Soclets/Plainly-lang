@@ -1073,3 +1073,24 @@ be misjudged, and every error after it would be wrong, and a wrong error message
 Cyborg never decided this, and its oracle stops.
 
 Owner: "Why not 3rd bullet, and fall back to 1st bullet?", then "yea, rec it".
+
+## D63: `procedure.main` follows every procedure rule, but can't be called (2026-11-17)
+
+    procedure.main[] fails [not_found]:
+    #level: Text = load_text(file: "level1.txt")?;
+    show_text(#level);
+    end procedure.main
+
+`.main` narrows `procedure` by one fact: only the runtime calls it, so a call to it from code is refused. Everything else
+about being a procedure carries over, including listing failures in the header (D46) and passing them up with `?` (D42).
+A failure that leaves `main` goes to its only caller, the runtime, which stops the program with a message and a failure
+exit status. Hello world needs neither, since `show_text` can't fail (D44).
+
+Refusing `fails` and `?` in `main` was turned down. Every failure there would have to be handled on its own line, with
+no list in the header, and `.main` would change things it isn't about.
+
+Open: how the message for a failure leaving `main` looks.
+
+Owner: "Isn't it `.main`? So, it's a variation/narrowing of `procedure`?", "Though, you can't call `main`, right?",
+"What if you make Hello World?", "How does Hello World look", "What happens if main doesn't accpet those?", then
+"accept them, rec it".
