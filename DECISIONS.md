@@ -984,9 +984,20 @@ Against cascades, as in Cyborg:
 - To sort knock-on errors from independent ones, the first error's single fix is applied in memory and the program
   checked again. Whatever disappears was caused by it, and is shown with a `because:` pointing back (Cyborg D207).
 
-Open, to be changed one at a time: a plain sentence first in `why:`, with decision numbers dropped or moved aside; more
-than one `fix:` when each is real, as Fale does; Thai labels (D57) with code untranslated and the `file:line:col` place
+Open, to be changed one at a time: more than one `fix:` when each is real, as Fale does; Thai labels (D57) with code untranslated and the `file:line:col` place
 unchanged, and columns counted in graphemes; what happens after a broken block opener or header, which Cyborg never
 decided.
 
 Owner: "yea".
+
+## D59: `why:` is a plain sentence, and names the symbol a word stands for (2026-11-17)
+
+    why:  `change` only works on a variable (#) declared `mut`.
+
+A `why:` line is a plain sentence a beginner can read, with no decision number, since `(D27)` means nothing to them.
+Where it names something the code writes with a symbol, the symbol follows in parentheses, as in "variable (#)", so the
+message ties the word to what's on the page. Writing "a `#` variable" was turned down: it sounds like a special kind of
+variable, rather than how Plainly writes every variable.
+
+Owner: too long, then "That kinda sounds like hastag variable is a special thing, rather than our language calls
+variables as hashtags, or used as hashtags".
