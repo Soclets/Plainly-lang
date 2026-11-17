@@ -31,6 +31,13 @@ names the decision it came from, or when the owner gave it.
    - **OCaml** (PlainOracle): `ocamlformat`, and compiler warnings are errors.
    (Owner, 2026-11-17, from Cyborg's rules 6 and 7)
 
+6. **Fixing stale documents.** The design session may correct a document that contradicts the decisions, such as
+   NOT-DECIDED.md, a prompt, the README, or a note under an old entry, but only when the proof is firsthand in its
+   current context: the owner's own message, or a file it read since the last compaction. A compaction summary doesn't
+   count, so after a compaction it reads the files again before correcting anything. Each correction says in its commit
+   what was stale and which decision shows it. It never overrules the owner's recorded words: an entry in DECISIONS.md
+   changes only through a new decision. (Owner, 2026-11-17)
+
 ## Tracing
 
 Code that carries out a decision says so with a comment, in PlainOracle and AroundPy alike:
