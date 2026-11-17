@@ -1107,7 +1107,20 @@ reader always knows when a number in the code is already rounded.
 `Float` is 32-bit, as in C, Java, C#, Swift and Kotlin, and as Rust's `f32` across `external.rust` (D40). 64-bit was
 offered, since a timer adding up frame times for hours loses precision in 32 bits (owner: "32-bit").
 
-Open: whether there's also a 64-bit float, such as a narrowing like `Float.64_bit`; whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
+A 64-bit float is `f64`, from Rust's number family: D65.
+
+Open: whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
 Plainly's floats promise about NaN and infinity (D18).
 
 Owner: "Let's do floats, `~` is in. Named `Float`".
+
+## D65: Rust's whole number family, as the short names (2026-11-17)
+
+Beside the plain names, Plainly has every number type Rust has, by the same names: `i8`, `i16`, `i32`, `i64`, `i128`
+and `isize`; `u8`, `u16`, `u32`, `u64`, `u128` and `usize`; `f32` and `f64`. `Whole` is `i64` and `Float` is `f32`
+(D64), so the plain names are where beginners start, and the short ones are there when you grow, the way `proc` is for
+`procedure`. The names carry over to Rust, Zig and Cyborg, and match Rust's across `external.rust` (D40). This was in
+Mult's notes from the start ("`Whole` to start; the `i8`/`i32`/`i64`/`u8` family when you grow"). A 64-bit float is
+`f64`, so no narrowing like `Float.64_bit` is needed.
+
+Owner: "Bro, we have the entire Rust family in short like `i`".
