@@ -1027,7 +1027,9 @@ like a bare question (owner: "I'm back. I think problem in Thai").
 `why:` is `เหตุผล:` ("reason"), naming what the line is, like `ปัญหา:`. `ทำไม:` ("why") reads like a bare question,
 and `เพราะ:` ("because") would clash with the `because:` label (owner: "yea, เหตุผล").
 
-Open: the other Thai labels (`when:`, `because:`, `fix:`, `check failed:`, `warning:`).
+`fix:` is `วิธีแก้:` ("how to fix"), naming what the line is. `แก้:` ("fix") was offered (owner: "วิธีแก้").
+
+Open: the other Thai labels (`when:`, `because:`, `check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
