@@ -26,8 +26,8 @@ this list.
 
 ## Failures
 
-Still open (D41 to D44, D46, D55 and D56 are decided):
-- Failures carrying data; `?` in `main`; cleanup for files and the terminal; how a handler family is declared; how a
+Still open (D41 to D44, D46, D55, D56 and D63 are decided):
+- Failures carrying data; the message for a failure leaving `main` (D63); cleanup for files and the terminal; how a handler family is declared; how a
   Rust `Result::Err` maps to a failure, and a Rust panic to a crash.
 
 ## Thai (D57)
