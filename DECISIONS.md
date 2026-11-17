@@ -1104,7 +1104,10 @@ reader always knows when a number in the code is already rounded.
     #speed: Float = ~0.1;
     #half: Float = 0.5;
 
-Open: whether `Float` is 32-bit or 64-bit; whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
+`Float` is 32-bit, as in C, Java, C#, Swift and Kotlin, and as Rust's `f32` across `external.rust` (D40). 64-bit was
+offered, since a timer adding up frame times for hours loses precision in 32 bits (owner: "32-bit").
+
+Open: whether there's also a 64-bit float, such as a narrowing like `Float.64_bit`; whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
 Plainly's floats promise about NaN and infinity (D18).
 
 Owner: "Let's do floats, `~` is in. Named `Float`".
