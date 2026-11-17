@@ -1700,7 +1700,21 @@ be stored in different ways (`é` as one code point or as `e` and an accent; a T
 either order), so the method has to be named: exact bytes, or the same after Unicode normalization (NFC). Text is
 compared with a procedure that names its method, not an operator.
 
-Open: the procedure's name and its narrowings for the two methods; whether `!=` follows `==`; the refusal's wording.
+The procedure is `compare_Text`, with no labels, since both texts play the same role. It gives true when the two are
+the same, so it fits an `if`, and `not` covers "different":
+
+    if compare_Text.looks_same(#guess, #answer):
+    if not compare_Text.stored_same(#guess, #answer):
+
+- `.stored_same` compares byte for byte, so it's true only when both are stored identically.
+- `.looks_same` compares after Unicode normalization (NFC), so differently typed versions of the same visible text
+  match, which suits a player's typed guess.
+- Case matters in both: `"Cat"` and `"cat"` differ.
+
+`same_text.exact(…, as: …)` was offered first.
+
+Open: whether `!=` between two `Text`s is refused like `==`; the refusal's wording; Thai names.
 
 Owner: "no, and refuse `==` with Text and Text.", "It's just that Text could be compared in a lot of ways, bytes,
-codepoints, graphemes", then "I think it should be a function instead".
+codepoints, graphemes", "I think it should be a function instead", "How about `compare_Text.`, and no labels?", "What does
+`exact` do?", then "`stored_same`?".
