@@ -1170,7 +1170,31 @@ A list grows and shrinks: you add to it and take from it, like Python's list or 
 known while building, so D20 can refuse a bad position like position 10 of a 9-item board before the game runs. Games
 are full of fixed-size things, like boards, grids and inventory slots.
 
-Open: how each is written, as a type and as a value; how an empty one is made. `Array<Text>[size: 9]` with every item
-written out was turned down.
+How each is written, and how an empty one is made: D68. `Array<Text>[size: 9]` with every item written out was turned
+down.
 
 Owner: "both. But not that syntax. Ask Cyborg for how to make empty shit."
+
+## D68: Lengths, `all`, and `.empty` (2026-11-17)
+
+    #board: Array<Text>[length: 9] = all " ";
+    #row: Array<Whole>[length: 3] = [1, 2, 3];
+    mut #hand: List<Text>[length.maximum: 7] = .empty;
+    mut #party: List<Text>[len.min: 1, len.max: 4] = ["Mia"];
+    mut #log: List<Text> = .empty;
+    if #hand == .empty:
+
+- **An array** has an exact `length:`. `all` fills it with one value, so a 9-square board doesn't list nine `" "`.
+- **A list** can have `length.maximum:`, `length.minimum:`, both, or neither, when it grows freely, as in Cyborg's
+  `len.max:` and `len.min:` (Cyborg D11 to D13). Going past its maximum is checked like a bad position (D19, D20).
+- **Short forms:** `len` for `length`, `max` for `maximum`, `min` for `minimum`, each word on its own, like `proc` and
+  `pos`. `size:` was turned down, since it can mean bytes as well as a count.
+- **`.empty`** takes its type from the left: the variable it goes into, or the other side of `==`. That fixes Cyborg's
+  reason for refusing a bare `empty` (Cyborg D428): in a comparison, its type couldn't be told. An array can't be
+  `.empty`, since its length is fixed.
+- **A list literal** like `[1, 2, 3]` becomes a list or an array depending on where it goes, with its count checked
+  against the type (Cyborg D141). With a GC, a literal goes straight into a growable list, with no allocator.
+
+Open: whether `[]` and `""` are refused, with `.empty` as the fix, as in Cyborg; filling an array from a range or a rule.
+
+Owner: "Where the fuck is setting a max length for List? And why the word `size:`?", has code, then "yea".
