@@ -36,7 +36,3 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 - Error messages in Thai.
 - A required space between keywords, since Thai doesn't put spaces between words.
 - Measuring text by screen columns, not characters.
-
-## Layout
-
-- How wide one level of indentation is, and spaces or tabs (D70).
