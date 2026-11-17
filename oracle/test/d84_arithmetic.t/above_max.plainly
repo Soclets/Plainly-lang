@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    mut #hp: Whole[min: 0, max: 100] = 150;
+end procedure.main

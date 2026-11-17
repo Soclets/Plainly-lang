@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    show_text(be.Text(7 divide 2));
+end procedure.main

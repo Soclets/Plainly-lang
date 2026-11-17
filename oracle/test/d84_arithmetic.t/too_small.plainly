@@ -1,0 +1,6 @@
+english
+procedure.main[none]:
+    #a: Whole = -9223372036854775808;
+    #b: Whole = 1;
+    show_text(be.Text(#a - #b));
+end procedure.main

@@ -87,6 +87,24 @@ in braces like a width, `{}` and other words in braces, and `.format` of text no
 
 Traced decisions added: D2, D3, D4, D5, D7, D11, D12, D13, D14.
 
+## Arithmetic (slice 2, continued)
+
+Runs: `-`, `x`, maths order with `( )` (D83, D84); `divide.down`, `divide.toward_zero`, `remainder.down`,
+`remainder.toward_zero`, and `div` and `mod` (D85); negatives like `-7` and `-#a` (D86); `plus.saturate`,
+`minus.saturate` and `times.saturate` sticking at a type's written limits, `Whole[min: 0, max: 100]` with `minimum` and
+`maximum` too (D87, D88).
+
+Refused, tested: a bare `divide` on whole numbers; a written number outside a variable's limits; `&` mixed with `x`
+(D83, D89). A `+` on text sitting next to `&` gets only the mixing refusal, not both.
+
+Failed checks, tested: dividing by zero; overflow on `-`; storing outside the limits, above and below (D82, D85, D88,
+D89). Built but not tested yet: overflow on `x`, negating the lowest `Whole`, and `remainder` by zero.
+
+Stops: `divide.exact` (`NotBuiltYet`, since failures aren't built); a `-` without a space on each side between two
+values, a bare `plus`, and `max:` written before `min:` (`NotDesignedYet`).
+
+Traced decisions added: D84, D85, D86, D87, D88, D89.
+
 ## Waiting for the owner
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
@@ -108,15 +126,14 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80, D81 and D82, except the `when:` line for
-two variables, joined with ", and". The mixed-operator wording is in D83.
+All wording so far is approved: D73, D76, D80, D81, D82, D83 and D89.
 
 ## Questions slice 2 raised
 
 1. ~~How a failed check is reported while running~~: decided as D82, and built.
 2. ~~Which goes first when `+` and `&` are mixed~~: decided as D83 (follow maths, brackets where maths doesn't say),
    and built.
-3. `-`, `*` and division.
+3. ~~`-`, `*` and division~~: decided as D84 to D89, and built.
 4. `be.Text` of something that's already `Text`: allowed, or refused?
 5. Declaring the same name twice in one procedure.
 6. The Thai words for `mut`, `mutable`, `change`, `be`, `Whole` and `Text`.

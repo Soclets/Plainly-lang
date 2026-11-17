@@ -17,13 +17,17 @@ type expression = {
   byte : int;
   length : int;
   value_type : value_type option;
+  (* The operator at the top of an unbracketed calculation, with its place, so
+     that mixing it with `&` can be refused (D83). *)
+  top_operator : (string * Token.t) option;
 }
 
 and shape =
   | Whole_literal of Int64.t
   | Text_literal of string
   | Variable of string
-  | Add of expression * expression * Token.t
+  | Arithmetic of operation * expression * expression * Token.t
+  | Negate of expression * Token.t
   | Join of expression * expression
   | Be_text of expression
   | Format of piece list
@@ -31,10 +35,28 @@ and shape =
 (* A piece of `.format` text: words as they are, or a fill-in. *)
 and piece = Words of string | Fill of expression
 
+(* trace: D84 *)
+(* trace: D85 *)
+(* trace: D87 *)
+and operation =
+  | Plus
+  | Minus
+  | Times
+  | Divide of rounding
+  | Remainder of rounding
+  | Saturate of operation
+
+and rounding = Down | Toward_zero
+
+(* A number type's written limits (D88). *)
+type limits = { minimum : Int64.t option; maximum : Int64.t option }
+
+let no_limits = { minimum = None; maximum = None }
+
 type statement =
   | Show_text of expression * bool
-  | Declare of string * expression
-  | Change of string * expression
+  | Declare of string * expression * limits
+  | Change of string * expression * limits
 
 type state = {
   source : Source.t;
@@ -45,6 +67,10 @@ type state = {
   mutable declared_word : string;
   mutable refusals : Message.t list;
   mutable variables : (string * (value_type * bool)) list;
+  mutable limits : (string * limits) list;
+  (* Refusals of `+` on text, held until it's known whether that `+` sits next
+     to `&`, which is refused instead (D83). *)
+  mutable pending : (Token.t * Message.t) list;
 }
 
 let stop kind (token : Token.t) words =
@@ -310,6 +336,7 @@ let spanning (first : Token.t) (last : Token.t) shape value_type =
     byte = first.byte;
     length = last.byte + last.length - first.byte;
     value_type;
+    top_operator = None;
   }
 
 let joined (left : expression) (right : expression) shape value_type =
@@ -319,6 +346,7 @@ let joined (left : expression) (right : expression) shape value_type =
     byte = left.byte;
     length = right.byte + right.length - left.byte;
     value_type;
+    top_operator = None;
   }
 
 let is_digit character = character >= '0' && character <= '9'
@@ -518,90 +546,335 @@ let format_argument state =
       stop Message.Not_designed_yet token
         "`.format` of text that isn't written in quotes isn't decided yet"
 
+(* An operator found where one can be: its text as written, the place it
+   covers, and how tightly it binds (D83): 2 for `x`, `divide` and `remainder`,
+   1 for `+` and `-`, 0 for `&`. *)
+type operator = {
+  text : string;
+  place : Token.t;
+  level : int;
+  doing : doing;
+  token_count : int;
+}
+
+and doing = Calculate of operation | Bare_divide | Join_text
+
+let spaced state (token : Token.t) =
+  let text = Source.line state.source token.line in
+  let before = token.byte - 2 and after = token.byte - 1 + token.length in
+  before >= 0
+  && (text.[before] = ' ' || text.[before] = '\t')
+  && after < String.length text
+  && (text.[after] = ' ' || text.[after] = '\t')
+
+let token_at state index =
+  if index < Array.length state.tokens then Some state.tokens.(index) else None
+
+(* Looks at the operator at the current position without moving past it. *)
+let peek_operator state =
+  match current state with
+  | None -> None
+  | Some token -> (
+      let one doing level =
+        Some
+          {
+            text = text_of state token;
+            place = token;
+            level;
+            doing;
+            token_count = 1;
+          }
+      in
+      let narrowed (narrowing : Token.t) doing level =
+        Some
+          {
+            text =
+              String.sub
+                (Source.line state.source token.line)
+                (token.byte - 1)
+                (narrowing.byte + narrowing.length - token.byte);
+            place =
+              {
+                token with
+                length = narrowing.byte + narrowing.length - token.byte;
+              };
+            level;
+            doing;
+            token_count = 3;
+          }
+      in
+      let narrowing () =
+        match
+          ( token_at state (state.position + 1),
+            token_at state (state.position + 2) )
+        with
+        | Some { kind = Symbol '.'; _ }, Some ({ kind = Word word; _ } as found)
+          ->
+            Some (word, found)
+        | _ -> None
+      in
+      match token.kind with
+      | Symbol '+' -> one (Calculate Plus) 1
+      | Symbol '-' ->
+          (* trace: D86 *)
+          if spaced state token then one (Calculate Minus) 1
+          else
+            stop Message.Not_designed_yet token
+              "a `-` without a space on each side, between two values, isn't \
+               decided yet"
+      | Symbol '&' -> one Join_text 0
+      | Word "x" -> one (Calculate Times) 2
+      | Word ("divide" | "div") -> (
+          english_only state token;
+          match narrowing () with
+          | Some ("down", found) -> narrowed found (Calculate (Divide Down)) 2
+          | Some ("toward_zero", found) ->
+              narrowed found (Calculate (Divide Toward_zero)) 2
+          | Some ("exact", found) ->
+              stop Message.Not_built_yet found
+                "`.exact` isn't in PlainOracle yet, since failures aren't"
+          | Some (_, found) -> not_built state found
+          | None -> one Bare_divide 2)
+      | Word ("remainder" | "mod") -> (
+          english_only state token;
+          match narrowing () with
+          | Some ("down", found) ->
+              narrowed found (Calculate (Remainder Down)) 2
+          | Some ("toward_zero", found) ->
+              narrowed found (Calculate (Remainder Toward_zero)) 2
+          | Some (_, found) -> not_built state found
+          | None ->
+              stop Message.Not_built_yet token
+                "a `remainder` that doesn't say how to round isn't in \
+                 PlainOracle yet")
+      | Word (("plus" | "minus" | "times") as word) -> (
+          english_only state token;
+          let operation, level =
+            match word with
+            | "plus" -> (Plus, 1)
+            | "minus" -> (Minus, 1)
+            | _ -> (Times, 2)
+          in
+          match narrowing () with
+          | Some ("saturate", found) ->
+              narrowed found (Calculate (Saturate operation)) level
+          | Some (_, found) -> not_built state found
+          | None ->
+              stop Message.Not_designed_yet token
+                (Printf.sprintf "a bare `%s` isn't decided yet" word))
+      | _ -> None)
+
+let take_operator state operator =
+  state.position <- state.position + operator.token_count
+
+let refuse_mixed state (text, (place : Token.t)) =
+  (* trace: D83 *)
+  state.pending <-
+    List.filter (fun ((held : Token.t), _) -> held <> place) state.pending;
+  refuse state
+    {
+      Message.kind = Message.Refused;
+      line = place.line;
+      byte = place.byte;
+      length = place.length;
+      body =
+        Message.What
+          (Printf.sprintf "`%s` and `&` are mixed without `( )`" text);
+      why = Some "maths doesn't say which goes first, so `( )` shows it.";
+    }
+
 let rec expression state =
-  let first = primary state in
-  operators state first None
+  let held = state.pending in
+  state.pending <- [];
+  let first = arithmetic state 1 in
+  let result = joins state first in
+  List.iter (fun (_, message) -> refuse state message) (List.rev state.pending);
+  state.pending <- held;
+  result
 
 (* trace: D1 *)
-and operators state left seen =
-  match current state with
-  | Some ({ kind = Symbol (('+' | '&') as operator); _ } as token) -> (
-      match seen with
-      | Some earlier when earlier <> operator ->
-          (* trace: D83 *)
-          (* Maths doesn't say whether `+` or `&` goes first, so brackets have
-             to. Since the order is unknown, so is the result's type, and
-             nothing after is refused because of it. *)
-          refuse state
-            {
-              Message.kind = Message.Refused;
-              line = token.line;
-              byte = token.byte;
-              length = token.length;
-              body = Message.What "`+` and `&` are mixed without `( )`";
-              why =
-                Some "maths doesn't say which goes first, so `( )` shows it.";
-            };
-          advance state;
-          let right = primary state in
-          let mixed = joined left right (Join (left, right)) None in
-          operators state mixed (Some operator)
-      | _ ->
-          advance state;
-          let right = primary state in
-          operators state
-            (combine state operator token left right)
-            (Some operator))
+(* trace: D6 *)
+(* trace: D83 *)
+(* `&` joins text. Maths says nothing about `&` against `+`, `-`, `x` or
+   `divide`, so an unbracketed calculation next to `&` is refused, and the
+   result's type becomes unknown, so nothing after is refused because of it. *)
+and joins state left =
+  match peek_operator state with
+  | Some ({ doing = Join_text; _ } as operator) ->
+      take_operator state operator;
+      let right = arithmetic state 1 in
+      let mixed =
+        match (left.top_operator, right.top_operator) with
+        | Some top, _ | None, Some top ->
+            refuse_mixed state top;
+            true
+        | None, None -> false
+      in
+      if mixed then joins state (joined left right (Join (left, right)) None)
+      else
+        let check_side side =
+          match side.value_type with
+          | Some Whole_type ->
+              refuse_at state side
+                (Message.Fix
+                   (Printf.sprintf "be.Text(%s)"
+                      (text_of_expression state side)))
+                "`&` joins text, and doesn't turn a number into text by itself."
+          | _ -> ()
+        in
+        check_side left;
+        check_side right;
+        let value_type =
+          match (left.value_type, right.value_type) with
+          | None, _ | _, None -> None
+          | _ -> Some Text_type
+        in
+        joins state (joined left right (Join (left, right)) value_type)
   | _ -> left
 
-and combine state operator (token : Token.t) left right =
-  match operator with
-  | '+' -> (
-      match (left.value_type, right.value_type) with
-      | Some Whole_type, Some Whole_type ->
-          joined left right (Add (left, right, token)) (Some Whole_type)
-      | Some Text_type, Some Text_type ->
-          refuse state
-            {
-              Message.kind = Message.Refused;
-              line = token.line;
-              byte = token.byte;
-              length = token.length;
-              body = Message.Fix "&";
-              why = Some "`+` is only for numbers, and `&` joins text.";
-            };
-          joined left right (Join (left, right)) (Some Text_type)
-      | Some _, Some _ ->
-          refuse state
-            {
-              Message.kind = Message.Refused;
-              line = token.line;
-              byte = token.byte;
-              length = token.length;
-              body = Message.What "`+` can't add `Text`";
-              why = Some "`+` is only for numbers, and `&` joins text.";
-            };
-          joined left right (Add (left, right, token)) None
-      | _ -> joined left right (Add (left, right, token)) None)
+(* Maths order: operators that bind tighter are gathered first, and ones of the
+   same level go left to right. *)
+and arithmetic state minimum_level =
+  let left = negation state in
+  climb state left minimum_level
+
+and climb state left minimum_level =
+  match peek_operator state with
+  | Some ({ doing = Calculate _ | Bare_divide; level; _ } as operator)
+    when level >= minimum_level ->
+      take_operator state operator;
+      let right = arithmetic state (level + 1) in
+      climb state (calculate state operator left right) minimum_level
+  | _ -> left
+
+and calculate state operator left right =
+  let whole shape =
+    {
+      (joined left right shape (Some Whole_type)) with
+      top_operator = Some (operator.text, operator.place);
+    }
+  in
+  match (operator.doing, left.value_type, right.value_type) with
+  | Calculate operation, Some Whole_type, Some Whole_type ->
+      whole (Arithmetic (operation, left, right, operator.place))
+  | Bare_divide, Some Whole_type, Some Whole_type ->
+      (* trace: D85 *)
+      let whole_text =
+        String.sub
+          (Source.line state.source left.line)
+          (left.byte - 1)
+          (right.byte + right.length - left.byte)
+      in
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = left.line;
+          byte = left.byte;
+          length = right.byte + right.length - left.byte;
+          body =
+            Message.What
+              (Printf.sprintf "`%s` doesn't say how to round" whole_text);
+          why =
+            Some
+              "whole numbers divide with `.down`, `.toward_zero` or `.exact`.";
+        };
+      whole (Arithmetic (Divide Down, left, right, operator.place))
+  | Calculate Plus, Some Text_type, Some Text_type ->
+      state.pending <-
+        ( operator.place,
+          {
+            Message.kind = Message.Refused;
+            line = operator.place.line;
+            byte = operator.place.byte;
+            length = operator.place.length;
+            body = Message.Fix "&";
+            why = Some "`+` is only for numbers, and `&` joins text.";
+          } )
+        :: state.pending;
+      {
+        (joined left right (Join (left, right)) (Some Text_type)) with
+        top_operator = Some (operator.text, operator.place);
+      }
+  | Calculate Plus, Some _, Some _ ->
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = operator.place.line;
+          byte = operator.place.byte;
+          length = operator.place.length;
+          body = Message.What "`+` can't add `Text`";
+          why = Some "`+` is only for numbers, and `&` joins text.";
+        };
+      joined left right (Arithmetic (Plus, left, right, operator.place)) None
+  | _, Some _, Some _ ->
+      stop Message.Not_built_yet operator.place
+        (Printf.sprintf "`%s` on `Text` isn't in PlainOracle yet" operator.text)
+  | Calculate operation, _, _ ->
+      joined left right
+        (Arithmetic (operation, left, right, operator.place))
+        None
   | _ ->
-      (* trace: D6 *)
-      let check_side side =
-        match side.value_type with
-        | Some Whole_type ->
-            refuse_at state side
-              (Message.Fix
-                 (Printf.sprintf "be.Text(%s)" (text_of_expression state side)))
-              "`&` joins text, and doesn't turn a number into text by itself."
-        | _ -> ()
-      in
-      check_side left;
-      check_side right;
-      let value_type =
-        match (left.value_type, right.value_type) with
-        | None, _ | _, None -> None
-        | _ -> Some Text_type
-      in
-      joined left right (Join (left, right)) value_type
+      joined left right
+        (Arithmetic (Divide Down, left, right, operator.place))
+        None
+
+(* trace: D86 *)
+(* A `-` right before a number or a name negates it. *)
+and negation state =
+  match current state with
+  | Some ({ kind = Symbol '-'; _ } as minus) -> (
+      let next_token = token_at state (state.position + 1) in
+      match next_token with
+      | Some ({ kind = Word digits; _ } as number)
+        when number.line = minus.line
+             && number.byte = minus.byte + 1
+             && String.length digits > 0
+             && is_digit digits.[0] ->
+          advance state;
+          advance state;
+          whole_number state minus number ("-" ^ digits)
+      | Some ({ kind = Name _; _ } as name)
+        when name.line = minus.line && name.byte = minus.byte + 1 ->
+          advance state;
+          let inner = primary state in
+          {
+            (spanning minus name (Negate (inner, minus)) inner.value_type) with
+            length = inner.byte + inner.length - minus.byte;
+          }
+      | _ ->
+          stop Message.Not_designed_yet minus
+            "a `-` that isn't right before a number or a name isn't decided yet"
+      )
+  | _ -> primary state
+
+and whole_number state (first : Token.t) (last : Token.t) text =
+  if
+    not
+      (String.for_all is_digit
+         (String.sub text
+            (if text.[0] = '-' then 1 else 0)
+            (String.length text - if text.[0] = '-' then 1 else 0)))
+  then
+    stop Message.Not_designed_yet first
+      "this way of writing a number isn't decided yet"
+  else
+    match Int64.of_string_opt text with
+    | Some value -> spanning first last (Whole_literal value) (Some Whole_type)
+    | None ->
+        refuse state
+          {
+            Message.kind = Message.Refused;
+            line = first.line;
+            byte = first.byte;
+            length = last.byte + last.length - first.byte;
+            body =
+              Message.What (Printf.sprintf "`%s` doesn't fit in a `Whole`" text);
+            why =
+              Some
+                "a `Whole` holds whole numbers from -9223372036854775808 to \
+                 9223372036854775807.";
+          };
+        spanning first last (Whole_literal 0L) (Some Whole_type)
 
 and primary state =
   let token = next state in
@@ -615,31 +888,9 @@ and primary state =
       english_only state token;
       advance state;
       spanning token token (Text_literal "\n") (Some Text_type)
-  | Word digits when String.length digits > 0 && is_digit digits.[0] -> (
+  | Word digits when String.length digits > 0 && is_digit digits.[0] ->
       advance state;
-      if not (String.for_all is_digit digits) then
-        stop Message.Not_designed_yet token
-          "this way of writing a number isn't decided yet"
-      else
-        match Int64.of_string_opt digits with
-        | Some value ->
-            spanning token token (Whole_literal value) (Some Whole_type)
-        | None ->
-            refuse state
-              {
-                Message.kind = Message.Refused;
-                line = token.line;
-                byte = token.byte;
-                length = token.length;
-                body =
-                  Message.What
-                    (Printf.sprintf "`%s` doesn't fit in a `Whole`" digits);
-                why =
-                  Some
-                    "a `Whole` holds whole numbers from -9223372036854775808 \
-                     to 9223372036854775807.";
-              };
-            spanning token token (Whole_literal 0L) (Some Whole_type))
+      whole_number state token token digits
   | Name name ->
       advance state;
       let value_type = Option.map fst (find_variable state token name) in
@@ -685,17 +936,90 @@ and primary state =
       spanning token closing inner.shape inner.value_type
   | _ -> not_built state token
 
+(* trace: D88 *)
+(* A signed whole number written in a type's limits. *)
+let limit_number state =
+  let token = next state in
+  match token.kind with
+  | Symbol '-' -> (
+      advance state;
+      let number = next state in
+      match number.kind with
+      | Word digits when number.byte = token.byte + 1 -> (
+          advance state;
+          match Int64.of_string_opt ("-" ^ digits) with
+          | Some value -> value
+          | None -> not_built state number)
+      | _ -> not_built state number)
+  | Word digits -> (
+      advance state;
+      match Int64.of_string_opt digits with
+      | Some value -> value
+      | None -> not_built state token)
+  | _ -> not_built state token
+
+(* trace: D88 *)
+(* `Whole[min: 0, max: 100]`, with `minimum` and `maximum` as the long forms
+   (D68). *)
+let type_limits state =
+  match current state with
+  | Some { kind = Symbol '['; _ } ->
+      advance state;
+      let label () =
+        let token = next state in
+        match token.kind with
+        | Word ("min" | "minimum") ->
+            english_only state token;
+            advance state;
+            ignore (expect_symbol state ':');
+            `Minimum (limit_number state)
+        | Word ("max" | "maximum") ->
+            english_only state token;
+            advance state;
+            ignore (expect_symbol state ':');
+            `Maximum (limit_number state, token)
+        | _ -> not_built state token
+      in
+      let first = label () in
+      let second =
+        match current state with
+        | Some { kind = Symbol ','; _ } ->
+            advance state;
+            Some (label ())
+        | _ -> None
+      in
+      ignore (expect_symbol state ']');
+      let limits =
+        match (first, second) with
+        | `Minimum low, None -> { minimum = Some low; maximum = None }
+        | `Maximum (high, _), None -> { minimum = None; maximum = Some high }
+        | `Minimum low, Some (`Maximum (high, _)) ->
+            { minimum = Some low; maximum = Some high }
+        | `Maximum (_, token), Some _ ->
+            stop Message.Not_designed_yet token
+              "writing `max:` before `min:` isn't decided yet"
+        | `Minimum _, Some (`Minimum _) -> not_built state (previous state)
+      in
+      (match limits with
+      | { minimum = Some low; maximum = Some high } when low > high ->
+          stop Message.Not_built_yet (previous state)
+            "limits with the minimum above the maximum aren't in PlainOracle \
+             yet"
+      | _ -> ());
+      limits
+  | _ -> no_limits
+
 let type_of state =
   let token = next state in
   match token.kind with
   | Word "Whole" ->
       english_only state token;
       advance state;
-      Whole_type
+      (Whole_type, type_limits state)
   | Word "Text" ->
       english_only state token;
       advance state;
-      Text_type
+      (Text_type, no_limits)
   | _ -> not_built state token
 
 let check_holds state name variable_type (value : expression) =
@@ -707,6 +1031,27 @@ let check_holds state name variable_type (value : expression) =
               (text_of_expression state value)
               (type_name found) name (type_name variable_type)))
         "a variable (#) holds only the type written for it."
+  | _ -> ()
+
+(* trace: D88 *)
+(* A written number outside the limits is refused, since it can be seen while
+   building. Anything else is checked while running. *)
+let check_limits state name limits (value : expression) =
+  match value.shape with
+  | Whole_literal number -> (
+      let refuse_limit words =
+        refuse_at state value (Message.What words)
+          "a number stays within the limits written for its type."
+      in
+      let text = text_of_expression state value in
+      match limits with
+      | { maximum = Some high; _ } when number > high ->
+          refuse_limit
+            (Printf.sprintf "`%s` is above `%s`'s maximum of %Ld" text name high)
+      | { minimum = Some low; _ } when number < low ->
+          refuse_limit
+            (Printf.sprintf "`%s` is below `%s`'s minimum of %Ld" text name low)
+      | _ -> ())
   | _ -> ()
 
 (* trace: D27 *)
@@ -727,14 +1072,16 @@ let declaration state ~mutable_variable =
     stop Message.Not_designed_yet name_token
       (Printf.sprintf "declaring `%s` again isn't decided yet" name);
   ignore (expect_symbol state ':');
-  let variable_type = type_of state in
+  let variable_type, limits = type_of state in
   ignore (expect_symbol state '=');
   let value = expression state in
   check_holds state name variable_type value;
+  check_limits state name limits value;
   state.variables <-
     (name, (variable_type, mutable_variable)) :: state.variables;
+  state.limits <- (name, limits) :: state.limits;
   finish state;
-  Declare (name, value)
+  Declare (name, value, limits)
 
 let change state =
   ignore (expect_keyword state Change_word);
@@ -761,11 +1108,16 @@ let change state =
   | _ -> ());
   ignore (expect_symbol state '=');
   let value = expression state in
+  let limits =
+    Option.value (List.assoc_opt name state.limits) ~default:no_limits
+  in
   (match found with
-  | Some (variable_type, _) -> check_holds state name variable_type value
+  | Some (variable_type, _) ->
+      check_holds state name variable_type value;
+      check_limits state name limits value
   | None -> ());
   finish state;
-  Change (name, value)
+  Change (name, value, limits)
 
 (* trace: D12 *)
 (* trace: D13 *)
@@ -854,6 +1206,8 @@ let program source tokens lexer_stop =
       declared_word = "";
       refusals = [];
       variables = [];
+      limits = [];
+      pending = [];
     }
   in
   match

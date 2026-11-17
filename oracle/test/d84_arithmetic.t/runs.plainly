@@ -1,0 +1,23 @@
+english
+procedure.main[none]:
+    #a: Whole = 7;
+    #b: Whole = 2;
+    show_text(be.Text(#a - #b));
+    show_text(be.Text(#a x #b + 1));
+    show_text(be.Text(#a x (#b + 1)));
+    show_text(be.Text(#a divide.down #b));
+    show_text(be.Text(-7 divide.down 2));
+    show_text(be.Text(-7 div.toward_zero 2));
+    show_text(be.Text(-7 remainder.down 2));
+    show_text(be.Text(-7 mod.toward_zero 2));
+    show_text(be.Text(-#a));
+    show_text(be.Text(#a - -7));
+    mut #hp: Whole[min: 0, max: 100] = 50;
+    change #hp = #hp minus.saturate 80;
+    show_text(be.Text(#hp));
+    change #hp = #hp plus.saturate 500;
+    show_text(be.Text(#hp));
+    mut #level: Whole[minimum: 1, maximum: 9] = 1;
+    change #level = #level times.saturate 20;
+    show_text(be.Text(#level));
+end procedure.main

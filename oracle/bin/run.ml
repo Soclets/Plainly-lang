@@ -3,67 +3,160 @@
 
 type value = Whole_value of Int64.t | Text_value of string
 
-(* trace: D19 *)
+let text_of (source : Source.t) (part : Check.expression) =
+  String.sub (Source.line source part.line) (part.byte - 1) part.length
+
+(* The variables an expression reads, each once, in the order they're written,
+   for a `when:` line (D82, D89). *)
+let rec variables_in (expression : Check.expression) =
+  match expression.shape with
+  | Check.Variable name -> [ name ]
+  | Check.Arithmetic (_, left, right, _) | Check.Join (left, right) ->
+      let left_names = variables_in left in
+      left_names
+      @ List.filter
+          (fun name -> not (List.mem name left_names))
+          (variables_in right)
+  | Check.Negate (inner, _) | Check.Be_text inner -> variables_in inner
+  | Check.Format pieces ->
+      List.concat_map
+        (function
+          | Check.Fill inner -> variables_in inner | Check.Words _ -> [])
+        pieces
+  | Check.Whole_literal _ | Check.Text_literal _ -> []
+
+let describe variables names =
+  List.filter_map
+    (fun name ->
+      match Hashtbl.find_opt variables name with
+      | Some (Whole_value number) ->
+          Some (Printf.sprintf "`%s` is %Ld" name number)
+      | _ -> None)
+    names
+  |> String.concat ", and "
+
 (* trace: D82 *)
-(* Overflow is a check that stops the program, naming the values that broke
-   it. *)
-let add source variables (expression : Check.expression) (token : Token.t)
-    (left : Check.expression) (right : Check.expression) first second =
-  let sum = Int64.add first second in
-  let overflowed =
-    (first >= 0L && second >= 0L && sum < 0L)
-    || (first < 0L && second < 0L && sum >= 0L)
-  in
-  if overflowed then
-    let text (part : Check.expression) =
-      String.sub (Source.line source part.line) (part.byte - 1) part.length
-    in
-    let values =
-      List.filter_map
-        (fun (part : Check.expression) ->
-          match part.shape with
-          | Check.Variable name -> (
-              match Hashtbl.find variables name with
-              | Whole_value number ->
-                  Some (Printf.sprintf "`%s` is %Ld" name number)
-              | Text_value _ -> None)
-          | _ -> None)
-        [ left; right ]
-    in
-    let what =
-      Printf.sprintf "`%s` is too big for a `Whole`" (text expression)
-    in
-    raise
-      (Message.Stop
-         {
-           Message.kind = Message.Check_failed;
-           line = token.line;
-           byte = token.byte;
-           length = token.length;
-           body =
-             (match values with
-             | [] -> Message.What what
-             | _ -> Message.What_when (what, String.concat ", and " values));
-           why =
-             Some
-               "a `Whole` holds whole numbers from -9223372036854775808 to \
-                9223372036854775807.";
-         })
-  else sum
+let check_failed (place : Token.t) what values why =
+  raise
+    (Message.Stop
+       {
+         Message.kind = Message.Check_failed;
+         line = place.line;
+         byte = place.byte;
+         length = place.length;
+         body =
+           (if values = "" then Message.What what
+            else Message.What_when (what, values));
+         why = Some why;
+       })
+
+let whole_range =
+  "a `Whole` holds whole numbers from -9223372036854775808 to \
+   9223372036854775807."
+
+(* The exact result, or which way it went past a `Whole`'s range. *)
+let exact operation first second =
+  let open Int64 in
+  match (operation : Check.operation) with
+  | Check.Plus ->
+      let sum = add first second in
+      if first >= 0L && second >= 0L && sum < 0L then Error `Too_big
+      else if first < 0L && second < 0L && sum >= 0L then Error `Too_small
+      else Ok sum
+  | Check.Minus ->
+      let difference = sub first second in
+      if first >= 0L && second < 0L && difference < 0L then Error `Too_big
+      else if first < 0L && second > 0L && difference >= 0L then
+        Error `Too_small
+      else Ok difference
+  | Check.Times ->
+      let product = mul first second in
+      let overflowed =
+        (first <> 0L && div product first <> second)
+        || (first = -1L && second = min_int)
+        || (second = -1L && first = min_int)
+      in
+      if overflowed then
+        if first < 0L = (second < 0L) then Error `Too_big else Error `Too_small
+      else Ok product
+  | Check.Divide rounding ->
+      if second = -1L && first = min_int then Error `Too_big
+      else
+        let quotient = div first second in
+        let remainder = rem first second in
+        if
+          rounding = Check.Down && remainder <> 0L && first < 0L <> (second < 0L)
+        then Ok (sub quotient 1L)
+        else Ok quotient
+  | Check.Remainder rounding ->
+      if second = -1L then Ok 0L
+      else
+        let remainder = rem first second in
+        if
+          rounding = Check.Down && remainder <> 0L
+          && remainder < 0L <> (second < 0L)
+        then Ok (add remainder second)
+        else Ok remainder
+  | Check.Saturate _ -> invalid_arg "Run.exact: saturate is handled apart"
 
 let rec evaluate source variables (expression : Check.expression) =
   match expression.shape with
   | Check.Whole_literal number -> Whole_value number
   | Check.Text_literal words -> Text_value words
   | Check.Variable name -> Hashtbl.find variables name
-  | Check.Add (left, right, token) -> (
+  | Check.Negate (inner, minus) -> (
+      match evaluate source variables inner with
+      | Whole_value number when number = Int64.min_int ->
+          (* trace: D86 *)
+          check_failed minus
+            (Printf.sprintf "`%s` is too big for a `Whole`"
+               (text_of source expression))
+            (describe variables (variables_in inner))
+            whole_range
+      | Whole_value number -> Whole_value (Int64.neg number)
+      | Text_value _ ->
+          invalid_arg "Run.evaluate: `-` on text passed the checker")
+  | Check.Arithmetic (Check.Saturate operation, left, right, _) ->
+      saturate source variables Check.no_limits operation left right
+  | Check.Arithmetic (operation, left, right, place) -> (
       match
         (evaluate source variables left, evaluate source variables right)
       with
-      | Whole_value first, Whole_value second ->
-          Whole_value
-            (add source variables expression token left right first second)
-      | _ -> invalid_arg "Run.evaluate: `+` on text passed the checker")
+      | Whole_value first, Whole_value second -> (
+          (match operation with
+          | (Check.Divide _ | Check.Remainder _) when second = 0L ->
+              (* trace: D85 *)
+              let values =
+                match right.shape with
+                | Check.Variable name -> describe variables [ name ]
+                | _ -> ""
+              in
+              check_failed place
+                (Printf.sprintf "`%s` divides by zero"
+                   (text_of source expression))
+                values "nothing can be divided by zero."
+          | _ -> ());
+          match exact operation first second with
+          | Ok number -> Whole_value number
+          | Error direction ->
+              (* trace: D84 *)
+              let operands =
+                List.filter_map
+                  (fun (part : Check.expression) ->
+                    match part.shape with
+                    | Check.Variable name -> Some name
+                    | _ -> None)
+                  [ left; right ]
+              in
+              check_failed place
+                (Printf.sprintf "`%s` is too %s for a `Whole`"
+                   (text_of source expression)
+                   (match direction with
+                   | `Too_big -> "big"
+                   | `Too_small -> "small"))
+                (describe variables operands)
+                whole_range)
+      | _ -> invalid_arg "Run.evaluate: arithmetic on text passed the checker")
   | Check.Join (left, right) -> (
       match
         (evaluate source variables left, evaluate source variables right)
@@ -82,11 +175,73 @@ let rec evaluate source variables (expression : Check.expression) =
            (List.map
               (function
                 | Check.Words words -> words
-                | Check.Fill expression -> (
-                    match evaluate source variables expression with
+                | Check.Fill inner -> (
+                    match evaluate source variables inner with
                     | Whole_value number -> Int64.to_string number
                     | Text_value words -> words))
               pieces))
+
+(* trace: D87 *)
+(* trace: D88 *)
+(* The result sticks at the limits of the type it goes into, or a `Whole`'s
+   own range when it has none. *)
+and saturate source variables (limits : Check.limits) operation left right =
+  match (evaluate source variables left, evaluate source variables right) with
+  | Whole_value first, Whole_value second ->
+      let result =
+        match exact operation first second with
+        | Ok number -> number
+        | Error `Too_big -> Int64.max_int
+        | Error `Too_small -> Int64.min_int
+      in
+      let result =
+        match limits.maximum with
+        | Some high when result > high -> high
+        | _ -> result
+      in
+      let result =
+        match limits.minimum with
+        | Some low when result < low -> low
+        | _ -> result
+      in
+      Whole_value result
+  | _ -> invalid_arg "Run.saturate: arithmetic on text passed the checker"
+
+(* trace: D88 *)
+(* Storing into a variable with limits: `.saturate` at the top sticks at them,
+   and anything else outside them is a failed check. *)
+let store source variables name limits (expression : Check.expression) =
+  let value =
+    match expression.shape with
+    | Check.Arithmetic (Check.Saturate operation, left, right, _) ->
+        saturate source variables limits operation left right
+    | _ -> evaluate source variables expression
+  in
+  (match value with
+  | Whole_value number -> (
+      let failed words =
+        check_failed
+          {
+            Token.kind = Token.Word "";
+            line = expression.line;
+            byte = expression.byte;
+            length = expression.length;
+          }
+          words
+          (describe variables (variables_in expression))
+          "a number stays within the limits written for its type."
+      in
+      let text = text_of source expression in
+      match limits with
+      | { Check.maximum = Some high; _ } when number > high ->
+          failed
+            (Printf.sprintf "`%s` is above `%s`'s maximum of %Ld" text name high)
+      | { Check.minimum = Some low; _ } when number < low ->
+          failed
+            (Printf.sprintf "`%s` is below `%s`'s minimum of %Ld" text name low)
+      | _ -> ())
+  | Text_value _ -> ());
+  Hashtbl.replace variables name value
 
 let program source statements =
   let variables = Hashtbl.create 16 in
@@ -101,6 +256,7 @@ let program source statements =
           | Whole_value _ ->
               invalid_arg
                 "Run.program: show_text of a number passed the checker")
-      | Check.Declare (name, expression) | Check.Change (name, expression) ->
-          Hashtbl.replace variables name (evaluate source variables expression))
+      | Check.Declare (name, expression, limits)
+      | Check.Change (name, expression, limits) ->
+          store source variables name limits expression)
     statements

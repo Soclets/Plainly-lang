@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    #a: Whole = 7;
+    show_text("n" & #a x 2);
+end procedure.main

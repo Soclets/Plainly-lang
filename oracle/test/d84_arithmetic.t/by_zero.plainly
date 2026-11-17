@@ -1,0 +1,6 @@
+english
+procedure.main[none]:
+    #a: Whole = 7;
+    #b: Whole = 0;
+    show_text(be.Text(#a divide.down #b));
+end procedure.main
