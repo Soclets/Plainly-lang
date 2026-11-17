@@ -1834,3 +1834,16 @@ pipe `#a + 1` and the joined text. `( )` around the left side is allowed, and ne
 arithmetic the same way.
 
 Owner: "yea".
+
+## D98: A line after `return` in the same block is refused (2026-11-17)
+
+    procedure greet[#name: Text]:
+        return;
+        show_text("never shown");
+    end procedure greet
+
+The line after `return` can never run, so it's a leftover or a bug, as with code after an `if` that always leaves
+(D50). The fix is deleting it, which can't be shown as code, so the refusal has a `what:`, not a `fix:`. Its wording
+isn't decided.
+
+Owner: "refuse. Also, what's `return;`?"
