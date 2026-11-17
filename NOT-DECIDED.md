@@ -37,10 +37,6 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 - A required space between keywords, since Thai doesn't put spaces between words.
 - Measuring text by screen columns, not characters.
 
-## Floats
-
-- Whether `~` on an exact literal, like `~0.5`, is refused (D64).
-
 ## Used in the README, but not decided
 
 - `procedure greet[...] returns Text:` as the header, with `:` at the end.
