@@ -1349,18 +1349,19 @@ Owner: "You know what's plain? `.code`, hahah", "Or just `.plainly`?", then "yea
 
 ## D79: The `apy` commands (2026-11-17)
 
-    apy run game.plainly --Working
-    apy build game.plainly --FinalSafe
+    apy run game.plainly --mode=Working
+    apy build game.plainly --mode=FinalSafe
     apy check game.plainly
-    apy convert game.plainly --<lang>
+    apy convert game.plainly --language=ไทย
 
 - `run` builds to a temporary file and runs it, as `go run` does (D16).
 - `build` makes the binary to ship.
 - `check` shows the refusals without building.
-- `convert` rewrites the file into the other word table (D57), language line included. Its flag is a language line's
-  word (D75, D77), as in `--ไทย` or `--english`.
-- A build mode is a flag with the mode's own name: `--Working`, `--FinalSafe`, `--FinalPerf` (D19). `run` and `build`
-  need one, since there's no default mode.
+- `convert` rewrites the file into the other word table (D57), language line included. `--language=` takes a language
+  line's word (D75, D77), as in `--language=ไทย` or `--language=english`.
+- `--mode=` takes a build mode: `Working`, `FinalSafe` or `FinalPerf` (D19). `run` and `build` need one, since there's
+  no default mode. The owner first wrote the flags as `--Working` and `--<lang>`, then brought back `--mode=` and
+  `--language=`.
 
 The command is `apy`, the compiler's short name (D23), rather than `plainly`, which would read
 `plainly run game.plainly`.
@@ -1373,6 +1374,9 @@ key). The command is `เอพาย`, `apy` in Thai letters (owner: "That's wh
 
 `build` is `สร้าง` ("build, create"), native and everyday; `บิลด์` was offered.
 
-Open: the Thai words for `check` and `convert`, the flags, and the extension.
+Owner, on `build` and the flags: "สร้าง
+And we'll bring back `--mode=` and `--language=`".
+
+Open: the Thai words for `check` and `convert`, for `--mode=` and `--language=` and the mode names, and the extension.
 
 Owner: has code.
