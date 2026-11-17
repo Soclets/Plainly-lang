@@ -903,8 +903,9 @@ and primary state =
       ignore (expect_symbol state '.');
       let type_token = next state in
       match type_token.kind with
-      | Word "Text" when is_format_next state ->
+      | Keyword (Text_word, table) when is_format_next state ->
           (* trace: D11 *)
+          check_table state type_token table;
           advance state;
           ignore (expect_symbol state '.');
           ignore (expect_word state "format");
@@ -912,7 +913,8 @@ and primary state =
           let pieces = format_argument state in
           let closing = expect_symbol state ')' in
           spanning token closing (Format pieces) (Some Text_type)
-      | Word "Text" ->
+      | Keyword (Text_word, table) ->
+          check_table state type_token table;
           advance state;
           ignore (expect_symbol state '(');
           let inner = expression state in
@@ -1020,12 +1022,12 @@ let type_limits state =
 let type_of state =
   let token = next state in
   match token.kind with
-  | Word "Whole" ->
-      english_only state token;
+  | Keyword (Whole_word, table) ->
+      check_table state token table;
       advance state;
       (Whole_type, type_limits state)
-  | Word "Text" ->
-      english_only state token;
+  | Keyword (Text_word, table) ->
+      check_table state token table;
       advance state;
       (Text_type, no_limits)
   | _ -> not_built state token

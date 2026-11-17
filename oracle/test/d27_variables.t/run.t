@@ -111,11 +111,16 @@ Mixing `+` and `&` needs brackets, since maths doesn't say which goes first (D83
    why:  maths doesn't say which goes first, so `( )` shows it.
   [1]
 
-The Thai word for `Whole` isn't decided yet (D57).
+Variables in Thai, with `เปลี่ยนได้`, `เปลี่ยน`, `จำนวนเต็ม`, `ข้อความ` and `เป็น` (D57).
+
+  $ plainoracle thai_runs.เพลนลี่
+  มีอา: 15
+
+`Whole` in a Thai file is the other table's word, and Thai messages aren't worded yet beyond their labels (D57, D61).
 
   $ plainoracle thai_whole.เพลนลี่
   NotDesignedYet: thai_whole.เพลนลี่:3:44, line 3 column 21
    3 |     เปลี่ยนได้ #score: Whole = 10;
      |                     ^^^^^
-   what: the Thai word for `Whole` isn't decided yet
+   what: the Thai wording of this message isn't decided yet
   [3]

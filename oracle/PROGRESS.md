@@ -67,7 +67,8 @@ status 4 (D82). With two variables, the `when:` line joins them with ", and", wh
 Refused, tested: `+` and `&` mixed without brackets (D83). The mixed expression's type becomes unknown, so nothing
 after it is refused because of it.
 
-Stops, tested: `Whole` in a Thai file, since its Thai word isn't decided. `เปลี่ยนได้` is Thai `mutable` (D57). Declaring a name again needs `shadow`, which may change its type, and `shadow mutable` works too; a redeclaration
+Runs, tested: a whole Thai program with `เปลี่ยนได้`, `เปลี่ยน`, `จำนวนเต็ม`, `ข้อความ` and `เป็น` (D57). `Whole` in a Thai
+file is the other table's word, so it's refused, which shows as `NotDesignedYet` until Thai sentences are worded. Declaring a name again needs `shadow`, which may change its type, and `shadow mutable` works too; a redeclaration
 without it is refused (D91), tested. Numbers written with anything but digits are `NotDesignedYet`. `be.Text`
 of `Text` is refused, with the value as the fix (D90), tested.
 
@@ -137,8 +138,9 @@ All wording so far is approved: D73, D76, D80, D81, D82, D83, D89, D90 and D91.
 3. ~~`-`, `*` and division~~: decided as D84 to D89, and built.
 4. ~~`be.Text` of something that's already `Text`~~: refused, as D90, and built.
 5. ~~Declaring the same name twice~~: `shadow` in front, as D91, and built.
-6. The Thai words for `Whole` and `Text`, and for the arithmetic words (`divide`, `remainder`, `saturate`, …).
-   Decided: `mutable` `เปลี่ยนได้`, `change` `เปลี่ยน`, `shadow` `บัง`, `be` `เป็น`.
+6. The Thai words for the arithmetic words (`divide`, `remainder`, `saturate`, `min`, `max`, …), `format`,
+   `same_line` and `new_line`. Decided: `mutable` `เปลี่ยนได้`, `change` `เปลี่ยน`, `shadow` `บัง`, `be` `เป็น`, `Whole`
+   `จำนวนเต็ม`, `Text` `ข้อความ`.
 7. Other ways of writing numbers, like `1_000`.
 
 ## Questions slice 3 raised
