@@ -30,7 +30,6 @@ names the decision it came from, or when the owner gave it.
      each `unsafe` block has a comment saying why it's safe.
    - **OCaml** (PlainOracle): `ocamlformat`, and compiler warnings are errors.
    (Owner, 2026-11-17, from Cyborg's rules 6 and 7)
-
 6. **Fixing stale documents.** The design session may correct a document that contradicts the decisions, such as
    NOT-DECIDED.md, a prompt, the README, or a note under an old entry, but only when the proof is firsthand in its
    current context: the owner's own message, or a file it read since the last compaction. A compaction summary doesn't
