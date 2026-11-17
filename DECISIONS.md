@@ -1690,3 +1690,11 @@ Owner: "hm? I can read it correctly, though".
 For a lone `=` in a condition (D34), comparing different types, an `if` given a plain value, and a missing `end if`.
 
 Owner, asked whether any read wrong: "no, and refuse `==` with Text and Text."
+
+## D94: `==` and `!=` don't compare two `Text`s (2026-11-17)
+
+`==` between two `Text` values is refused, and so is `!=`, presumably. How two texts are compared instead isn't decided.
+
+Open: how texts are compared; whether `!=` follows `==`; the refusal's wording.
+
+Owner: "no, and refuse `==` with Text and Text."
