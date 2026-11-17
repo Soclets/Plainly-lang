@@ -48,16 +48,29 @@ let rec evaluate variables (expression : Check.expression) =
       match evaluate variables inner with
       | Whole_value number -> Text_value (Int64.to_string number)
       | Text_value words -> Text_value words)
+  (* trace: D2 *)
+  | Check.Format pieces ->
+      Text_value
+        (String.concat ""
+           (List.map
+              (function
+                | Check.Words words -> words
+                | Check.Fill expression -> (
+                    match evaluate variables expression with
+                    | Whole_value number -> Int64.to_string number
+                    | Text_value words -> words))
+              pieces))
 
 let program statements =
   let variables = Hashtbl.create 16 in
   List.iter
     (function
-      | Check.Show_text expression -> (
+      | Check.Show_text (expression, same_line) -> (
           match evaluate variables expression with
           | Text_value words ->
               print_string words;
-              print_char '\n'
+              (* trace: D12 *)
+              if not same_line then print_char '\n'
           | Whole_value _ ->
               invalid_arg
                 "Run.program: show_text of a number passed the checker")

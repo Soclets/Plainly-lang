@@ -26,9 +26,13 @@ and shape =
   | Add of expression * expression * Token.t
   | Join of expression * expression
   | Be_text of expression
+  | Format of piece list
+
+(* A piece of `.format` text: words as they are, or a fill-in. *)
+and piece = Words of string | Fill of expression
 
 type statement =
-  | Show_text of expression
+  | Show_text of expression * bool
   | Declare of string * expression
   | Change of string * expression
 
@@ -338,6 +342,182 @@ let find_variable state (token : Token.t) name =
         };
       None
 
+(* trace: D3 *)
+(* Text outside `.format` is literal, and what `\` means there isn't decided. *)
+let plain_text (token : Token.t) words =
+  match String.index_opt words '\\' with
+  | Some index ->
+      raise
+        (Message.Stop
+           {
+             Message.kind = Message.Not_designed_yet;
+             line = token.line;
+             byte = token.byte + 1 + index;
+             length = 1;
+             body =
+               Message.What "`\\` in text outside `.format` isn't decided yet";
+             why = None;
+           })
+  | None -> ()
+
+let expect_word state word =
+  let token = next state in
+  match token.kind with
+  | Word found when found = word ->
+      english_only state token;
+      advance state;
+      token
+  | _ -> not_built state token
+
+let is_format_next state =
+  state.position + 2 < Array.length state.tokens
+  &&
+  match
+    ( state.tokens.(state.position + 1).kind,
+      state.tokens.(state.position + 2).kind )
+  with
+  | Symbol '.', Word "format" -> true
+  | _ -> false
+
+let is_letter_or_digit = function
+  | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' -> true
+  | _ -> false
+
+let is_name_byte = function
+  | 'a' .. 'z' | 'A' .. 'Z' | '0' .. '9' | '_' -> true
+  | other -> Char.code other >= 0x80
+
+(* trace: D2 *)
+(* trace: D4 *)
+(* trace: D5 *)
+(* trace: D7 *)
+(* `.format` text: `{#name}` and `{new_line}` are filled in, `\` keeps the next
+   character, so `\{` is a brace, and a lone `}` is just a character. *)
+let format_text state (token : Token.t) text =
+  let size = String.length text in
+  let at index length kind words =
+    {
+      Message.kind;
+      line = token.line;
+      byte = token.byte + 1 + index;
+      length;
+      body = Message.What words;
+      why = None;
+    }
+  in
+  let pieces = ref [] in
+  let buffer = Buffer.create 16 in
+  let flush () =
+    if Buffer.length buffer > 0 then (
+      pieces := Words (Buffer.contents buffer) :: !pieces;
+      Buffer.clear buffer)
+  in
+  let rec go index =
+    if index < size then
+      match text.[index] with
+      | '\\' when index + 1 < size ->
+          let next_character = text.[index + 1] in
+          if is_letter_or_digit next_character then
+            raise
+              (Message.Stop
+                 (at index 1 Message.Not_designed_yet
+                    "`\\` before a letter isn't decided yet"));
+          Buffer.add_char buffer next_character;
+          go (index + 2)
+      | '{' -> (
+          match String.index_from_opt text (index + 1) '}' with
+          | None ->
+              refuse state
+                {
+                  (at index 1 Message.Refused "this `{` has no `}`") with
+                  why = Some "a fill-in starts with `{` and ends with `}`.";
+                }
+          | Some closing ->
+              let inside = String.sub text (index + 1) (closing - index - 1) in
+              fill index inside closing;
+              go (closing + 1))
+      | character ->
+          Buffer.add_char buffer character;
+          go (index + 1)
+  and fill index inside closing =
+    let calculation () =
+      refuse state
+        {
+          (at index
+             (closing - index + 1)
+             Message.Refused
+             (Printf.sprintf "`{%s}` holds a calculation, not a value" inside))
+          with
+          why = Some "a fill-in only reads a value, so it can never hide work.";
+        }
+    in
+    if inside = "new_line" then Buffer.add_char buffer '\n'
+    else if String.length inside > 0 && inside.[0] = '#' then
+      let size = String.length inside in
+      let rec name_end position =
+        if position < size && is_name_byte inside.[position] then
+          name_end (position + 1)
+        else position
+      in
+      let finish = name_end 1 in
+      if finish = size then (
+        flush ();
+        let name_token =
+          {
+            Token.kind = Name inside;
+            line = token.line;
+            byte = token.byte + 2 + index;
+            length = size;
+          }
+        in
+        let value_type =
+          Option.map fst (find_variable state name_token inside)
+        in
+        pieces :=
+          Fill (spanning name_token name_token (Variable inside) value_type)
+          :: !pieces)
+      else
+        match inside.[finish] with
+        | '.' ->
+            raise
+              (Message.Stop
+                 (at
+                    (index + 1 + finish)
+                    1 Message.Not_designed_yet
+                    "fields in a fill-in aren't decided yet"))
+        | ',' ->
+            raise
+              (Message.Stop
+                 (at
+                    (index + 1 + finish)
+                    1 Message.Not_designed_yet
+                    "settings in a fill-in, like a width, aren't decided yet"))
+        | _ -> calculation ()
+    else if String.exists (fun c -> String.contains "+-*/&|()" c) inside then
+      calculation ()
+    else
+      raise
+        (Message.Stop
+           (at index
+              (closing - index + 1)
+              Message.Not_designed_yet
+              (Printf.sprintf "`{%s}` isn't decided yet" inside)))
+  in
+  go 0;
+  flush ();
+  List.rev !pieces
+
+(* The argument of `.format` is text written in quotes. *)
+let format_argument state =
+  let token = next state in
+  match token.kind with
+  | Text words ->
+      advance state;
+      format_text state token words
+  | _ ->
+      stop Message.Not_designed_yet token
+        "`.format` of text that isn't written in quotes isn't decided yet"
+
 let rec expression state =
   let first = primary state in
   operators state first None
@@ -410,7 +590,13 @@ and primary state =
   match token.kind with
   | Text words ->
       advance state;
+      plain_text token words;
       spanning token token (Text_literal words) (Some Text_type)
+  | Word "new_line" ->
+      (* trace: D4 *)
+      english_only state token;
+      advance state;
+      spanning token token (Text_literal "\n") (Some Text_type)
   | Word digits when String.length digits > 0 && is_digit digits.[0] -> (
       advance state;
       if not (String.for_all is_digit digits) then
@@ -447,6 +633,15 @@ and primary state =
       ignore (expect_symbol state '.');
       let type_token = next state in
       match type_token.kind with
+      | Word "Text" when is_format_next state ->
+          (* trace: D11 *)
+          advance state;
+          ignore (expect_symbol state '.');
+          ignore (expect_word state "format");
+          ignore (expect_symbol state '(');
+          let pieces = format_argument state in
+          let closing = expect_symbol state ')' in
+          spanning token closing (Format pieces) (Some Text_type)
       | Word "Text" ->
           advance state;
           ignore (expect_symbol state '(');
@@ -555,17 +750,48 @@ let change state =
   Change (name, value)
 
 (* trace: D12 *)
+(* trace: D13 *)
+(* trace: D14 *)
 (* trace: D44 *)
 let show_text state =
-  ignore (expect_keyword state Show_text_word);
-  (let token = next state in
-   match token.kind with
-   | Symbol '(' -> advance state
-   | Symbol '.' ->
-       stop Message.Not_built_yet token
-         "narrowings of `show_text`, like `.format`, aren't in PlainOracle yet"
-   | _ -> not_built state token);
-  let value = expression state in
+  let show_token = expect_keyword state Show_text_word in
+  let rec narrowings found =
+    match current state with
+    | Some { kind = Symbol '.'; _ } -> (
+        advance state;
+        let token = next state in
+        match token.kind with
+        | Word (("format" | "same_line") as word)
+          when not (List.mem_assoc word found) ->
+            english_only state token;
+            advance state;
+            narrowings ((word, token) :: found)
+        | _ -> not_built state token)
+    | _ -> List.rev found
+  in
+  let found = narrowings [] in
+  let words = List.map fst found in
+  (if words = [ "same_line"; "format" ] then
+     let last = snd (List.nth found 1) in
+     refuse state
+       {
+         Message.kind = Message.Refused;
+         line = show_token.line;
+         byte = show_token.byte;
+         length = last.byte + last.length - show_token.byte;
+         body = Message.Fix "show_text.format.same_line";
+         why =
+           Some
+             "`.format` changes what's shown, so it comes before `.same_line`.";
+       });
+  ignore (expect_symbol state '(');
+  let value =
+    if List.mem "format" words then
+      let first = next state in
+      let pieces = format_argument state in
+      spanning first (previous state) (Format pieces) (Some Text_type)
+    else expression state
+  in
   ignore (expect_symbol state ')');
   (match value.value_type with
   | Some Whole_type ->
@@ -575,7 +801,7 @@ let show_text state =
         "`show_text` shows text, and doesn't turn a number into text by itself."
   | _ -> ());
   finish state;
-  Show_text value
+  Show_text (value, List.mem "same_line" words)
 
 let rec body state found =
   let token = next state in

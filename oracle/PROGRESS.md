@@ -23,8 +23,9 @@ To recreate the switch: `opam switch create ./oracle ocaml-system --no-install`,
 |---|---|
 | 1. Hello world, English and Thai, the error format, `;`, `[none]`, indentation | Done, 2026-11-17 |
 | 2. Variables, `Whole` and `Text`, `mut`, `change`, `+`, `&`, `be.Text` | Done, 2026-11-17 |
-| 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` | Next |
-| 4 to 9 | Not started |
+| 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` | Done, 2026-11-17 |
+| 4. `if`, `else if`, `else`, comparisons, `and`/`or`/`not`, D50 | Next |
+| 5 to 9 | Not started |
 
 ## Slice 1
 
@@ -66,6 +67,21 @@ with anything but digits, all `NotDesignedYet`.
 
 Traced decisions added: D1, D6, D19, D27, D28, D51.
 
+## Slice 3
+
+Runs: `show_text.format` and `be.Text.format`, with `{#name}` filled in (numbers converted) and `{new_line}`; `\{` and
+`\"` inside `.format`; a lone `}` as a character; plain `show_text` staying literal; `.same_line`, alone or as
+`.format.same_line`; `new_line` as a word joined with `&`.
+
+Refused, tested: `.same_line.format`, with `fix: show_text.format.same_line` (D14); a calculation in braces (D7); a `{`
+with no `}`; an undeclared variable in braces.
+
+Stops, tested: `\` before a letter, and `\` in text outside `.format` (D3); fields in braces (D7). Also built: settings
+in braces like a width, `{}` and other words in braces, and `.format` of text not written in quotes, all
+`NotDesignedYet`.
+
+Traced decisions added: D2, D3, D4, D5, D7, D11, D12, D13, D14.
+
 ## Waiting for the owner
 
 These are choices slice 1 had to make so that anything could run. They're provisional until the owner answers:
@@ -99,6 +115,12 @@ From slice 2, in D73's style:
   9223372036854775807.`
 - `what: `#score` isn't mutable` comes from D58's own example, and its `why:` is D59's.
 
+From slice 3:
+- `why:  `.format` changes what's shown, so it comes before `.same_line`.`
+- `what: `{#n + 1}` holds a calculation, not a value`, with `why:  a fill-in only reads a value, so it can never hide
+  work.`
+- `what: this `{` has no `}``, with `why:  a fill-in starts with `{` and ends with `}`.`
+
 ## Questions slice 2 raised
 
 1. How a failed check is reported while running: its wording and its exit status (D71 left it open). Overflow needs it.
@@ -108,3 +130,9 @@ From slice 2, in D73's style:
 5. Declaring the same name twice in one procedure.
 6. The Thai words for `mut`, `mutable`, `change`, `be`, `Whole` and `Text`.
 7. Other ways of writing numbers, like `1_000`.
+
+## Questions slice 3 raised
+
+8. `{}`, and words other than `new_line` in braces.
+9. Settings in braces, like a width or decimal places (D7 left them open).
+10. `.format` of text that isn't written in quotes, like a variable holding a template.

@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    show_text.format("\n");
+end procedure.main

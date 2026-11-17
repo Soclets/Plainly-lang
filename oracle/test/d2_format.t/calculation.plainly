@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    #n: Whole = 1;
+    show_text.format("{#n + 1}");
+end procedure.main

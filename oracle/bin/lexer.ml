@@ -80,8 +80,10 @@ let tokens (source : Source.t) =
               index + 1
           | '\\' ->
               (* trace: D3 *)
-              stop Message.Not_designed_yet line (index + 1) 1
-                "`\\` in text outside `.format` isn't decided yet"
+              (* A backslash keeps the next character, even a quote. Whether
+                 that's allowed here depends on where the text is, so the
+                 checker decides. *)
+              scan (index + 2)
           | _ -> scan (index + 1)
       in
       scan (start + 1)

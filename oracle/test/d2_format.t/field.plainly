@@ -1,0 +1,5 @@
+english
+procedure.main[none]:
+    #name: Text = "Mia";
+    show_text.format("{#name.size}");
+end procedure.main
