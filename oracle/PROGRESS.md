@@ -61,11 +61,14 @@ Refused, tested: `change` on a variable that isn't `mut`; a value of the wrong t
 joined with `&` or passed to `show_text`, with `fix: be.Text(…)`; a variable used before its declaration; a number too
 big for a `Whole`. A refused declaration still creates its variable with its written type (D58), tested.
 
-Stops, tested: overflow (decided as a check, but how a failed check is reported while running isn't); `+` and `&` mixed
+A failed check, tested: overflow stops with `check failed:`, a `when:` line naming the variables' values, and exit
+status 4 (D82). With two variables, the `when:` line joins them with ", and", which isn't tested or reviewed yet.
+
+Stops, tested: `+` and `&` mixed
 without brackets; `mut` in a Thai file. Also built: declaring a name twice, `be.Text` of `Text`, and numbers written
 with anything but digits, all `NotDesignedYet`.
 
-Traced decisions added: D1, D6, D19, D27, D28, D51.
+Traced decisions added: D1, D6, D19, D27, D28, D51, D71, D82.
 
 ## Slice 3
 
@@ -103,11 +106,11 @@ These are choices slice 1 had to make so that anything could run. They're provis
 
 ## Wording
 
-All wording so far is approved: D73, D76, D80 and D81.
+All wording so far is approved: D73, D76, D80, D81 and D82, except the `when:` line for two variables.
 
 ## Questions slice 2 raised
 
-1. How a failed check is reported while running: its wording and its exit status (D71 left it open). Overflow needs it.
+1. ~~How a failed check is reported while running~~: decided as D82, and built.
 2. Which goes first when `+` and `&` are mixed without brackets.
 3. `-`, `*` and division.
 4. `be.Text` of something that's already `Text`: allowed, or refused?

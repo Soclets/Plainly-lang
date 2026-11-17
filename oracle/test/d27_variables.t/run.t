@@ -89,14 +89,17 @@ A number that doesn't fit in a `Whole` is refused.
    why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
   [1]
 
-Overflow is a check that stops the program in `Working` (D19), but how a failed check is reported isn't decided yet.
+Overflow is a check that stops the program in `Working` (D19), reported with the values that broke it and exit status 4
+(D82).
 
   $ plainoracle overflow.plainly
-  NotDesignedYet: overflow.plainly:4:24, line 4 column 24
+  check failed: overflow.plainly:4:24, line 4 column 24
    4 |     change #big = #big + 1;
      |                        ^
-   what: how a failed check is reported while running isn't decided yet
-  [3]
+   what: `#big + 1` is too big for a `Whole`
+   when: `#big` is 9223372036854775807
+   why:  a `Whole` holds whole numbers from -9223372036854775808 to 9223372036854775807.
+  [4]
 
 Mixing `+` and `&` without brackets isn't decided, since which goes first isn't.
 

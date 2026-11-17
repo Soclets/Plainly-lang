@@ -1,11 +1,16 @@
 (* Error messages, in the layout D58 to D62 give. *)
 
-type kind = Refused | Not_built_yet | Not_designed_yet
+type kind = Refused | Check_failed | Not_built_yet | Not_designed_yet
 
 (* trace: D60 *)
 (* A message shows a fix only when there's exactly one, and the fix replaces
    [what:]. *)
-type body = Fix of string | What of string
+type body =
+  | Fix of string
+  | What of string
+  (* trace: D82 *)
+  (* [when:] gives the values that broke a rule while running. *)
+  | What_when of string * string
 
 (* [byte] and [length] mark the part in question, in bytes. A length of 0 marks
    the place where something is missing. *)
@@ -22,8 +27,16 @@ exception Stop of t
 
 let stops message = match message.kind with Refused -> false | _ -> true
 
+(* trace: D71 *)
+(* trace: D82 *)
+let exit_status = function
+  | Refused -> 1
+  | Check_failed -> 4
+  | Not_built_yet | Not_designed_yet -> 3
+
 let kind_word = function
   | Refused -> "refused"
+  | Check_failed -> "check failed"
   | Not_built_yet -> "NotBuiltYet"
   | Not_designed_yet -> "NotDesignedYet"
 
@@ -46,6 +59,9 @@ let render (source : Source.t) message =
     (String.make (max 1 (Source.graphemes part)) '^');
   (match message.body with
   | Fix code -> add " fix:  `%s`\n" code
-  | What words -> add " what: %s\n" words);
+  | What words -> add " what: %s\n" words
+  | What_when (words, values) ->
+      add " what: %s\n" words;
+      add " when: %s\n" values);
   (match message.why with Some words -> add " why:  %s\n" words | None -> ());
   Buffer.contents buffer

@@ -50,12 +50,12 @@ let run file =
       in
       match messages with
       | [] -> (
-          match Run.program statements with
+          match Run.program source statements with
           | () -> 0
           | exception Message.Stop message ->
               flush stdout;
               prerr_string (Message.render source message);
-              3)
+              Message.exit_status message.kind)
       | messages ->
           prerr_string
             (String.concat "\n" (List.map (Message.render source) messages));
