@@ -1485,9 +1485,9 @@ Owner, on the wording: "What kind of brackets", then "yea".
 `divide`, with `div` as its short form, the way `proc` is short for `procedure`. They follow maths order (D83): `x` and
 `divide` before `+` and `-`.
 
-Division's rounding: D85.
+Division's rounding: D85. Negatives: D86.
 
-Open: negative numbers; overflow on `-` and `x`.
+Open: overflow on `-` and `x`.
 
 Owner: "`x`. Short as alts, `divide` is probably the better main".
 
