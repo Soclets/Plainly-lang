@@ -1489,3 +1489,22 @@ Open: how whole-number division rounds (Cyborg names it every time, as in `div.t
 floats; the remainder; negative numbers; overflow on `-` and `x`.
 
 Owner: "`x`. Short as alts, `divide` is probably the better main".
+
+## D85: Whole-number division names how it rounds (2026-11-17)
+
+    #each: Whole = 7 divide.down 2;
+    #each: Whole = 7 divide.toward_zero 2;
+    #each: Whole = 8 divide.exact 2;
+
+- `.down` rounds down: 7 divided by 2 is 3, and -7 divided by 2 is -4.
+- `.toward_zero` cuts the fraction off: -7 divided by 2 is -3, as in C and Java.
+- `.exact` gives 4 for 8 divided by 2, and doesn't accept a remainder.
+
+A bare `divide` on whole numbers is refused, since there's more than one way to round, so the message names the
+options rather than one fix (D60). Floats get a plain `divide`, since there's nothing to round. This is Cyborg's named
+rounding (Cyborg D48), with plainer words than its `.floor` and `.trunc`.
+
+Open: whether `.exact` with a remainder is a failure the program can handle or a failed check; dividing by zero; the
+remainder; the refusal's wording.
+
+Owner: "yea".
