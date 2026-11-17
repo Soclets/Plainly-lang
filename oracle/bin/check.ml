@@ -233,13 +233,18 @@ let indentation (source : Source.t) tokens =
         | Keyword ((Procedure_word | End_word), _) -> 0
         | _ -> 1
       in
-      let indent = String.sub (Source.line source line) 0 (first.byte - 1) in
+      let text = Source.line source line in
+      let indent = String.sub text 0 (first.byte - 1) in
+      let rest =
+        String.sub text (first.byte - 1) (String.length text - first.byte + 1)
+      in
       let wanted = String.make (4 * depth) ' ' in
       if indent = wanted then messages
       else
         let body, why =
           if depth > 0 then
-            ( Message.Fix wanted,
+            (* trace: D74 *)
+            ( Message.Fix (wanted ^ rest),
               "a body is indented 4 spaces per level, never with a tab." )
           else
             ( Message.What

@@ -4,7 +4,7 @@ A body is indented 4 spaces, and anything else is refused (D70).
   refused: two_spaces:2:1, line 2 column 1
    2 |   show_text("Hello, World!");
      | ^^
-   fix:  `    `
+   fix:  `    show_text("Hello, World!");`
    why:  a body is indented 4 spaces per level, never with a tab.
   [1]
 
@@ -14,7 +14,7 @@ A tab is refused too.
   refused: tab:2:1, line 2 column 1
    2 | 	show_text("Hello, World!");
      | ^
-   fix:  `    `
+   fix:  `    show_text("Hello, World!");`
    why:  a body is indented 4 spaces per level, never with a tab.
   [1]
 
@@ -24,7 +24,7 @@ So is a body with no indentation.
   refused: not_indented:2:1, line 2 column 1
    2 | show_text("Hello, World!");
      | ^
-   fix:  `    `
+   fix:  `    show_text("Hello, World!");`
    why:  a body is indented 4 spaces per level, never with a tab.
   [1]
 

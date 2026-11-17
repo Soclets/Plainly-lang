@@ -38,7 +38,7 @@ Refused, with D58's layout, tested:
 
 Stops, tested: a variable (`NotBuiltYet`), and English and Thai keywords mixed in one file (`NotDesignedYet`).
 
-Traced decisions: D3, D12, D31, D44, D57, D58, D60, D62, D63, D69, D70.
+Traced decisions: D3, D12, D31, D44, D57, D58, D60, D62, D63, D69, D70, D74.
 
 Not built yet: D58's knock-on sorting (apply the first fix, check again, add `because:`). Nothing in slice 1 can cause a
 knock-on error, so there's nothing to test it with yet. It's needed from slice 2, when a broken declaration can cause
@@ -50,8 +50,7 @@ These are choices slice 1 had to make so that anything could run. They're provis
 1. ~~Exit statuses~~: decided as D71.
 2. ~~The layout of `NotBuiltYet` and `NotDesignedYet`~~: decided as D72.
 3. ~~New wording~~: decided as D73.
-4. **The indentation fix** marks the indentation itself and shows four spaces as code, `` `    ` ``. When a line has no
-   indentation, the `^` sits under its first letter, which can read as "replace this letter".
+4. ~~The indentation fix~~: decided as D74, and built.
 5. **Which language a message is in** when the file uses Thai keywords. Slice 1 writes every message in English.
 6. **The file extension and command line.** `plainoracle <file>`, any file name.
 
