@@ -1029,7 +1029,10 @@ and `เพราะ:` ("because") would clash with the `because:` label (owner:
 
 `fix:` is `วิธีแก้:` ("how to fix"), naming what the line is. `แก้:` ("fix") was offered (owner: "วิธีแก้").
 
-Open: the other Thai labels (`when:`, `because:`, `check failed:`, `warning:`).
+`because:` is `เพราะ:` ("because"), which is free since `why:` became `เหตุผล:`. `สาเหตุ:` ("cause") was offered
+(owner: "เพราะ:").
+
+Open: the other Thai labels (`when:`, `check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
