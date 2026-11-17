@@ -1,7 +1,7 @@
 A body is indented 4 spaces, and anything else is refused, with the whole corrected line as the fix (D70, D74).
 
-  $ plainoracle two_spaces
-  refused: two_spaces:3:1, line 3 column 1
+  $ plainoracle two_spaces.plainly
+  refused: two_spaces.plainly:3:1, line 3 column 1
    3 |   show_text("Hello, World!");
      | ^^
    fix:  `    show_text("Hello, World!");`
@@ -10,8 +10,8 @@ A body is indented 4 spaces, and anything else is refused, with the whole correc
 
 A tab is refused too.
 
-  $ plainoracle tab
-  refused: tab:3:1, line 3 column 1
+  $ plainoracle tab.plainly
+  refused: tab.plainly:3:1, line 3 column 1
    3 | 	show_text("Hello, World!");
      | ^
    fix:  `    show_text("Hello, World!");`
@@ -20,8 +20,8 @@ A tab is refused too.
 
 So is a body with no indentation.
 
-  $ plainoracle not_indented
-  refused: not_indented:3:1, line 3 column 1
+  $ plainoracle not_indented.plainly
+  refused: not_indented.plainly:3:1, line 3 column 1
    3 | show_text("Hello, World!");
      | ^
    fix:  `    show_text("Hello, World!");`
@@ -30,8 +30,8 @@ So is a body with no indentation.
 
 A closer lines up with its opening line.
 
-  $ plainoracle indented_closer
-  refused: indented_closer:4:1, line 4 column 1
+  $ plainoracle indented_closer.plainly
+  refused: indented_closer.plainly:4:1, line 4 column 1
    4 |     end procedure.main
      | ^^^^
    what: a block's closer lines up with its opening line
