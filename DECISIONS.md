@@ -1094,3 +1094,17 @@ Open: how the message for a failure leaving `main` looks.
 Owner: "Isn't it `.main`? So, it's a variation/narrowing of `procedure`?", "Though, you can't call `main`, right?",
 "What if you make Hello World?", "How does Hello World look", "What happens if main doesn't accpet those?", then
 "accept them, rec it".
+
+## D64: Floats are `Float`, and an inexact literal is marked `~` (2026-11-17)
+
+Plainly's float type is called `Float`. A float literal the type can't hold exactly is marked with `~`, as in Fale and
+Cyborg: `~0.1`, since 0.1 has no exact binary float. A literal it can hold exactly, like `0.5`, needs no mark. So a
+reader always knows when a number in the code is already rounded.
+
+    #speed: Float = ~0.1;
+    #half: Float = 0.5;
+
+Open: whether `Float` is 32-bit or 64-bit; whether `~` on an exact literal, like `~0.5`, is refused, as in Cyborg; what
+Plainly's floats promise about NaN and infinity (D18).
+
+Owner: "Let's do floats, `~` is in. Named `Float`".
