@@ -1,0 +1,2 @@
+# PlainOracle's cram tests are named `run.t`, which GitHub's language bar reads as Raku.
+oracle/test/**/run.t linguist-detectable=false
