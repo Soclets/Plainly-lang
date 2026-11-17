@@ -22,7 +22,7 @@ this list.
 
 - How far the compiler looks for a bad position while building, beyond literals and fixed sizes (D20).
 - Whether there are positions counted from the end, ranges of positions, or an `offset:` form that counts from 0.
-- How a list's type and a list value are written.
+- Whether `[]` and `""` are refused with `.empty` as the fix; filling an array from a range or a rule (D68).
 
 ## Failures
 
