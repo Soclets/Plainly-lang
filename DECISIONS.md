@@ -1693,7 +1693,7 @@ Owner, asked whether any read wrong: "no, and refuse `==` with Text and Text."
 
 ## D94: `==` and `!=` don't compare two `Text`s (2026-11-17)
 
-`==` between two `Text` values is refused, and so is `!=`, presumably. How two texts are compared instead isn't decided.
+`==` between two `Text` values is refused. How two texts are compared instead isn't decided.
 
 Open: how texts are compared; whether `!=` follows `==`; the refusal's wording.
 
