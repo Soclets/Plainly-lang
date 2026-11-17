@@ -1396,6 +1396,9 @@ only `.plainly` for every file was offered (owner: "two").
 The Thai extension is `.เพลนลี่`, "Plainly" in Thai letters, as in `เกม.เพลนลี่`. A Thai word with the meaning, like
 `.ชัดเจน`, was offered (owner: "เพลนลี่").
 
-Open: the Thai mode names; whether a file's extension must match its language line.
+A file's extension must match its language line: `.plainly` with `english` or `eng`, and `.เพลนลี่` with `ไทย`.
+Anything else is refused (owner: "must match").
+
+Open: the Thai mode names.
 
 Owner: has code.
