@@ -1622,3 +1622,26 @@ hide that, as with ignored results (D26) and code after an `if` that always leav
 removing the `be.Text( )`. Generic code, where a value might already be `Text`, can revisit this once generics exist.
 
 Owner: "What do you recom?", then "yes".
+
+## D91: `shadow` in front declares a name again (2026-11-17)
+
+    #input: Text = "42";
+    shadow #input: Whole = be.Whole(#input);
+    shadow mutable #input: Whole = 0;
+
+A name already declared in the procedure can be declared again only with `shadow` in front, which may change its type,
+as when typed text becomes a number. It's visible and searchable, like `change`, so two identical-looking declarations
+can't be misread. `shadow` comes before `mutable` (or `mut`), and `mutable` is the main form in examples, with `mut`
+its short form (D28).
+
+A redeclaration without `shadow` is refused. There are two possible fixes, adding `shadow` or using `change`, so the
+message has no `fix:` (D60):
+
+    what: `#score` is already declared on line 3
+    why:  a variable (#) is declared once, unless `shadow` declares it again.
+
+Refusing every redeclaration was offered first.
+
+Open: `shadow` on a name that wasn't declared before; the Thai word for `shadow`.
+
+Owner: "`shadow` infront?", then "yea. And it's `mutable` as main".
