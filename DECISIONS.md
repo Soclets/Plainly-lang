@@ -1393,6 +1393,9 @@ there as alts").
 Plainly has two extensions: `.plainly` and a Thai one, so a fully Thai command needs no Latin letters at all. Keeping
 only `.plainly` for every file was offered (owner: "two").
 
-Open: the Thai mode names; the Thai extension's spelling; whether a file's extension must match its language line.
+The Thai extension is `.เพลนลี่`, "Plainly" in Thai letters, as in `เกม.เพลนลี่`. A Thai word with the meaning, like
+`.ชัดเจน`, was offered (owner: "เพลนลี่").
+
+Open: the Thai mode names; whether a file's extension must match its language line.
 
 Owner: has code.
