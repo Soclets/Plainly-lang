@@ -1,0 +1,3 @@
+procedure.main[none]:
+    #total: Whole = 0;
+end procedure.main

@@ -1,0 +1,4 @@
+procedure.main[none]
+    show_text("one")
+    show_text("two");
+end procedure.main

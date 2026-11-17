@@ -1,0 +1,6 @@
+(executable
+ (name plainoracle)
+ (public_name plainoracle)
+ (libraries uuseg.string)
+ (flags
+  (:standard -w +a-4-40-41-42-44-45-70 -warn-error +a)))
