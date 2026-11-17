@@ -68,8 +68,3 @@ These are choices slice 1 had to make so that anything could run. They're provis
   like Chinese, which take two.
 - A line's role for indentation comes from its first token: `procedure` and `end` lines are at level 0, everything else
   at level 1. That's only enough for slice 1, which has one block.
-
-## New wording waiting for review
-
-- `what: this file's name doesn't end in `.plainly` or `.เพลนลี่``, for an extension that's neither. D80 covers a
-  mismatch between the two, but not this case, so the line follows D80's style and still needs the owner's eye.

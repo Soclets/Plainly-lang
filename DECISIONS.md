@@ -1414,4 +1414,7 @@ Owner: has code.
 There's no `fix:`, since there are two ways to fix it, renaming the file or changing the line (D60). The message is in
 English, since the file's language is in doubt.
 
+An extension that's neither gets `what: this file's name doesn't end in `.plainly` or `.เพลนลี่`` with the same `why:`
+(owner, asked whether it read right: "yea").
+
 Owner: "yea".
