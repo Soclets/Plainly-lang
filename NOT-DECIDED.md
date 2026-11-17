@@ -37,9 +37,7 @@ Still open (D41 to D44, D46, D55, D56 and D63 are decided):
 - A required space between keywords, since Thai doesn't put spaces between words.
 - Measuring text by screen columns, not characters.
 
-## Used in the README, but not decided
+## Layout
 
-- `procedure greet[...] returns Text:` as the header, with `:` at the end.
-- `end procedure greet` as the closer.
-- `proc` as the short form of `procedure`.
-- Bodies not indented.
+- Whether bodies may be indented, must be, or mustn't be. Examples so far aren't indented, but it was never discussed.
+  The header, closer and `proc` were on this list by mistake: D9, D28, D40, D46, D63 and D69 settle them.

@@ -67,10 +67,9 @@ Known gaps that look decided but aren't, so treat them as `NotDesignedYet` until
 - The true/false type's name and its literals. `Bool` has only been a placeholder.
 - Records (structs), maps, reading input, reading a letter out of text, and comments (`//` appears in early sketches
   but was never recorded).
-- Everything on NOT-DECIDED.md's "used in the README, but not decided" list: `proc` as a short form, the header shape
-  `procedure greet[...] returns Text:`, the closer `end procedure greet`, and bodies not being indented. Decision
-  examples use these shapes, but an example isn't a decision. Hello world itself depends on the header and closer
-  shapes, so ask the owner to settle that list first, before slice 1.
+- Indentation: whether a body may be indented, must be, or mustn't be (NOT-DECIDED.md, Layout). Procedures themselves
+  are settled: the header `procedure name[...] returns T or fails [...]:` (D46, D9, D40), `[none]` (D69),
+  `procedure.main` (D63), the closer `end procedure name`, and `proc` as the short form (D28, D40).
 - The file extension (`.plain_code` was only Mult's idea) and PlainOracle's command line. Accept any file path, and
   keep the command line minimal: `plainoracle <file>`.
 - Error message wording in Thai beyond the labels in D61, and how the language of a message is chosen.
@@ -84,8 +83,8 @@ Build in small vertical slices, each one complete with its tests before the next
    (D1) and `be.Text` (D6).
 3. `show_text.format`, braces, `\{`, `new_line`, `be.Text.format`, `.same_line` (D2 to D5, D7, D11 to D14).
 4. `if`, `else if`, `else`, comparisons, `and`/`or`/`not`, short-circuiting (D34 to D37), and D50's rule.
-5. Procedures with parameters, labels, defaults, `labels.any_order`, results that can't be ignored, the pipe (D8 to D10,
-   D26, D29, D30), once their headers are decided.
+5. Procedures with parameters, results and `proc`, labels, defaults, `labels.any_order`, results that can't be ignored,
+   the pipe (D8 to D10, D26, D28, D29, D30, D46).
 6. Loops and ranges (D52 to D54).
 7. Lists and arrays, positions, `.empty`, `all`, `copy` and `share` (D15, D20, D32, D67, D68).
 8. Failures: `or fails`, `fail`, `?`, `otherwise` forms, handler families (D41 to D46, D55, D56, D63).
