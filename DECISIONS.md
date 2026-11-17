@@ -1018,6 +1018,9 @@ down as too formal, closer to "rejected". A Thai `why:` line says what the code 
 declared, as in `ที่เขียน `เปลี่ยนได้` ไว้` ("that has `mut` written on it"), since `ที่ประกาศ` ("which was declared")
 is textbook language.
 
+Thai messages call a variable `ตัวแปร`, the word Thai maths and programming textbooks use ("a symbol that varies"),
+as in "ตัวแปร x" (owner: "yea").
+
 Open: the other Thai labels (`what:`, `why:`, `when:`, `because:`, `fix:`, `check failed:`, `warning:`).
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
