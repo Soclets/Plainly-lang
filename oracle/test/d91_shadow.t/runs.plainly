@@ -1,0 +1,9 @@
+english
+procedure.main[none]:
+    #score: Whole = 10;
+    shadow #score: Text = "ten";
+    show_text(#score);
+    shadow mutable #score: Whole = 3;
+    change #score = #score + 1;
+    show_text(be.Text(#score));
+end procedure.main

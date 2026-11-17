@@ -68,6 +68,7 @@ type state = {
   mutable refusals : Message.t list;
   mutable variables : (string * (value_type * bool)) list;
   mutable limits : (string * limits) list;
+  mutable declared_on : (string * int) list;
   (* Refusals of `+` on text, held until it's known whether that `+` sits next
      to `&`, which is refused instead (D83). *)
   mutable pending : (Token.t * Message.t) list;
@@ -1066,7 +1067,7 @@ let check_limits state name limits (value : expression) =
 (* trace: D58 *)
 (* A declaration creates its variable with its written type even when its
    value is refused, so later lines aren't refused because of it. *)
-let declaration state ~mutable_variable =
+let declaration state ~shadow ~mutable_variable =
   let name_token = next state in
   let name =
     match name_token.kind with
@@ -1075,9 +1076,32 @@ let declaration state ~mutable_variable =
         name
     | _ -> not_built state name_token
   in
-  if List.mem_assoc name state.variables then
-    stop Message.Not_designed_yet name_token
-      (Printf.sprintf "declaring `%s` again isn't decided yet" name);
+  (* trace: D91 *)
+  (* A name is declared once, unless `shadow` declares it again. A refused
+     redeclaration still replaces the variable, so later lines aren't refused
+     because of it (D58). *)
+  (match (List.assoc_opt name state.declared_on, shadow) with
+  | Some line, false ->
+      refuse state
+        {
+          Message.kind = Message.Refused;
+          line = name_token.line;
+          byte = name_token.byte;
+          length = name_token.length;
+          body =
+            Message.What
+              (Printf.sprintf "`%s` is already declared on line %d" name line);
+          why =
+            Some
+              "a variable (#) is declared once, unless `shadow` declares it \
+               again.";
+        }
+  | None, true ->
+      stop Message.Not_designed_yet name_token
+        (Printf.sprintf
+           "`shadow` on `%s`, which isn't declared yet, isn't decided yet" name)
+  | _ -> ());
+  state.declared_on <- (name, name_token.line) :: state.declared_on;
   ignore (expect_symbol state ':');
   let variable_type, limits = type_of state in
   ignore (expect_symbol state '=');
@@ -1188,11 +1212,26 @@ let rec body state found =
   | Keyword (Mut_word, table) ->
       check_table state token table;
       advance state;
-      body state (declaration state ~mutable_variable:true :: found)
+      body state
+        (declaration state ~shadow:false ~mutable_variable:true :: found)
+  | Keyword (Shadow_word, table) ->
+      check_table state token table;
+      advance state;
+      let mutable_variable =
+        match current state with
+        | Some ({ kind = Keyword (Mut_word, mut_table); _ } as mut_token) ->
+            check_table state mut_token mut_table;
+            advance state;
+            true
+        | _ -> false
+      in
+      body state (declaration state ~shadow:true ~mutable_variable :: found)
   | Keyword (Change_word, table) ->
       check_table state token table;
       body state (change state :: found)
-  | Name _ -> body state (declaration state ~mutable_variable:false :: found)
+  | Name _ ->
+      body state
+        (declaration state ~shadow:false ~mutable_variable:false :: found)
   | _ -> not_built state token
 
 let closer state =
@@ -1214,6 +1253,7 @@ let program source tokens lexer_stop =
       refusals = [];
       variables = [];
       limits = [];
+      declared_on = [];
       pending = [];
     }
   in

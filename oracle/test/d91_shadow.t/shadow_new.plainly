@@ -1,0 +1,4 @@
+english
+procedure.main[none]:
+    shadow #score: Whole = 10;
+end procedure.main
