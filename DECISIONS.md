@@ -1221,3 +1221,16 @@ entries before this one write `[]`.
 In Thai, `none` is `ไม่มี` (D57), as in `กระบวนการ.หลัก[ไม่มี]:`.
 
 Owner: "So, params now use `[none]`?", "[none], rec it", then "ไม่มี, rec it".
+
+## D70: Bodies are indented (2026-11-17)
+
+    procedure.main[none]:
+        show_text("Hello, World!");
+    end procedure.main
+
+A block's body is indented one level inside its header and closer. Examples in entries before this one aren't
+indented, only because the conversation's chat couldn't show indentation.
+
+Open: whether wrong indentation is refused, or only fixed by a formatter; how wide one level is, and spaces or tabs.
+
+Owner: "Indented, it's just that I can't format in chat".
