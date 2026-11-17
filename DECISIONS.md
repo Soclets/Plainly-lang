@@ -1561,8 +1561,7 @@ failing a check, the same in every build mode. `saturate` is a word worth learni
 not learn nothing", and `.stop_at_limit` was offered as too long. These are Cyborg's word forms (Cyborg D295).
 
 Open: whether there's a `.wrap` form too; whether a bare `plus` is refused with `fix: +`, as in Cyborg; limits other
-than the type's own, since a `Whole`'s lowest value is far below 0, so a health bar sticking at 0 needs an unsigned type
-like `u8` (D65), or bounds Plainly doesn't have yet.
+than the type's own: D88.
 
 Owner: "That's pretty long, how about learning `saturate`?"
 
