@@ -1338,3 +1338,11 @@ The English language line is lowercase like every other keyword, with `eng` as i
 for `procedure`. The Thai line stays `ไทย`. A refusal that names the line quotes the word the file actually wrote.
 
 Owner: "no. Also, shouldn't it be `english` with alt as `eng`?"
+
+## D78: Plainly files end in `.plainly` (2026-11-17)
+
+`game.plainly`. It names the language, so people and editors know what the file is, it's unclaimed, so GitHub and
+editors can map it to Plainly without a clash, and it's searchable. `.code` was offered as the plainest, but it names no
+language, and Mult's `.plain_code` was the starting idea.
+
+Owner: "You know what's plain? `.code`, hahah", "Or just `.plainly`?", then "yea. Now, commands".
