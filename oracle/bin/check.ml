@@ -27,9 +27,6 @@ type expression = {
   (* The operator at the top of an unbracketed calculation, with its place, so
      that mixing it with `&` can be refused (D83). *)
   top_operator : (string * Token.t) option;
-  (* Whether an unbracketed operator joins this expression's parts, so a pipe
-     after it is ambiguous. *)
-  operator_at_top : bool;
 }
 
 and shape =
@@ -405,7 +402,6 @@ let spanning (first : Token.t) (last : Token.t) shape value_type =
     length = last.byte + last.length - first.byte;
     value_type;
     top_operator = None;
-    operator_at_top = false;
   }
 
 let joined (left : expression) (right : expression) shape value_type =
@@ -416,7 +412,6 @@ let joined (left : expression) (right : expression) shape value_type =
     length = right.byte + right.length - left.byte;
     value_type;
     top_operator = None;
-    operator_at_top = true;
   }
 
 (* From an expression to a token on the same line. *)
@@ -428,7 +423,6 @@ let from_to (left : expression) (last : Token.t) shape value_type =
     length = last.byte + last.length - left.byte;
     value_type;
     top_operator = None;
-    operator_at_top = false;
   }
 
 let token_of_expression (expression : expression) =
@@ -1715,13 +1709,12 @@ and check_unit state parameter argument value_place =
 
 (* trace: D29 *)
 (* trace: D30 *)
-(* `|>` passes the value on its left as the next step's bare first argument. *)
+(* trace: D97 *)
+(* `|>` passes the value on its left as the next step's bare first argument.
+   It's read after maths and `&`, so it takes all of its left side. *)
 and pipe state start (left : expression) =
   match current state with
   | Some ({ kind = Pipe; _ } as bar) ->
-      if left.operator_at_top then
-        stop Message.Not_designed_yet bar
-          "a `|>` after a calculation without `( )` isn't decided yet";
       (match left.value_type with
       | Some Bool_type ->
           stop Message.Not_designed_yet bar
