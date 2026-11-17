@@ -1039,7 +1039,22 @@ keyword (owner: "เมื่อ:").
 `ไม่ผ่าน:` while building. `ตรวจไม่ผ่าน:` ("check didn't pass") was turned down as too close to `ไม่ผ่าน:` (owner:
 "หยุดทำงาน:").
 
-Open: the Thai label for `warning:`.
+`warning:` is `คำเตือน:` ("warning"), the word Thai apps and signs use. `ระวัง:` ("careful") was offered (owner:
+"คำเตือน:").
+
+All of D58's labels now have Thai:
+
+| English | Thai |
+|---|---|
+| `refused:` | `ไม่ผ่าน:` |
+| `check failed:` | `หยุดทำงาน:` |
+| `warning:` | `คำเตือน:` |
+| `what:` | `ปัญหา:` |
+| `why:` | `เหตุผล:` |
+| `when:` | `เมื่อ:` |
+| `because:` | `เพราะ:` |
+| `fix:` | `วิธีแก้:` |
+| `line N column M` | `บรรทัด N คอลัมน์ M` |
 
 Owner: "`ไม่ผ่าน:` and `ที่เขียน` is good, but idk if `ตัวแปร` means variable. I mean, I don't know the Thai word for
 that".
