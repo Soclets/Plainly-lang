@@ -941,6 +941,7 @@ From now on, every keyword gets both an English and a Thai word. The first:
 | `show_text` | `แสดงข้อความ` |
 | `if` | `ถ้า` |
 | `else` | `ไม่งั้น` |
+| `none` (D69) | `ไม่มี` |
 
 Thai names are written joined, as normal Thai is, with no `_`: `แสดงข้อความ`, not `แสดง_ข้อความ`. Spaces separate
 keywords and names, the way spaces separate phrases in a Thai sentence, so a space always means a new name or keyword.
@@ -1217,6 +1218,6 @@ work, so it gets a word. The brackets stay, so every procedure header has the sa
 that it takes nothing, as in Cyborg. Leaving the brackets out, as in `procedure.main:`, was turned down. Examples in
 entries before this one write `[]`.
 
-Open: the Thai word for `none` (D57).
+In Thai, `none` is `ไม่มี` (D57), as in `กระบวนการ.หลัก[ไม่มี]:`.
 
-Owner: "So, params now use `[none]`?", then "[none], rec it".
+Owner: "So, params now use `[none]`?", "[none], rec it", then "ไม่มี, rec it".
