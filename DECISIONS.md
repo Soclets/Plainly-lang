@@ -1116,11 +1116,13 @@ Owner: "Let's do floats, `~` is in. Named `Float`".
 
 ## D65: Rust's whole number family, as the short names (2026-11-17)
 
-Beside the plain names, Plainly has every number type Rust has, by the same names: `i8`, `i16`, `i32`, `i64`, `i128`
-and `isize`; `u8`, `u16`, `u32`, `u64`, `u128` and `usize`; `f32` and `f64`. `Whole` is `i64` and `Float` is `f32`
+Beside the plain names, Plainly has Rust's number types by the same names: `i8`, `i16`, `i32`, `i64` and `i128`; `u8`,
+`u16`, `u32`, `u64` and `u128`; `f16`, `f32` and `f64`. There's no `isize` or `usize`, whose size changes with the
+machine. `f16` is added, though Rust's own `f16` and Cranelift's support for it are newer than the rest. `Whole` is `i64` and `Float` is `f32`
 (D64), so the plain names are where beginners start, and the short ones are there when you grow, the way `proc` is for
 `procedure`. The names carry over to Rust, Zig and Cyborg, and match Rust's across `external.rust` (D40). This was in
 Mult's notes from the start ("`Whole` to start; the `i8`/`i32`/`i64`/`u8` family when you grow"). A 64-bit float is
 `f64`, so no narrowing like `Float.64_bit` is needed.
 
-Owner: "Bro, we have the entire Rust family in short like `i`".
+Owner: "Bro, we have the entire Rust family in short like `i`", then "No `isize` or `usize` shit, and we should add
+`f16`".
