@@ -20,7 +20,7 @@ standard says what the rules are now.
 3. [Types and values](03-types.md): `Whole` and its limits, the number family, `Float`, `Text`, lists and arrays
 4. [Variables](04-variables.md): declaring, `mutable`, `change`, `shadow`, `copy` and `share`
 5. [Expressions](05-expressions.md): maths order, operators, division and rounding, `&`, `.format`, comparisons, logic and the pipe
-6. Control flow: `if`, loops and ranges, and what comes after an `if` that leaves
+6. [Control flow](06-control-flow.md): `if`, loops and ranges, and what comes after an `if` that leaves
 7. Procedures: headers, `returns`, labels, defaults, units, calls, `return` and `procedure.main`
 8. Failures: `fails`, `?`, `otherwise` and handlers
 9. Messages: the error layout, the kinds of message, and exit statuses
